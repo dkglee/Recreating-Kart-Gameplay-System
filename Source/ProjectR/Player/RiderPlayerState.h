@@ -12,15 +12,12 @@ class PROJECTR_API ARiderPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
-	FORCEINLINE uint16 GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
+	FORCEINLINE FString GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
 	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
-	void SetCheckPoint(const uint16 CheckPointNum);
-	FORCEINLINE void GoNextLap() { CurrentLap += 1; }
+	FORCEINLINE void SetCheckPoint(const FString& CheckPointNum) { CurrentKartCheckPoint = CheckPointNum; }
+	FORCEINLINE void GoNextLap() { CurrentLap += 1; CurrentKartCheckPoint = TEXT("0"); }
 	
 private:
-	UPROPERTY()
-	TObjectPtr<ACheckPoint> CurrentCheckPointPin;
-	
-	uint16 CurrentKartCheckPoint = 0;
+	FString CurrentKartCheckPoint = TEXT("0");
 	uint8 CurrentLap = 0;
 };

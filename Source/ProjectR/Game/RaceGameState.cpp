@@ -21,16 +21,21 @@ void ARaceGameState::BeginPlay()
 		const ACheckPoint* CheckPointA = static_cast<const ACheckPoint*>(A);
 		const ACheckPoint* CheckPointB = static_cast<const ACheckPoint*>(B);
 		
-		return CheckPointA->GetCurrentCheckPoint() < CheckPointB->GetCurrentCheckPoint();
+		return CheckPointA->GetPinMainNumber() < CheckPointB->GetPinMainNumber();
 	});
 
 	const ACheckPoint* LastPoint = static_cast<ACheckPoint*>(CheckPointList[CheckPointList.Num() - 1]);
 	// 체크포인트 최대 숫자는 보통 0 ~ 최대 숫자 까지기 때문에 0 ~ 최대 숫자 만큼 보다
 	// 적은 갯수를 보유하고 있으면 맵에 있는 체크포인트 자체에 문제가 있음을 의미한다.
-	if (CheckPointList.Num() < LastPoint->GetCurrentCheckPoint() + 1)
+	if (CheckPointList.Num() < LastPoint->GetPinMainNumber() + 1)
 	{
 		UE_LOG(LogTemp, Error, TEXT("현재 잘못된 맵 세팅입니다. 재확인이 필요합니다: 사유 체크포인트 갯수 부족"))
 	}
 
-	MaxCheckPoint = LastPoint->GetCurrentCheckPoint();
+	MaxCheckPoint = LastPoint->GetPinMainNumber();
+}
+
+void ARaceGameState::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
