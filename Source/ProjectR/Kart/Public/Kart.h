@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "Kart.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputBindingDelegate, class UEnhancedInputComponent*, PlayerInput);
+
 UCLASS()
 class PROJECTR_API AKart : public APawn
 {
@@ -25,4 +27,15 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	FInputBindingDelegate OnInputBindingDelegate;
+private:
+	// Input Mapping Context
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputMappingContext* Imc_Kart = nullptr;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	class UKartMovementComponent* KartMovementComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	class UKartSteeringComponent* KartSteeringComponent = nullptr;
 };
