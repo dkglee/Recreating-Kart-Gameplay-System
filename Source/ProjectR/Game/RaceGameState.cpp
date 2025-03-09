@@ -31,4 +31,6 @@ void ARaceGameState::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("현재 잘못된 맵 세팅입니다. 재확인이 필요합니다: 사유 체크포인트 갯수 부족"))
 	}
+
+	MaxCheckPoint = LastPoint->GetCurrentCheckPoint();
 }

@@ -34,7 +34,7 @@ void ACheckPoint::OnMoveToCheckPoint(UPrimitiveComponent* OverlappedComponent
 	{
 		return;
 	}
-
+	
 	const bool IsNextCheckPoint = RiderPlayerState->GetCurrentKartCheckPoint() + 1 == CurrentCheckPoint;
 	const bool IsNextLap = RiderPlayerState->GetCurrentKartCheckPoint() == GetWorld()->GetGameState<ARaceGameState>()->GetMaxCheckPoint()
 			&& CurrentCheckPoint == 0;
@@ -42,12 +42,16 @@ void ACheckPoint::OnMoveToCheckPoint(UPrimitiveComponent* OverlappedComponent
 	if (IsNextCheckPoint)
 	{
 		RiderPlayerState->SetCheckPoint(CurrentCheckPoint);
+		
+		UE_LOG(LogTemp, Display, TEXT("다음 랩 상황: %d, %d"), RiderPlayerState->GetCurrentKartCheckPoint(), RiderPlayerState->GetCurrentLap());
 		return;
 	}
 
 	if (IsNextLap)
 	{
 		RiderPlayerState->SetCheckPoint(CurrentCheckPoint);
-		RiderPlayerState->GoNextRap();
+		RiderPlayerState->GoNextLap();
+		
+		UE_LOG(LogTemp, Display, TEXT("다음 랩 상황: %d, %d"), RiderPlayerState->GetCurrentKartCheckPoint(), RiderPlayerState->GetCurrentLap());
 	}
 }

@@ -11,10 +11,11 @@ class PROJECTR_API ARiderPlayerState : public APlayerState
 	
 public:
 	FORCEINLINE uint16 GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
+	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
 	void SetCheckPoint(const uint16 CheckPointNum);
-	FORCEINLINE void GoNextRap() { CurrentRap += 1; }
+	FORCEINLINE void GoNextLap() { CurrentLap += 1; }
 	
 private:
 	uint16 CurrentKartCheckPoint = 0;
-	uint8 CurrentRap = 0;
+	uint8 CurrentLap = 0;
 };

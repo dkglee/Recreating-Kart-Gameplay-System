@@ -23,7 +23,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Options|CheckPoint", meta = (AllowPrivateAccess = true))
 	uint16 CurrentCheckPoint;
 	
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UBoxComponent> CheckBox;
 
 	UFUNCTION()
