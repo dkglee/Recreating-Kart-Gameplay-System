@@ -1,9 +1,9 @@
-﻿#include "ItemRaceGameMode.h"
+﻿#include "RaceGameState.h"
 
 #include "CheckPoint.h"
 #include "Kismet/GameplayStatics.h"
 
-void AItemRaceGameMode::BeginPlay()
+void ARaceGameState::BeginPlay()
 {
 	Super::BeginPlay();
 	

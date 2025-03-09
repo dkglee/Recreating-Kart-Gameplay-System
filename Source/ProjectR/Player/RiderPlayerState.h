@@ -10,8 +10,11 @@ class PROJECTR_API ARiderPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
-	void SetCheckPointToNext();
+	FORCEINLINE uint16 GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
+	void SetCheckPoint(const uint16 CheckPointNum);
+	FORCEINLINE void GoNextRap() { CurrentRap += 1; }
 	
 private:
 	uint16 CurrentKartCheckPoint = 0;
+	uint8 CurrentRap = 0;
 };
