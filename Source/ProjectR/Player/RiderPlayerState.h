@@ -4,6 +4,8 @@
 #include "GameFramework/PlayerState.h"
 #include "RiderPlayerState.generated.h"
 
+class ACheckPoint;
+
 UCLASS()
 class PROJECTR_API ARiderPlayerState : public APlayerState
 {
@@ -16,6 +18,9 @@ public:
 	FORCEINLINE void GoNextLap() { CurrentLap += 1; }
 	
 private:
+	UPROPERTY()
+	TObjectPtr<ACheckPoint> CurrentCheckPointPin;
+	
 	uint16 CurrentKartCheckPoint = 0;
 	uint8 CurrentLap = 0;
 };

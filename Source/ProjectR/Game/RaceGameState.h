@@ -11,10 +11,14 @@ class PROJECTR_API ARaceGameState : public AGameStateBase
 	
 public:
 	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
+	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
 
 protected:
 	virtual void BeginPlay() override;
 	
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Options|Race", meta = (AllowPrivateAccess = true))
+	uint8 MaxLaps = 1;
+	
 	uint16 MaxCheckPoint = 0;
 };
