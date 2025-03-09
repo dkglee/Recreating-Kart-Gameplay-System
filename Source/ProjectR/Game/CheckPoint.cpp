@@ -33,14 +33,14 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 		return;
 	}
 
-	ARiderPlayerState* RiderPlayerState = PlayerKart->GetPlayerState<ARiderPlayerState>();
+	ARiderPlayerState* PS = PlayerKart->GetPlayerState<ARiderPlayerState>();
 
-	if (!RiderPlayerState)
+	if (!PS)
 	{
 		return;
 	}
 
-	const FString CheckPointPin = RiderPlayerState->GetCurrentKartCheckPoint();
+	const FString CheckPointPin = PS->GetCurrentKartCheckPoint();
 
 	TArray<uint16> CurrentPlayerPin;
 	
@@ -59,7 +59,8 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 		
 		if (IsNextPinToMove)
 		{
-			RiderPlayerState->SetCheckPoint(CurrentCheckPoint);
+			PS->SetCheckPoint(CurrentCheckPoint);
+			UE_LOG(LogTemp, Display, TEXT("현재 정보: %d Laps, %s CheckPoint"), PS->GetCurrentLap(), *PS->GetCurrentKartCheckPoint());
 			return;
 		}
 
@@ -70,7 +71,8 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 
 		if (IsNextLapToMove)
 		{
-			RiderPlayerState->GoNextLap();
+			PS->GoNextLap();
+			UE_LOG(LogTemp, Display, TEXT("현재 정보: %d Laps, %s CheckPoint"), PS->GetCurrentLap(), *PS->GetCurrentKartCheckPoint());
 		}
 	}
 }
