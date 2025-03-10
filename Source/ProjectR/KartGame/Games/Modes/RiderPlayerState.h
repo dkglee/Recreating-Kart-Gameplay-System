@@ -16,12 +16,18 @@ public:
 	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
 	FORCEINLINE void SetCheckPoint(const FString& CheckPointNum) { CurrentKartCheckPoint = CheckPointNum; }
 	FORCEINLINE void GoNextLap() { CurrentLap += 1; CurrentKartCheckPoint = TEXT("0"); }
+	
 	uint16 GetCurrentMainCheckPoint() const;
+	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
+	TArray<uint16> PlayerCurrentCheckPointPinList;
+	
 	UPROPERTY(Replicated)
 	FString CurrentKartCheckPoint = TEXT("0");
 

@@ -33,7 +33,7 @@ void ARaceGameState::BeginPlay()
 	// ReadOnly용 체크 포인트 데이터 가져오기
 	for (AActor* CheckPoint : CheckPointList)
 	{
-		const ACheckPoint* NewCheckPoint = static_cast<ACheckPoint*>(CheckPoint);
+		ACheckPoint* NewCheckPoint = static_cast<ACheckPoint*>(CheckPoint);
 		CheckPointData.Add(NewCheckPoint->GetCurrentCheckPoint(), NewCheckPoint);
 	}
 
