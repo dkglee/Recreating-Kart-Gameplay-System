@@ -80,11 +80,11 @@ void UItemInventoryComponent::UseItem()
 	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *usingItem.ItemName.ToString());
 
 	Inventory.RemoveAt(0);
-	// 두번째 인벤토리에 아이템이 있으면 당겨오기
-	if (Inventory.Num() == 1)
-	{
-		Inventory[0] = Inventory[1];
-		Inventory.RemoveAt(1);
-	}
+	// // 두번째 인벤토리에 아이템이 있으면 당겨오기
+	// if (Inventory.Num() == 1)
+	// {
+	// 	Inventory[0] = Inventory[1];
+	// 	Inventory.RemoveAt(1);
+	// }
 }
 
