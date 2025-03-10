@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Components/ActorComponent.h"
 #include "KartAccelerationComponent.generated.h"
 
@@ -20,6 +21,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	UFUNCTION()
+	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
 
 public:
 	// Called every frame
@@ -27,10 +30,34 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
+	void ProcessAccleration(float DeltaTime);
+	void ApplyForceToKart(float DeltaTime);
+	void AlignToLandScape(float DeltaTime);
+
+	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* KartBody = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	TArray<class UKartSuspensionComponent*> Wheels;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* IA_Movement = nullptr;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float AccelerationInput = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float AccelerationRate = 5.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float DragCoefficient = 0.3f;
+
+	// 엔진에 따라서 변경될 수 있음
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float MaxAcceleration = 10000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float Acceleration = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	FVector CenterOfMass = {50.0f, 0.0f, 0.0f};
 };

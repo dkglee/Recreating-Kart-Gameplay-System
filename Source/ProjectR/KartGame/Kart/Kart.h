@@ -50,4 +50,7 @@ private:
 	class UKartSuspensionComponent* LR_Wheel = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartSuspensionComponent* RR_Wheel = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartAccelerationComponent* AccelerationComponent = nullptr;
 };

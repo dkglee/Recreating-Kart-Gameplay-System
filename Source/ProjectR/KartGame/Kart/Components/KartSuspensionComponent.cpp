@@ -1,9 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Kart/Suspension/Public/KartSuspensionComponent.h"
-
-#include "AssetSelection.h"
+#include "KartSuspensionComponent.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -19,6 +17,14 @@ UKartSuspensionComponent::UKartSuspensionComponent()
 
 	// ...
 	bWantsInitializeComponent = true;
+}
+
+bool UKartSuspensionComponent::GetLandScapeNormal(FVector& OutNormal, FVector& OutLocation)
+{
+	OutNormal = LandScapeNormal;
+	OutLocation = LandScapeLocation;
+	
+	return bHitLandScape;
 }
 
 
@@ -40,7 +46,7 @@ void UKartSuspensionComponent::InitializeComponent()
 	{
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 		KartBody->SetLinearDamping(5.0f);
-		KartBody->SetMassOverrideInKg(NAME_None, 150.0f, true);
+		// KartBody->SetMassOverrideInKg(NAME_None, 150.0f, true);
 	}
 }
 
@@ -58,7 +64,7 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 void UKartSuspensionComponent::ProcessSuspension()
 {
 	FVector Start = GetComponentLocation();
-	FVector End = Start + FVector({0.0f, 0.0f, -60.0f});
+	FVector End = Start + Kart->GetActorUpVector() * -SuspensionLength;
 
 	FHitResult HitResult;
 
@@ -71,13 +77,21 @@ void UKartSuspensionComponent::ProcessSuspension()
 		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, 60.0f);
 		DistanceNormalized = 1 - DistanceNormalized;
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
-
-		FVector Force = Direction * DistanceNormalized * ForceScale;
-		if (KartBody)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Force: %s, this: %p"), *Force.ToString(), this);
-			KartBody->AddForceAtLocation(Force, Start);
-		}
+		
+		// FVector Force = Direction * DistanceNormalized * ForceScale;
+		// if (KartBody)
+		// {
+		// 	KartBody->AddForceAtLocation(Force, Start);
+		// }
+		bHitLandScape = true;
+		LandScapeNormal = HitResult.ImpactNormal;
+		LandScapeLocation = HitResult.ImpactPoint;
+	}
+	else
+	{
+		bHitLandScape = false;
+		LandScapeNormal = FVector::ZeroVector;
+		LandScapeLocation = FVector::ZeroVector;
 	}
 }
 

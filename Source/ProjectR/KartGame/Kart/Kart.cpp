@@ -2,11 +2,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
+#include "KartAccelerationComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Chaos/SoftsSpring.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kart/Suspension/Public/KartSuspensionComponent.h"
+#include "KartSuspensionComponent.h"
 
 // Sets default values
 AKart::AKart()
@@ -40,16 +41,18 @@ AKart::AKart()
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
-	LF_Wheel->SetRelativeLocation({80, -70, -20});
+	LF_Wheel->SetRelativeLocation({90, -60, -20});
 	RF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RF_Wheel"));
 	RF_Wheel->SetupAttachment(RootBox);
-	RF_Wheel->SetRelativeLocation({80, 70, -20});
+	RF_Wheel->SetRelativeLocation({90, 60, -20});
 	LR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LR_Wheel"));
 	LR_Wheel->SetupAttachment(RootBox);
-	LR_Wheel->SetRelativeLocation({-90, -70, -20});
+	LR_Wheel->SetRelativeLocation({-90, -60, -20});
 	RR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RR_Wheel"));
 	RR_Wheel->SetupAttachment(RootBox);
-	RR_Wheel->SetRelativeLocation({-90, 70, -20});
+	RR_Wheel->SetRelativeLocation({-90, 60, -20});
+
+	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 }
 
 // Called when the game starts or when spawned
