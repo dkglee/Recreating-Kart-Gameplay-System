@@ -9,16 +9,6 @@
 /**
  * 
  */
-USTRUCT(BlueprintType)
-struct FItemTable : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	FName ItemName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	int32 ItemWeight;	
-};
 
 UCLASS()
 class PROJECTR_API UKartGameInstance : public UGameInstance

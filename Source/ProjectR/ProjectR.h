@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 
 // 디버깅용으로 만든 define
-DECLARE_LOG_CATEGORY_EXTERN(ProjectR, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(PROJECT_R, Log, All);
 
 #define CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
 
 #define PRINT_CALLINFO() \
-UE_LOG(ProjectR, Warning, TEXT("%s"), *CALLINFO)
+UE_LOG(PROJECT_R, Warning, TEXT("%s"), *CALLINFO)
 
 #define PRINTLOG(fmt, ...) \
-UE_LOG(ProjectR, Warning, TEXT("%s %s"), *CALLINFO, *FString::Printf(fmt, ##__VA_ARGS__))
+UE_LOG(PROJECT_R, Warning, TEXT("%s %s"), *CALLINFO, *FString::Printf(fmt, ##__VA_ARGS__))
 
 #define PRINTLOGTOSCREEN(fmt, ...) \
 PRINTLOG(fmt, ##__VA_ARGS__); \
