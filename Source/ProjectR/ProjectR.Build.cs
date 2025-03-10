@@ -15,9 +15,9 @@ public class ProjectR : ModuleRules
 		PublicIncludePaths.AddRange(new string[]
 		{
 			"ProjectR/",
-			"ProjectR/Kart/Public",
-			"ProjectR/Kart/Movement/Public",
-			"ProjectR/Kart/Steering/Public"
+			"ProjectR/KartGame/Kart/",
+			"ProjectR/KartGame/Kart/Components/",
+			"ProjectR/KartGame/Kart/Components/Legacy/"
 		});
 
 		// Uncomment if you are using Slate UI

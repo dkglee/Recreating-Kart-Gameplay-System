@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponent.h"
-#include "KartSteeringComponent.generated.h"
+#include "KartSteeringComponentLegacy.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSteeringDelegate, float, SteeringAngle);
 
@@ -16,13 +16,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSteeringDelegate, float, Steering
  * 속도와 무관하게 차량의 방향을 변경할 수 있도록 설계.
  */
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PROJECTR_API UKartSteeringComponent : public UActorComponent
+class PROJECTR_API UKartSteeringComponentLegacy : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UKartSteeringComponent();
+	UKartSteeringComponentLegacy();
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
@@ -51,9 +51,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteeringInput = 0.0f;  // 입력값 (-1 ~ 1)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float Steer = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteeringAngle = 0.0f;  // 현재 조향각
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	float SteeringSpeed = 5.0f;  // 조향 속도
+	float SteeringRate = 5.0f;  // 조향 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float MaxSteeringAngle = 30.0f;  // 최대 조향각
 };
