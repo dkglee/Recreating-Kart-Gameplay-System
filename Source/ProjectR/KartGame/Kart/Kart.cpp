@@ -79,10 +79,19 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	LR_Wheel->ProcessSuspension();
-	RR_Wheel->ProcessSuspension();
-	LF_Wheel->ProcessSuspension();
-	RF_Wheel->ProcessSuspension();
+	bool flag = true;
+	flag &= LR_Wheel->ProcessSuspension();
+	flag &= RR_Wheel->ProcessSuspension();
+	flag &= LF_Wheel->ProcessSuspension();
+	flag &= RF_Wheel->ProcessSuspension();
+
+	// if (flag)
+	// {
+		AccelerationComponent->ApplyForceToCart(LR_Wheel);
+		AccelerationComponent->ApplyForceToCart(RR_Wheel);
+		AccelerationComponent->ApplyForceToCart(LF_Wheel);
+		AccelerationComponent->ApplyForceToCart(RF_Wheel);
+	// }
 }
 
 // Called to bind functionality to input

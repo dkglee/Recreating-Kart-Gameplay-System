@@ -26,6 +26,12 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	}
 }
 
+void UKartAccelerationComponent::ApplyForceToCart(class UKartSuspensionComponent* Wheel)
+{
+	FVector Force = KartBody->GetForwardVector() * MaxAcceleration * AccelerationInput * KartBody->GetMass();
+	KartBody->AddForceAtLocation(Force, Wheel->GetComponentLocation());
+}
+
 
 // Called when the game starts
 void UKartAccelerationComponent::BeginPlay()
@@ -71,16 +77,14 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessAccleration(DeltaTime);
-	ApplyForceToKart(DeltaTime);
-	// AlignToLandScape(DeltaTime);
+	// ProcessAccleration(DeltaTime);
+	// ApplyForceToKart(DeltaTime);
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	float TargetAcceleration = InputActionValue.Get<float>();
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
-	UE_LOG(LogTemp, Warning, TEXT("AccelerationInput: %f"), AccelerationInput);
 }
 
 void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
@@ -98,8 +102,6 @@ void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
 void UKartAccelerationComponent::ApplyForceToKart(float DeltaTime)
 {
 	FVector Force = KartBody->GetForwardVector() * KartBody->GetMass() * Acceleration;
-
-	// KartBody->AddForceAtLocation(Force, KartBody->GetComponentLocation());
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{
