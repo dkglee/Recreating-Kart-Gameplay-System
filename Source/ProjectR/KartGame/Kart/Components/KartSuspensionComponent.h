@@ -16,6 +16,7 @@ public:
 	// Sets default values for this component's properties
 	UKartSuspensionComponent();
 	bool GetLandScapeNormal(FVector& OutNormam, FVector& OutLocation);
+	bool ProcessSuspension();
 
 protected:
 	// Called when the game starts
@@ -28,7 +29,6 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void ProcessSuspension();
 	
 	UPROPERTY()
 	class AKart* Kart = nullptr;
@@ -36,7 +36,7 @@ private:
 	class UBoxComponent* KartBody = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
-	float ForceScale = 90000.0f;
+	float ForceScale = 85000.0f * 3.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
 	int SuspensionLength = 60.0f;
 
