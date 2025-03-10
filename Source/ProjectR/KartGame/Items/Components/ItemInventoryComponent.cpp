@@ -3,6 +3,9 @@
 
 #include "ItemInventoryComponent.h"
 
+#include "EnhancedInputComponent.h"
+#include "Kart.h"
+
 
 // Sets default values for this component's properties
 UItemInventoryComponent::UItemInventoryComponent()
@@ -11,6 +14,12 @@ UItemInventoryComponent::UItemInventoryComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	bWantsInitializeComponent = true;
+	ConstructorHelpers::FObjectFinder<UInputAction> ia_useitem(TEXT("'/Game/Kart/Input/InputAction/IA_UseItem.IA_UseItem'"));
+	if (ia_useitem.Succeeded())
+	{
+		IA_UseItem = ia_useitem.Object;
+	}
 }
 
 
@@ -18,6 +27,22 @@ UItemInventoryComponent::UItemInventoryComponent()
 void UItemInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UItemInventoryComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	Kart = Cast<AKart>(GetOwner());
+	if (Kart)
+	{
+		Kart->OnInputBindingDelegate.AddDynamic(this, &UItemInventoryComponent::SetupInputBinding);
+	}
+}
+
+void UItemInventoryComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
+{
+	PlayerInputComponent->BindAction(IA_UseItem, ETriggerEvent::Started, this, &UItemInventoryComponent::UseItem);
 }
 
 
@@ -29,7 +54,11 @@ void UItemInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UItemInventoryComponent::GetItem(FItemTable itemData)
 {
-	if (bInventoryIsFull) return;
+	if (bInventoryIsFull)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
+		return;
+	}
 
 	Inventory.Add(itemData);
 
@@ -41,11 +70,21 @@ void UItemInventoryComponent::GetItem(FItemTable itemData)
 
 void UItemInventoryComponent::UseItem()
 {
+	if (Inventory.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
+		return;
+	}
+	
 	FItemTable usingItem = Inventory[0];
 	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *usingItem.ItemName.ToString());
 
 	Inventory.RemoveAt(0);
-	Inventory[0] = Inventory[1];
-	Inventory.RemoveAt(1);
+	// 두번째 인벤토리에 아이템이 있으면 당겨오기
+	if (Inventory.Num() == 1)
+	{
+		Inventory[0] = Inventory[1];
+		Inventory.RemoveAt(1);
+	}
 }
 

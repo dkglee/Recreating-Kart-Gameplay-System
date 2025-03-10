@@ -80,7 +80,7 @@ void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue
 {
 	float TargetAcceleration = InputActionValue.Get<float>();
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
-	UE_LOG(LogTemp, Warning, TEXT("AccelerationInput: %f"), AccelerationInput);
+	//UE_LOG(LogTemp, Warning, TEXT("AccelerationInput: %f"), AccelerationInput);
 }
 
 void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)

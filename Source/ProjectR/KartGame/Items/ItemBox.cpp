@@ -3,7 +3,9 @@
 
 #include "ItemBox.h"
 
+#include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "Components/ItemInventoryComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "ProjectR/ProjectR.h"
 #include "ProjectR/KartGame/Games/KartGameInstance.h"
@@ -46,19 +48,21 @@ void AItemBox::InitComponents()
 void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto* player = Cast<APawn>(OtherActor);
+	auto* player = Cast<AKart>(OtherActor);
 	if (player)
 	{
-		MakeRandomItem();
+		MakeRandomItem(player->GetItemInventoryComponent());
 	}
 }
 
-void AItemBox::MakeRandomItem()
+void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("make random item"));
 	int32 randomIdx = UKismetMathLibrary::RandomIntegerInRange(0,3);
 
 	ItemData = *(Items->FindRow<FItemTable>(ItemIDs[randomIdx],ItemIDs[randomIdx].ToString()));
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemData.ItemName.ToString());
+
+	ItemInventoryComponent->GetItem(ItemData);
 }
 

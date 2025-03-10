@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "KartSuspensionComponent.h"
+#include "KartGame/Items/Components/ItemInventoryComponent.h"
 
 // Sets default values
 AKart::AKart()
@@ -53,6 +54,7 @@ AKart::AKart()
 	RR_Wheel->SetRelativeLocation({-90, 60, -20});
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
+	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -90,3 +92,7 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+class UItemInventoryComponent* AKart::GetItemInventoryComponent()
+{
+	return ItemInventoryComponent;
+}

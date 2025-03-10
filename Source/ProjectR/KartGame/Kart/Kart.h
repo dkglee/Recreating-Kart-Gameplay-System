@@ -28,6 +28,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	class UItemInventoryComponent* GetItemInventoryComponent();
+	
 	FInputBindingDelegate OnInputBindingDelegate;
 private:
 	// Input Mapping Context
@@ -53,4 +56,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
 };

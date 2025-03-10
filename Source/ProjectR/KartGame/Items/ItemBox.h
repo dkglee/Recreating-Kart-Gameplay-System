@@ -27,23 +27,23 @@ protected:
 
 public:
 	UFUNCTION()
-	void MakeRandomItem();
+	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
 	
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Settings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
 	class UBoxComponent* Root;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Settings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
 	class UStaticMeshComponent* Mesh;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	class UDataTable* Items;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	TArray<FName> ItemIDs;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	FItemTable ItemData;
 
 };
