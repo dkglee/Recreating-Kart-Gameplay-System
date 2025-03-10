@@ -1,8 +1,9 @@
 ﻿#include "CheckPoint.h"
 
-#include "RaceGameState.h"
 #include "Components/BoxComponent.h"
-#include "ProjectR/Player/RiderPlayerState.h"
+#include "ProjectR/KartGame/Utils/CheckPointUtil.h"
+#include "ProjectR/KartGame/Games/Modes/RaceGameState.h"
+#include "ProjectR/KartGame/Games/Modes/RiderPlayerState.h"
 
 ACheckPoint::ACheckPoint()
 {
@@ -14,7 +15,7 @@ void ACheckPoint::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCheckPointPinInfo(CurrentCheckPoint, CurrentCheckPointPinNumArray);
+	FCheckPointUtil::GetCheckPointPinInfo(CurrentCheckPoint, CurrentCheckPointPinNumArray);
 	CheckBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnMoveToCheckPoint);
 }
 
@@ -44,7 +45,7 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 
 	TArray<uint16> CurrentPlayerPin;
 	
-	GetCheckPointPinInfo(CheckPointPin, CurrentPlayerPin);
+	FCheckPointUtil::GetCheckPointPinInfo(CheckPointPin, CurrentPlayerPin);
 
 	const uint16 CurrentPlayerPinMainNum = CurrentPlayerPin[0];
 	const uint16 CurrentCheckPointPinMainNum = CurrentCheckPointPinNumArray[0];
@@ -85,24 +86,4 @@ uint16 ACheckPoint::GetPinMainNumber() const
 	}
 	
 	return CurrentCheckPointPinNumArray[0];
-}
-
-void ACheckPoint::GetCheckPointPinInfo(FString Pin, TArray<uint16>& PinList)
-{
-	FString Temp;
-	// wchar_t -> 확장형 문자 타입으로 OS 별 모든 것을 지원하는
-	// FString을 구성하는 문자 요소인 것으로 추정
-	for (const wchar_t Char : Pin)
-	{
-		// 글자가 분기점 : 인 경우에 대한 대응
-		if (Char == ':')
-		{
-			PinList.Add(FCString::Atoi(*Temp));
-			Temp = TEXT("");
-			continue;
-		}
-		Temp.InsertAt(Temp.Len() - 1, Char);
-	}
-	
-	PinList.Add(FCString::Atoi(*Temp));
 }

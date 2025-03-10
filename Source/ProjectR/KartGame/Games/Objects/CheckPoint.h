@@ -35,6 +35,4 @@ private:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	void SaveCheckPoint(const AActor* CheckKart);
-
-	void GetCheckPointPinInfo(FString Pin, TArray<uint16>& PinList);
 };

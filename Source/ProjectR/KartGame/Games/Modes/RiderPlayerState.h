@@ -16,8 +16,10 @@ public:
 	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
 	FORCEINLINE void SetCheckPoint(const FString& CheckPointNum) { CurrentKartCheckPoint = CheckPointNum; }
 	FORCEINLINE void GoNextLap() { CurrentLap += 1; CurrentKartCheckPoint = TEXT("0"); }
+	uint16 GetCurrentMainCheckPoint() const;
 	
 private:
 	FString CurrentKartCheckPoint = TEXT("0");
+	
 	uint8 CurrentLap = 0;
 };
