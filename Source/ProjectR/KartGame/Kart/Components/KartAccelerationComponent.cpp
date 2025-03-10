@@ -26,6 +26,12 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	}
 }
 
+void UKartAccelerationComponent::ApplyForceToCart(class UKartSuspensionComponent* Wheel)
+{
+	FVector Force = KartBody->GetForwardVector() * MaxAcceleration * AccelerationInput * KartBody->GetMass();
+	KartBody->AddForceAtLocation(Force, Wheel->GetComponentLocation());
+}
+
 
 // Called when the game starts
 void UKartAccelerationComponent::BeginPlay()
@@ -71,16 +77,14 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessAccleration(DeltaTime);
-	ApplyForceToKart(DeltaTime);
-	AlignToLandScape(DeltaTime);
+	// ProcessAccleration(DeltaTime);
+	// ApplyForceToKart(DeltaTime);
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	float TargetAcceleration = InputActionValue.Get<float>();
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
-	//UE_LOG(LogTemp, Warning, TEXT("AccelerationInput: %f"), AccelerationInput);
 }
 
 void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
@@ -97,52 +101,14 @@ void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
 
 void UKartAccelerationComponent::ApplyForceToKart(float DeltaTime)
 {
-	FVector Force = KartBody->GetForwardVector() * KartBody->GetMass() * Acceleration * 0.4;
-
-	KartBody->AddForceAtLocation(Force, KartBody->GetComponentLocation());
-	
-	// for (int32 i = 0; i < Wheels.Num(); i++)
-	// {
-	// 	FVector Location = Wheels[i]->GetComponentLocation();
-	// 	KartBody->AddForceAtLocation(Force, Location);
-	// 	
-	// 	FVector Center = CenterOfMass * AccelerationInput;
-	// 	KartBody->SetCenterOfMass(Center);
-	// }
-}
-
-void UKartAccelerationComponent::AlignToLandScape(float DeltaTime)
-{
-	FVector LandScapeNormalAvg = FVector::ZeroVector;
-	FVector LandScapePointAvg = FVector::ZeroVector; // 추가: 지면 평균 위치
-	int32 Num = 0;
+	FVector Force = KartBody->GetForwardVector() * KartBody->GetMass() * Acceleration;
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{
-		FVector TempNormal, TempLocation;
-		if (Wheels[i]->GetLandScapeNormal(TempNormal, TempLocation)) // GetLandScapeNormal 함수에서 지면 위치도 반환하도록 수정 필요!
-		{
-			LandScapeNormalAvg += TempNormal;
-			LandScapePointAvg += TempLocation; // 지면의 위치 합산
-			Num++;
-		}
+		FVector Location = Wheels[i]->GetComponentLocation();
+		KartBody->AddForceAtLocation(Force, Location);
+		//
+		// FVector Center = CenterOfMass * AccelerationInput;
+		// KartBody->SetCenterOfMass(Center);
 	}
-	
-	if (Num <= 2)
-		return;
-	
-	LandScapeNormalAvg /= Num;
-	LandScapeNormalAvg.Normalize();
-	LandScapePointAvg /= Num; // 평균 지면 위치 계산
-	
-	FVector TargetUp = LandScapeNormalAvg;
-	FVector RightVector = KartBody->GetRightVector();
-	FRotator TargetRotation = UKismetMathLibrary::MakeRotFromZX(TargetUp, RightVector);
-	
-	// KartBody->SetWorldRotation(TargetRotation);
-	
-	// 목표 위치: 평균 지면 위치에서 50.0f 위
-	FVector TargetLocation = LandScapePointAvg + (LandScapeNormalAvg * 20.0f);
-	KartBody->SetWorldLocation(TargetLocation);
 }
-

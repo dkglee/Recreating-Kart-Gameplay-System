@@ -17,6 +17,8 @@ public:
 	// Sets default values for this component's properties
 	UKartAccelerationComponent();
 
+	void ApplyForceToCart(class UKartSuspensionComponent* Wheel);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -33,7 +35,6 @@ private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
 	void ProcessAccleration(float DeltaTime);
 	void ApplyForceToKart(float DeltaTime);
-	void AlignToLandScape(float DeltaTime);
 
 	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
@@ -48,16 +49,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float AccelerationInput = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	float AccelerationRate = 5.0f;
+	float AccelerationRate = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float DragCoefficient = 0.3f;
 
 	// 엔진에 따라서 변경될 수 있음
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	float MaxAcceleration = 10000.0f;
+	float MaxAcceleration = 5000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	FVector CenterOfMass = {50.0f, 0.0f, 0.0f};
+	FVector CenterOfMass = {20.0f, 0.0f, 0.0f};
 };

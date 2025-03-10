@@ -25,11 +25,13 @@ AKart::AKart()
 
 	RootBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	SetRootComponent(RootBox);
-	RootBox->SetBoxExtent({100, 60, 32});
+	RootBox->SetBoxExtent({103, 52, 12});
 
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
+
+	RootBox->SetLinearDamping(3.0f);
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootBox);
@@ -42,16 +44,16 @@ AKart::AKart()
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
-	LF_Wheel->SetRelativeLocation({90, -60, -20});
+	LF_Wheel->SetRelativeLocation({100, -50, 0});
 	RF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RF_Wheel"));
 	RF_Wheel->SetupAttachment(RootBox);
-	RF_Wheel->SetRelativeLocation({90, 60, -20});
+	RF_Wheel->SetRelativeLocation({100, 50, 0});
 	LR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LR_Wheel"));
 	LR_Wheel->SetupAttachment(RootBox);
-	LR_Wheel->SetRelativeLocation({-90, -60, -20});
+	LR_Wheel->SetRelativeLocation({-100, -50, 0});
 	RR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RR_Wheel"));
 	RR_Wheel->SetupAttachment(RootBox);
-	RR_Wheel->SetRelativeLocation({-90, 60, -20});
+	RR_Wheel->SetRelativeLocation({-100, 50, 0});
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
@@ -78,6 +80,20 @@ void AKart::BeginPlay()
 void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	bool flag = true;
+	flag &= LR_Wheel->ProcessSuspension();
+	flag &= RR_Wheel->ProcessSuspension();
+	flag &= LF_Wheel->ProcessSuspension();
+	flag &= RF_Wheel->ProcessSuspension();
+
+	// if (flag)
+	// {
+		AccelerationComponent->ApplyForceToCart(LR_Wheel);
+		AccelerationComponent->ApplyForceToCart(RR_Wheel);
+		AccelerationComponent->ApplyForceToCart(LF_Wheel);
+		AccelerationComponent->ApplyForceToCart(RF_Wheel);
+	// }
 }
 
 // Called to bind functionality to input

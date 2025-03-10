@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Math/UnitConversion.h"
 
 
 // Sets default values for this component's properties
@@ -45,8 +46,6 @@ void UKartSuspensionComponent::InitializeComponent()
 	if (Kart)
 	{
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
-		KartBody->SetLinearDamping(5.0f);
-		// KartBody->SetMassOverrideInKg(NAME_None, 150.0f, true);
 	}
 }
 
@@ -58,10 +57,10 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessSuspension();
+	// ProcessSuspension();
 }
 
-void UKartSuspensionComponent::ProcessSuspension()
+bool UKartSuspensionComponent::ProcessSuspension()
 {
 	FVector Start = GetComponentLocation();
 	FVector End = Start + Kart->GetActorUpVector() * -SuspensionLength;
@@ -74,24 +73,33 @@ void UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
-		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, 60.0f);
+		KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+		
+		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
 		DistanceNormalized = 1 - DistanceNormalized;
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
 		
-		// FVector Force = Direction * DistanceNormalized * ForceScale;
-		// if (KartBody)
-		// {
-		// 	KartBody->AddForceAtLocation(Force, Start);
-		// }
-		bHitLandScape = true;
-		LandScapeNormal = HitResult.ImpactNormal;
-		LandScapeLocation = HitResult.ImpactPoint;
+		FVector Force = Direction * DistanceNormalized * ForceScale;
+		float ForceLength = Force.Length();
+
+		UE_LOG(LogTemp, Warning, TEXT("Force: %s, Force Length: %f"), *Force.ToString(), ForceLength);
+
+		// Force가 안정화된 값(예: 26464)에 근접하면 고정
+		const float StableForce = 26464.0f; // 원하는 Force 크기
+		const float Threshold = 100.0f; // 오차 허용 범위
+
+		if (FMath::Abs(ForceLength - StableForce) < Threshold)
+		{
+			// Force를 StableForce 크기로 고정
+			Force = Force.GetSafeNormal() * StableForce;
+		}
+
+		if (KartBody)
+		{
+			KartBody->AddForceAtLocation(Force, Start);
+		}
+		return true;
 	}
-	else
-	{
-		bHitLandScape = false;
-		LandScapeNormal = FVector::ZeroVector;
-		LandScapeLocation = FVector::ZeroVector;
-	}
+	return false;
 }
 
