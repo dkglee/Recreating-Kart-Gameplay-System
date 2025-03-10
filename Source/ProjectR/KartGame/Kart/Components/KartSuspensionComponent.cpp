@@ -82,8 +82,6 @@ bool UKartSuspensionComponent::ProcessSuspension()
 		FVector Force = Direction * DistanceNormalized * ForceScale;
 		float ForceLength = Force.Length();
 
-		UE_LOG(LogTemp, Warning, TEXT("Force: %s, Force Length: %f"), *Force.ToString(), ForceLength);
-
 		// Force가 안정화된 값(예: 26464)에 근접하면 고정
 		const float StableForce = 26464.0f; // 원하는 Force 크기
 		const float Threshold = 100.0f; // 오차 허용 범위

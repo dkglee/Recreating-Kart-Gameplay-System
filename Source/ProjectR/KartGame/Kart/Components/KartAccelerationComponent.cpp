@@ -53,15 +53,12 @@ void UKartAccelerationComponent::InitializeComponent()
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartAccelerationComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 
-		UE_LOG(LogTemp, Warning, TEXT("Kart Mass: %f"), KartBody->GetMass());
-		
 		TArray<UKartSuspensionComponent*> FoundWheels;
 		Kart->GetComponents<UKartSuspensionComponent>(FoundWheels);
 		for (auto Wheel : FoundWheels)
 		{
 			Wheels.Add(Wheel);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Wheels Num: %d"), Wheels.Num());
 	}
 }
 
@@ -78,7 +75,7 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	// ...
 	// ProcessAccleration(DeltaTime);
-	// ApplyForceToKart(DeltaTime);
+	ApplyForceToKart(DeltaTime);
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
@@ -101,14 +98,11 @@ void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
 
 void UKartAccelerationComponent::ApplyForceToKart(float DeltaTime)
 {
-	FVector Force = KartBody->GetForwardVector() * KartBody->GetMass() * Acceleration;
+	FVector Force = KartBody->GetForwardVector() * MaxAcceleration * AccelerationInput * KartBody->GetMass();
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{
 		FVector Location = Wheels[i]->GetComponentLocation();
 		KartBody->AddForceAtLocation(Force, Location);
-		//
-		// FVector Center = CenterOfMass * AccelerationInput;
-		// KartBody->SetCenterOfMass(Center);
 	}
 }
