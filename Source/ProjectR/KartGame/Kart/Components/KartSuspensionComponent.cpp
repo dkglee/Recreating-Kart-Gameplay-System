@@ -45,8 +45,6 @@ void UKartSuspensionComponent::InitializeComponent()
 	if (Kart)
 	{
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
-		KartBody->SetLinearDamping(5.0f);
-		// KartBody->SetMassOverrideInKg(NAME_None, 150.0f, true);
 	}
 }
 
@@ -58,7 +56,7 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessSuspension();
+	// ProcessSuspension();
 }
 
 void UKartSuspensionComponent::ProcessSuspension()
@@ -74,24 +72,24 @@ void UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
-		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, 60.0f);
+		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
 		DistanceNormalized = 1 - DistanceNormalized;
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
 		
-		// FVector Force = Direction * DistanceNormalized * ForceScale;
-		// if (KartBody)
-		// {
-		// 	KartBody->AddForceAtLocation(Force, Start);
-		// }
-		bHitLandScape = true;
-		LandScapeNormal = HitResult.ImpactNormal;
-		LandScapeLocation = HitResult.ImpactPoint;
+		FVector Force = Direction * DistanceNormalized * ForceScale;
+		if (KartBody)
+		{
+			KartBody->AddForceAtLocation(Force, Start);
+		}
+		// bHitLandScape = true;
+		// LandScapeNormal = HitResult.ImpactNormal;
+		// LandScapeLocation = HitResult.ImpactPoint;
 	}
 	else
 	{
-		bHitLandScape = false;
-		LandScapeNormal = FVector::ZeroVector;
-		LandScapeLocation = FVector::ZeroVector;
+		// bHitLandScape = false;
+		// LandScapeNormal = FVector::ZeroVector;
+		// LandScapeLocation = FVector::ZeroVector;
 	}
 }
 
