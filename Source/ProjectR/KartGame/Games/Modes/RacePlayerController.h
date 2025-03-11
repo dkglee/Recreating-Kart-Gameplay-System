@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "RacePlayerController.generated.h"
 
+class UMainUI;
 /**
  * 
  */
@@ -19,5 +20,8 @@ protected:
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
-	TSubclassOf<UUserWidget> MainHUDClass;
+	TSubclassOf<UMainUI> MainHUDClass;
+
+	UPROPERTY()
+	TObjectPtr<UMainUI> MainHUD;
 };
