@@ -8,6 +8,7 @@
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -17,6 +18,7 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
+	SetIsReplicatedByDefault(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_KARTMOVEMENT
 	(TEXT("/Game/Kart/Input/InputAction/IA_KartMovement.IA_KartMovement"));
@@ -26,20 +28,12 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	}
 }
 
-void UKartAccelerationComponent::ApplyForceToCart(class UKartSuspensionComponent* Wheel)
-{
-	FVector Force = KartBody->GetForwardVector() * MaxAcceleration * AccelerationInput * KartBody->GetMass();
-	KartBody->AddForceAtLocation(Force, Wheel->GetComponentLocation());
-}
-
-
 // Called when the game starts
 void UKartAccelerationComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 void UKartAccelerationComponent::InitializeComponent()
@@ -53,21 +47,23 @@ void UKartAccelerationComponent::InitializeComponent()
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartAccelerationComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 
-		UE_LOG(LogTemp, Warning, TEXT("Kart Mass: %f"), KartBody->GetMass());
-		
 		TArray<UKartSuspensionComponent*> FoundWheels;
 		Kart->GetComponents<UKartSuspensionComponent>(FoundWheels);
 		for (auto Wheel : FoundWheels)
 		{
 			Wheels.Add(Wheel);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Wheels Num: %d"), Wheels.Num());
 	}
 }
 
 void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &UKartAccelerationComponent::OnMovementInputDetected);
+}
+
+void UKartAccelerationComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 // Called every frame
@@ -77,38 +73,40 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	// ProcessAccleration(DeltaTime);
-	// ApplyForceToKart(DeltaTime);
+	ProcessAcceleration(DeltaTime);
+	if (Kart->HasAuthority())
+	{
+		// FFastLogger::LogScreen(FColor::Red, TEXT("Client Cart[%s] : %f"), *Kart->GetName(), AccelerationInput);
+		ApplyForceToKart_Implementation(Acceleration, DeltaTime);
+	}
+	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		ApplyForceToKart(Acceleration, DeltaTime);
+	}
+	OnAccelerationDelegate.Broadcast(AccelerationInput);
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	float TargetAcceleration = InputActionValue.Get<float>();
+	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.4f, 1.0f);
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
 }
 
-void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
+void UKartAccelerationComponent::ProcessAcceleration(float DeltaTime)
 {
-	Acceleration = FMath::Lerp(0.0f, MaxAcceleration, AccelerationInput);
-	if (FMath::IsNearlyZero(AccelerationInput))
-	{
-		Acceleration = 0.0f;
-	}
-	
+	Acceleration = MaxAcceleration * AccelerationInput;
 	// 천천히 줄어듬
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, 0.0f, GetWorld()->GetDeltaSeconds(), DragCoefficient);
 }
 
-void UKartAccelerationComponent::ApplyForceToKart(float DeltaTime)
+void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration, float DeltaTime)
 {
-	FVector Force = KartBody->GetForwardVector() * KartBody->GetMass() * Acceleration;
+	FVector Force = KartBody->GetForwardVector() * InAcceleration * KartBody->GetMass();
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{
 		FVector Location = Wheels[i]->GetComponentLocation();
 		KartBody->AddForceAtLocation(Force, Location);
-		//
-		// FVector Center = CenterOfMass * AccelerationInput;
-		// KartBody->SetCenterOfMass(Center);
 	}
 }

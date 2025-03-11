@@ -8,6 +8,8 @@
 #include "KartAccelerationComponent.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAcceleartionDelegate, float, AccelerationIntensity);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartAccelerationComponent : public UActorComponent
 {
@@ -17,8 +19,7 @@ public:
 	// Sets default values for this component's properties
 	UKartAccelerationComponent();
 
-	void ApplyForceToCart(class UKartSuspensionComponent* Wheel);
-
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -31,10 +32,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	FOnAcceleartionDelegate OnAccelerationDelegate;
+
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
-	void ProcessAccleration(float DeltaTime);
-	void ApplyForceToKart(float DeltaTime);
+	void ProcessAcceleration(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+	void ApplyForceToKart(float InAcceleration, float DeltaTime);
 
 	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))

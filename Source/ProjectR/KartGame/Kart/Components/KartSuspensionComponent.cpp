@@ -15,9 +15,9 @@ UKartSuspensionComponent::UKartSuspensionComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 	bWantsInitializeComponent = true;
+	
+	SetIsReplicatedByDefault(true);
 }
 
 bool UKartSuspensionComponent::GetLandScapeNormal(FVector& OutNormal, FVector& OutLocation)
@@ -62,6 +62,9 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 bool UKartSuspensionComponent::ProcessSuspension()
 {
+	// TODO: 리펙토링의 여지가 있음
+	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	
 	FVector Start = GetComponentLocation();
 	FVector End = Start + Kart->GetActorUpVector() * -SuspensionLength;
 
@@ -73,21 +76,19 @@ bool UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
-		KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 		
 		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
 		DistanceNormalized = 1 - DistanceNormalized;
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
 		
 		FVector Force = Direction * DistanceNormalized * ForceScale;
+		
 		float ForceLength = Force.Length();
-
-		UE_LOG(LogTemp, Warning, TEXT("Force: %s, Force Length: %f"), *Force.ToString(), ForceLength);
 
 		// Force가 안정화된 값(예: 26464)에 근접하면 고정
 		const float StableForce = 26464.0f; // 원하는 Force 크기
 		const float Threshold = 100.0f; // 오차 허용 범위
-
+		
 		if (FMath::Abs(ForceLength - StableForce) < Threshold)
 		{
 			// Force를 StableForce 크기로 고정

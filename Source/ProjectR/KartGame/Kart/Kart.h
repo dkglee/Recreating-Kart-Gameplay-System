@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/Pawn.h"
 #include "Kart.generated.h"
 
@@ -20,6 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	// Called every frame
@@ -28,8 +30,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	class UItemInventoryComponent* GetItemInventoryComponent();
+#pragma region GetterSetter
+	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
+	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+#pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
 private:
@@ -56,6 +60,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
 };
