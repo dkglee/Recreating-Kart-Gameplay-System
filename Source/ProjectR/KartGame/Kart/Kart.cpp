@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Chaos/SoftsSpring.h"
 #include "Components/BoxComponent.h"
@@ -40,7 +41,9 @@ AKart::AKart()
 
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
-	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bUsePawnControlRotation = false;
+	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->bEnableCameraRotationLag = true;
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -57,6 +60,7 @@ AKart::AKart()
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
+	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -81,19 +85,10 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	bool flag = true;
-	flag &= LR_Wheel->ProcessSuspension();
-	flag &= RR_Wheel->ProcessSuspension();
-	flag &= LF_Wheel->ProcessSuspension();
-	flag &= RF_Wheel->ProcessSuspension();
-
-	// if (flag)
-	// {
-		AccelerationComponent->ApplyForceToCart(LR_Wheel);
-		AccelerationComponent->ApplyForceToCart(RR_Wheel);
-		AccelerationComponent->ApplyForceToCart(LF_Wheel);
-		AccelerationComponent->ApplyForceToCart(RF_Wheel);
-	// }
+	LR_Wheel->ProcessSuspension();
+	RR_Wheel->ProcessSuspension();
+	LF_Wheel->ProcessSuspension();
+	RF_Wheel->ProcessSuspension();
 }
 
 // Called to bind functionality to input

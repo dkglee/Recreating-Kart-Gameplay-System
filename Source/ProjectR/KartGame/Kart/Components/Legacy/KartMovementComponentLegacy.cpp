@@ -174,8 +174,6 @@ void UKartMovementComponentLegacy::UpdateSlipAngle()
 	const float MaxSlipAngle = FMath::DegreesToRadians(2.0f);
 	Alpha_f = FMath::Clamp(Alpha_f, -MaxSlipAngle, MaxSlipAngle);
 	Alpha_r = FMath::Clamp(Alpha_r, -MaxSlipAngle, MaxSlipAngle);
-
-	UE_LOG(LogTemp, Warning, TEXT("Alpha_f : %f, Alpha_r : %f"), Alpha_f, Alpha_r);
 }
 
 // 횡력(코너링 강성 모델)

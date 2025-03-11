@@ -8,6 +8,8 @@
 #include "KartAccelerationComponent.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAcceleartionDelegate, float, AccelerationIntensity);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartAccelerationComponent : public UActorComponent
 {
@@ -16,8 +18,6 @@ class PROJECTR_API UKartAccelerationComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UKartAccelerationComponent();
-
-	void ApplyForceToCart(class UKartSuspensionComponent* Wheel);
 
 protected:
 	// Called when the game starts
@@ -30,6 +30,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	FOnAcceleartionDelegate OnAccelerationDelegate;
 
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);

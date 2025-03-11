@@ -73,6 +73,7 @@ bool UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
+		// TODO: 리펙토링의 여지가 있음
 		KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 		
 		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
@@ -80,19 +81,6 @@ bool UKartSuspensionComponent::ProcessSuspension()
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
 		
 		FVector Force = Direction * DistanceNormalized * ForceScale;
-		float ForceLength = Force.Length();
-
-		UE_LOG(LogTemp, Warning, TEXT("Force: %s, Force Length: %f"), *Force.ToString(), ForceLength);
-
-		// Force가 안정화된 값(예: 26464)에 근접하면 고정
-		const float StableForce = 26464.0f; // 원하는 Force 크기
-		const float Threshold = 100.0f; // 오차 허용 범위
-
-		if (FMath::Abs(ForceLength - StableForce) < Threshold)
-		{
-			// Force를 StableForce 크기로 고정
-			Force = Force.GetSafeNormal() * StableForce;
-		}
 
 		if (KartBody)
 		{
