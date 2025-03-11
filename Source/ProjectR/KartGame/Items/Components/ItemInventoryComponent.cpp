@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Kart.h"
+#include "KartGame/Items/Missile/Missile.h"
 
 
 UItemInventoryComponent::UItemInventoryComponent()
@@ -46,7 +47,7 @@ void UItemInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UItemInventoryComponent::GetItem(const FItemTable itemData)
+void UItemInventoryComponent::GetItem(const FItemTable* itemData)
 { 
 	if (bInventoryIsFull)
 	{
@@ -54,6 +55,7 @@ void UItemInventoryComponent::GetItem(const FItemTable itemData)
 		return;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("GetItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(itemData->ItemName));
 	Inventory.Add(itemData);
 
 	if (Inventory.Num() == MaxInventorySpace)
@@ -69,19 +71,19 @@ void UItemInventoryComponent::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
-	
-	FItemTable usingItem = Inventory[0];
-	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *usingItem.ItemName.ToString());
-	//SpawnItem(usingItem);
-	// 아이템 데이터(이름)을 바탕으로 
+
+	const FItemTable* usingItem = Inventory[0];
+	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *FCommonUtil::GetClassEnumKeyAsString(usingItem->ItemName));
+
+	SpawnItem(usingItem);
 	Inventory.RemoveAt(0);
 	bInventoryIsFull = false;
 }
 
 void UItemInventoryComponent::LockPlayer()
 {
-	if (!Inventory[0].ItemType) return;
-	FItemTable usingItem = Inventory[0];
+	if (!Inventory[0]->ItemType) return;
+	const FItemTable* usingItem = Inventory[0];
 
 	// 사용자 정면 기준으로 lay를 쏜다
 	// lay안에 상대가 있으면 그 상대를 instance에 저장한다
@@ -92,10 +94,17 @@ void UItemInventoryComponent::LockPlayer()
 	MakeTraceBoxAndCheckHit(start, end, BoxHalfSize);
 }
 
-void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
+void UItemInventoryComponent::SpawnItem(const FItemTable* itemData)
 {
 	// 아이템 스폰
-	
+	switch (itemData->ItemName)
+	{
+	case EItemName::Missile:
+		GetWorld()->SpawnActor<AMissile>(itemData->ItemClass);
+		break;
+	default:
+		break;
+	}
 }
 
 void UItemInventoryComponent::MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize)
