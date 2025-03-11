@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Chaos/SoftsSpring.h"
 #include "Components/BoxComponent.h"
@@ -57,6 +58,7 @@ AKart::AKart()
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
+	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 }
 
 // Called when the game starts or when spawned

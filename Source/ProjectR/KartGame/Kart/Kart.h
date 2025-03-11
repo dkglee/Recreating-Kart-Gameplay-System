@@ -57,5 +57,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartSteeringComponent* SteeringComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
 };
