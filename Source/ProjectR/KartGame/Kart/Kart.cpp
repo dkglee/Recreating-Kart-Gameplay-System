@@ -41,7 +41,9 @@ AKart::AKart()
 
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
-	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bUsePawnControlRotation = false;
+	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->bEnableCameraRotationLag = true;
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
