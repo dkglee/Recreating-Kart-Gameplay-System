@@ -8,6 +8,7 @@
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -17,6 +18,7 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
+	SetIsReplicatedByDefault(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_KARTMOVEMENT
 	(TEXT("/Game/Kart/Input/InputAction/IA_KartMovement.IA_KartMovement"));
@@ -32,7 +34,6 @@ void UKartAccelerationComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 void UKartAccelerationComponent::InitializeComponent()
@@ -60,6 +61,11 @@ void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &UKartAccelerationComponent::OnMovementInputDetected);
 }
 
+void UKartAccelerationComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 // Called every frame
 void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                                FActorComponentTickFunction* ThisTickFunction)
@@ -67,8 +73,16 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessAccleration(DeltaTime);
-	ApplyForceToKart(DeltaTime);
+	ProcessAcceleration(DeltaTime);
+	if (Kart->HasAuthority())
+	{
+		// FFastLogger::LogScreen(FColor::Red, TEXT("Client Cart[%s] : %f"), *Kart->GetName(), AccelerationInput);
+		ApplyForceToKart_Implementation(Acceleration, DeltaTime);
+	}
+	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		ApplyForceToKart(Acceleration, DeltaTime);
+	}
 	OnAccelerationDelegate.Broadcast(AccelerationInput);
 }
 
@@ -79,16 +93,16 @@ void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
 }
 
-void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
+void UKartAccelerationComponent::ProcessAcceleration(float DeltaTime)
 {
 	Acceleration = MaxAcceleration * AccelerationInput;
 	// 천천히 줄어듬
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, 0.0f, GetWorld()->GetDeltaSeconds(), DragCoefficient);
 }
 
-void UKartAccelerationComponent::ApplyForceToKart(float DeltaTime)
+void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration, float DeltaTime)
 {
-	FVector Force = KartBody->GetForwardVector() * Acceleration * KartBody->GetMass();
+	FVector Force = KartBody->GetForwardVector() * InAcceleration * KartBody->GetMass();
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{

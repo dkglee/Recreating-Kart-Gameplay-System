@@ -19,6 +19,7 @@ public:
 	// Sets default values for this component's properties
 	UKartAccelerationComponent();
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -35,8 +36,10 @@ public:
 
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
-	void ProcessAccleration(float DeltaTime);
-	void ApplyForceToKart(float DeltaTime);
+	void ProcessAcceleration(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+	void ApplyForceToKart(float InAcceleration, float DeltaTime);
 
 	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))

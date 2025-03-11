@@ -10,12 +10,17 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
+#include "CommonUtil.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AKart::AKart()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	bReplicates = true;
+	Super::SetReplicateMovement(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
 	(TEXT("/Game/Kart/Input/IMC_Kart.IMC_Kart"));
@@ -59,8 +64,14 @@ AKart::AKart()
 	RR_Wheel->SetRelativeLocation({-100, 50, 0});
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
+	AccelerationComponent->SetNetAddressable();
+	AccelerationComponent->SetIsReplicated(true);
+
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
+
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
+	SteeringComponent->SetNetAddressable();
+	SteeringComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +89,11 @@ void AKart::BeginPlay()
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
 	}
+}
+
+void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 // Called every frame
@@ -101,9 +117,4 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
-}
-
-class UItemInventoryComponent* AKart::GetItemInventoryComponent()
-{
-	return ItemInventoryComponent;
 }
