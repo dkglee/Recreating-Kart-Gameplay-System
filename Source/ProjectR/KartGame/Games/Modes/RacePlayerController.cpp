@@ -9,6 +9,9 @@ void ARacePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UUserWidget* HUD = CreateWidget(this, MainHUDClass);
-	HUD->AddToViewport();
+	if (IsLocalController())
+	{
+		UUserWidget* HUD = CreateWidget(this, MainHUDClass);
+		HUD->AddToViewport();
+	}
 }
