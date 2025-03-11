@@ -73,8 +73,8 @@ void ARaceGameState::Tick(float DeltaSeconds)
 		return true;
 	});
 
-	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
-	{
-		UE_LOG(LogTemp, Display, TEXT("현재 순서: %s"), *PlayerState->GetName());
-	}
+	// for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	// {
+	// 	UE_LOG(LogTemp, Display, TEXT("현재 순서: %s"), *PlayerState->GetName());
+	// }
 }
