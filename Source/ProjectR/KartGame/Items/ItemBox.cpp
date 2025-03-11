@@ -41,7 +41,7 @@ void AItemBox::InitComponents()
 	Items = LoadObject<UDataTable>(nullptr,TEXT("/Script/Engine.DataTable'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
-		ItemIDs = Items->GetRowNames();
+		ItemRowNames = Items->GetRowNames();
 	}
 }
 
@@ -57,12 +57,11 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
 {
-	UE_LOG(LogTemp, Warning, TEXT("make random item"));
-	int32 randomIdx = UKismetMathLibrary::RandomIntegerInRange(0,3);
+	int32 randomIdx = UKismetMathLibrary::RandomIntegerInRange(0,ItemRowNames.Num()-1);
 
-	ItemData = *(Items->FindRow<FItemTable>(ItemIDs[randomIdx],ItemIDs[randomIdx].ToString()));
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemData.ItemName.ToString());
+	RandomItemData = *(Items->FindRow<FItemTable>(ItemRowNames[randomIdx],ItemRowNames[randomIdx].ToString()));
+	UE_LOG(LogTemp, Warning, TEXT("Get Item : %s"), *RandomItemData.ItemName.ToString());
 
-	ItemInventoryComponent->GetItem(ItemData);
+	ItemInventoryComponent->GetItem(RandomItemData);
 }
 
