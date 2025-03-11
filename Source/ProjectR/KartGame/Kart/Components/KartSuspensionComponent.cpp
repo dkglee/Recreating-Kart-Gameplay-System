@@ -74,7 +74,7 @@ bool UKartSuspensionComponent::ProcessSuspension()
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
 
 		// Damper 안정성 조정
-		float Damper = FVector::DotProduct(Kart->GetVelocity(), GetUpVector()) * -DamperScale;
+		float Damper = FVector::DotProduct(Kart->GetVelocity(), Direction) * -DamperScale;
 		float ResultForceScale = Damper + ForceScale;
 		
 		FVector Force = Direction * DistanceNormalized * ResultForceScale;
