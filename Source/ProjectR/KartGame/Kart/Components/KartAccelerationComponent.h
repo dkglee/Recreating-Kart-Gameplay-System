@@ -35,7 +35,7 @@ public:
 
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
-	void ProcessAccleration(float DeltaTime);
+	void ProcessAcceleration(float DeltaTime);
 	void ApplyForceToKart(float DeltaTime);
 
 	// InitializeComponent에서 설정

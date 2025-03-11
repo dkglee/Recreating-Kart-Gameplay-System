@@ -17,6 +17,9 @@ AKart::AKart()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = true;
+	Super::SetReplicateMovement(true);
+
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
 	(TEXT("/Game/Kart/Input/IMC_Kart.IMC_Kart"));
 	if (IMC_KART.Succeeded())

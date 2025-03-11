@@ -17,6 +17,7 @@ UKartAccelerationComponent::UKartAccelerationComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
+	// SetIsReplicated(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_KARTMOVEMENT
 	(TEXT("/Game/Kart/Input/InputAction/IA_KartMovement.IA_KartMovement"));
@@ -67,7 +68,7 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ProcessAccleration(DeltaTime);
+	ProcessAcceleration(DeltaTime);
 	ApplyForceToKart(DeltaTime);
 	OnAccelerationDelegate.Broadcast(AccelerationInput);
 }
@@ -79,7 +80,7 @@ void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
 }
 
-void UKartAccelerationComponent::ProcessAccleration(float DeltaTime)
+void UKartAccelerationComponent::ProcessAcceleration(float DeltaTime)
 {
 	Acceleration = MaxAcceleration * AccelerationInput;
 	// 천천히 줄어듬
