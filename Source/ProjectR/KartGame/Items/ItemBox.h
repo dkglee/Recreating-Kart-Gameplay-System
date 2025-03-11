@@ -30,11 +30,11 @@ public:
 	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item", meta = (AllowPrivateAccess = "true"))
 	class UDataTable* Items;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item", meta = (AllowPrivateAccess = "true"))
-	TArray<FName> ItemRowNames;
+	
+	TMap<int, FItemTable*> ItemMap;
+	
+	int32 TotalWeight = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item", meta = (AllowPrivateAccess = "true"))
 	FItemTable RandomItemData;

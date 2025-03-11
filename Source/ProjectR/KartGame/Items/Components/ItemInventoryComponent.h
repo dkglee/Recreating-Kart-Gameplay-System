@@ -28,13 +28,13 @@ protected:
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void GetItem(const FItemTable itemData);
+	void GetItem(const FItemTable* itemData);
 	
 	void UseItem();
 
 	void LockPlayer();
 
-	void SpawnItem(const FItemTable itemData);
+	void SpawnItem(const FItemTable* itemData);
 
 	void MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize);
 private:
@@ -47,8 +47,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	TArray<FItemTable> Inventory;
+	TArray<const FItemTable *> Inventory;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
