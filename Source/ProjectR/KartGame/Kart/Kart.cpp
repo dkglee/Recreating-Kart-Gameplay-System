@@ -72,9 +72,9 @@ AKart::AKart()
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);
-
-	RootBox->SetLinearDamping(0.0f);
-	RootBox->SetAngularDamping(0.0f);
+	//
+	// RootBox->SetLinearDamping(0.0f);
+	// RootBox->SetAngularDamping(0.0f);
 }
 
 // Called when the game starts or when spawned
