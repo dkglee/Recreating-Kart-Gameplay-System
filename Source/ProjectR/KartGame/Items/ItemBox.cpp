@@ -20,7 +20,7 @@ AItemBox::AItemBox()
 void AItemBox::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	Root->OnComponentBeginOverlap.AddDynamic(this,&AItemBox::ItemBoxBeginOverlap);
 }
 
@@ -38,10 +38,20 @@ void AItemBox::InitComponents()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	Items = LoadObject<UDataTable>(nullptr,TEXT("/Script/Engine.DataTable'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	Items = LoadObject<UDataTable>(nullptr,TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
-		ItemIDs = Items->GetRowNames();
+		TArray<FName> RowNames = Items->GetRowNames();
+
+		for (const FName& RowName : RowNames)
+		{
+			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
+			if (Row != nullptr)
+			{
+				TotalWeight += Row->ItemWeight;
+				ItemMap.Add(Row->ItemID,Row);
+			}
+		}
 	}
 }
 
@@ -57,12 +67,18 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
 {
-	UE_LOG(LogTemp, Warning, TEXT("make random item"));
-	int32 randomIdx = UKismetMathLibrary::RandomIntegerInRange(0,3);
+	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
+	int32 CurrentWeight = 0;
+	for (const auto& Item : ItemMap)
+	{
+		CurrentWeight += Item.Value->ItemWeight;
+		if (RandomValue < CurrentWeight)
+		{
+			ItemInventoryComponent->GetItem(Item.Value);
+			return;	
+		}
+	}
 
-	ItemData = *(Items->FindRow<FItemTable>(ItemIDs[randomIdx],ItemIDs[randomIdx].ToString()));
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemData.ItemName.ToString());
-
-	ItemInventoryComponent->GetItem(ItemData);
+	UE_LOG(LogTemp, Warning, TEXT("데이터가 이상해요"));
 }
 

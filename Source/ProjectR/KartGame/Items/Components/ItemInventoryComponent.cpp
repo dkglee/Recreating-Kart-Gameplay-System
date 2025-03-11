@@ -5,13 +5,11 @@
 
 #include "EnhancedInputComponent.h"
 #include "Kart.h"
+#include "KartGame/Items/Missile/Missile.h"
 
 
-// Sets default values for this component's properties
 UItemInventoryComponent::UItemInventoryComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
 	bWantsInitializeComponent = true;
@@ -22,8 +20,6 @@ UItemInventoryComponent::UItemInventoryComponent()
 	}
 }
 
-
-// Called when the game starts
 void UItemInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -42,27 +38,27 @@ void UItemInventoryComponent::InitializeComponent()
 
 void UItemInventoryComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
-	PlayerInputComponent->BindAction(IA_UseItem, ETriggerEvent::Started, this, &UItemInventoryComponent::UseItem);
+	PlayerInputComponent->BindAction(IA_UseItem, ETriggerEvent::Ongoing, this, &UItemInventoryComponent::LockPlayer);
+	PlayerInputComponent->BindAction(IA_UseItem, ETriggerEvent::Completed, this, &UItemInventoryComponent::UseItem);
 }
 
-
-// Called every frame
 void UItemInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UItemInventoryComponent::GetItem(FItemTable itemData)
-{
+void UItemInventoryComponent::GetItem(const FItemTable* itemData)
+{ 
 	if (bInventoryIsFull)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
 		return;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("GetItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(itemData->ItemName));
 	Inventory.Add(itemData);
 
-	if (Inventory.Num() == 2)
+	if (Inventory.Num() == MaxInventorySpace)
 	{
 		bInventoryIsFull = true;
 	}
@@ -75,16 +71,83 @@ void UItemInventoryComponent::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
-	
-	FItemTable usingItem = Inventory[0];
-	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *usingItem.ItemName.ToString());
 
+	const FItemTable* usingItem = Inventory[0];
+	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *FCommonUtil::GetClassEnumKeyAsString(usingItem->ItemName));
+
+	SpawnItem(usingItem);
 	Inventory.RemoveAt(0);
-	// // 두번째 인벤토리에 아이템이 있으면 당겨오기
-	// if (Inventory.Num() == 1)
-	// {
-	// 	Inventory[0] = Inventory[1];
-	// 	Inventory.RemoveAt(1);
-	// }
+	bInventoryIsFull = false;
+}
+
+void UItemInventoryComponent::LockPlayer()
+{
+	if (!Inventory[0]->ItemType) return;
+	const FItemTable* usingItem = Inventory[0];
+
+	// 사용자 정면 기준으로 lay를 쏜다
+	// lay안에 상대가 있으면 그 상대를 instance에 저장한다
+	// 해당 instance를 조준형 아이템에 전달한다.
+	FVector start = Kart->GetActorLocation();
+	FVector end = Kart->GetActorForwardVector() * MaxLockOnDist;
+	FVector BoxHalfSize(100.f);
+	MakeTraceBoxAndCheckHit(start, end, BoxHalfSize);
+}
+
+void UItemInventoryComponent::SpawnItem(const FItemTable* itemData)
+{
+	// 아이템 스폰
+	switch (itemData->ItemName)
+	{
+	case EItemName::Missile:
+		GetWorld()->SpawnActor<AMissile>(itemData->ItemClass);
+		break;
+	default:
+		break;
+	}
+}
+
+void UItemInventoryComponent::MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize)
+{
+	FCollisionQueryParams Params;
+	TArray<FHitResult> HitResults;
+
+	bool bHit = GetWorld()->SweepMultiByChannel(
+		HitResults,
+		start,
+		end,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeBox(boxHalfSize),
+		Params);
+
+	FColor BoxColor = FColor::Green;
+	if (bHit)
+	{
+		for (const FHitResult hit : HitResults)
+		{
+			auto* lockedTarget = Cast<AKart>(hit.GetActor());
+			if (lockedTarget)
+			{
+				BoxColor = FColor::Red;
+				LockedTarget = lockedTarget;
+			}
+		}
+	}
+	else
+	{
+		BoxColor = FColor::Green;
+		LockedTarget = nullptr;
+	}
+
+	int NumSteps = 10;
+	for (int i = 0; i <= NumSteps; i++)
+	{
+		float Alpha = (float)i / NumSteps;
+		FVector DebugLocation = FMath::Lerp(start, end, Alpha);
+	
+		DrawDebugBox(GetWorld(), DebugLocation, boxHalfSize, FQuat::Identity, BoxColor, false, 0.1f);
+	}
+	
 }
 

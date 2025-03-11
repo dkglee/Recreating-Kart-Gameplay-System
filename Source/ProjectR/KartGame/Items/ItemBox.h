@@ -29,6 +29,15 @@ public:
 	UFUNCTION()
 	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
 	
+private:
+	class UDataTable* Items;
+	
+	TMap<int, FItemTable*> ItemMap;
+	
+	int32 TotalWeight = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item", meta = (AllowPrivateAccess = "true"))
+	FItemTable RandomItemData;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
@@ -36,14 +45,4 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
 	class UStaticMeshComponent* Mesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	class UDataTable* Items;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	TArray<FName> ItemIDs;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	FItemTable ItemData;
-
 };

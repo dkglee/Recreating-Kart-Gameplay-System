@@ -9,14 +9,34 @@
 /**
  * 
  */
+UENUM(BlueprintType)
+enum class EItemName : uint8
+{
+	None,
+	Booster,
+	Missile,
+	WaterBomb,
+	Shield,
+};
 USTRUCT(BlueprintType)
 struct PROJECTR_API FItemTable : public FTableRowBase
 {
 	GENERATED_BODY()
+	
 public:
-	FItemTable() : ItemName(""), ItemWeight(0) {};
+	FItemTable() : ItemName(EItemName::None), ItemWeight(0), ItemType(false), ItemClass(nullptr) {};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	FName ItemName;
+	int ItemID = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	int32 ItemWeight;	
+	EItemName ItemName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
+	int32 ItemWeight;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
+	bool ItemType; // true = 조준형 , false = 즉발형
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
+	TSubclassOf<AActor> ItemClass;
 };

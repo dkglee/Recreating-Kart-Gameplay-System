@@ -24,24 +24,38 @@ protected:
 	
 	UFUNCTION()
 	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void GetItem(FItemTable itemData);
+	void GetItem(const FItemTable* itemData);
 	
 	void UseItem();
 
+	void LockPlayer();
+
+	void SpawnItem(const FItemTable* itemData);
+
+	void MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize);
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
-	class AKart* Kart;
+	class AKart* Kart = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	class AKart* LockedTarget = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* IA_UseItem;
+	class UInputAction* IA_UseItem = nullptr;
+	
+	TArray<const FItemTable *> Inventory;
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FItemTable> Inventory;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	int32 MaxInventorySpace = 2;
+	
 	UPROPERTY()
 	bool bInventoryIsFull = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	float MaxLockOnDist = 1000.f;
 };
