@@ -43,7 +43,7 @@ void UKartSteeringComponent::InitializeComponent()
 	{
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartSteeringComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
-		UKartAccelerationComponent* Comp = Cast<UKartAccelerationComponent>(Kart->GetComponentByClass(UKartAccelerationComponent::StaticClass()));
+		UKartAccelerationComponent* Comp = Kart->GetAccelerationComponent();
 		if (Comp)
 		{
 			Comp->OnAccelerationDelegate.AddDynamic(this, &UKartSteeringComponent::OnAccelerationInputDetected);
@@ -82,7 +82,7 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
 {
 	// 1. 카트의 로컬 축 벡터 구하기
-	FVector RightVector = KartBody->GetRightVector();     // Roll 축 (X)
+	// FVector RightVector = KartBody->GetRightVector();     // Roll 축 (X)
 	FVector UpVector = KartBody->GetUpVector();           // Pitch 축 (Y)
 	FVector ForwardVector = KartBody->GetForwardVector(); // Yaw 축 (Z) - 기울어진 상태 고려됨
 

@@ -118,8 +118,3 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
 }
-
-class UItemInventoryComponent* AKart::GetItemInventoryComponent()
-{
-	return ItemInventoryComponent;
-}

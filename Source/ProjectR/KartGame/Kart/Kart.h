@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/Pawn.h"
 #include "Kart.generated.h"
 
@@ -29,8 +30,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	class UItemInventoryComponent* GetItemInventoryComponent();
+#pragma region GetterSetter
+	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
+	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+#pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
 private:
