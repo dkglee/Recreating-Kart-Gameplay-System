@@ -10,6 +10,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
+#include "CommonUtil.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AKart::AKart()
@@ -62,8 +64,14 @@ AKart::AKart()
 	RR_Wheel->SetRelativeLocation({-100, 50, 0});
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
+	AccelerationComponent->SetNetAddressable();
+	AccelerationComponent->SetIsReplicated(true);
+
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
+
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
+	SteeringComponent->SetNetAddressable();
+	SteeringComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -81,6 +89,11 @@ void AKart::BeginPlay()
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
 	}
+}
+
+void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 // Called every frame

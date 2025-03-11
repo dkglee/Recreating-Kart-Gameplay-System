@@ -31,9 +31,11 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void ApplyTorqueToKart();
 	void ProcessSteering();
 	void OnSteeringInputDetected(const FInputActionValue& InputActionValue);
+
+	UFUNCTION(Server, Reliable)
+	void ApplyTorqueToKart(float InAccerlationIntensity, float InSteeringIntensity);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;

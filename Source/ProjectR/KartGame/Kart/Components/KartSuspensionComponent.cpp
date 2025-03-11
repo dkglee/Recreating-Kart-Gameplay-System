@@ -16,7 +16,8 @@ UKartSuspensionComponent::UKartSuspensionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	// SetIsReplicated(true);
+	
+	SetIsReplicatedByDefault(true);
 }
 
 bool UKartSuspensionComponent::GetLandScapeNormal(FVector& OutNormal, FVector& OutLocation)

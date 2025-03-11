@@ -68,26 +68,19 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	ApplyTorqueToKart();
+	if (Kart->HasAuthority())
+	{
+		ApplyTorqueToKart_Implementation(AccelerationIntensity, SteeringIntensity);
+	}
+	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		ApplyTorqueToKart(AccelerationIntensity, SteeringIntensity);
+	}
 	ProcessSteering();
 }
 
-void UKartSteeringComponent::ApplyTorqueToKart()
+void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
 {
-	// FVector ForwardVector = KartBody->GetForwardVector();
-	// FVector Velocity = KartBody->GetComponentVelocity();
-	// ForwardVector.Normalize();
-	// Velocity.Normalize();
-	// float ForwardIntensity = FVector::DotProduct(ForwardVector, Velocity);
-	//
-	// float Torque = SteeringIntensity * SteerPower * FMath::Sign(ForwardIntensity);
-	//
-	// // 종방향 속도가 없을 경우 바디에 토크를 가하지 않음
-	// if (FMath::Abs(AccelerationIntensity) > 0.05f)
-	// {
-	// 	KartBody->AddTorqueInRadians({0, 0, Torque});
-	// }
-
 	// 1. 카트의 로컬 축 벡터 구하기
 	FVector RightVector = KartBody->GetRightVector();     // Roll 축 (X)
 	FVector UpVector = KartBody->GetUpVector();           // Pitch 축 (Y)
@@ -103,14 +96,14 @@ void UKartSteeringComponent::ApplyTorqueToKart()
 	float DirectionSign = FMath::Sign(ForwardIntensity); 
 
 	// 4. Steering Torque를 로컬 Yaw 축 기준으로 적용
-	float YawTorqueValue = SteeringIntensity * SteerPower * DirectionSign;
+	float YawTorqueValue = InSteeringIntensity * SteerPower * DirectionSign;
 
 	// 5. 로컬 Yaw 축을 기준으로 Torque 벡터 생성
 	FVector LocalYawAxis = UpVector; // 카트의 현재 Up 벡터가 기울어진 상태의 Yaw 축
 	FVector Torque = LocalYawAxis * YawTorqueValue;
 
 	// 6. 속도가 충분할 때만 토크 적용
-	if (FMath::Abs(AccelerationIntensity) > 0.05f) {
+	if (FMath::Abs(InAccelerationIntensity) > 0.05f) {
 		KartBody->AddTorqueInRadians(Torque);
 	}
 }
