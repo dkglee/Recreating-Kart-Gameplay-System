@@ -1,14 +1,15 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "RacePlayerController.h"
+﻿#include "RacePlayerController.h"
 
 #include "Blueprint/UserWidget.h"
+#include "KartGame/UIs/HUD/MainUI.h"
 
 void ARacePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UUserWidget* HUD = CreateWidget(this, MainHUDClass);
-	HUD->AddToViewport();
+	if (IsLocalController())
+	{
+		MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
+		MainHUD->AddToViewport();
+	}
 }
