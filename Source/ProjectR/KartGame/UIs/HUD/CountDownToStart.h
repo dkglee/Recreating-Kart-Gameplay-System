@@ -20,11 +20,12 @@ protected:
 	virtual void NativeOnInitialized() override;
 
 private:
-	UPROPERTY(BlueprintReadWrite, Category = "Options|UI", meta = (AllowPrivateAccess = true))
+	// TODO: 해당 로직은 추후 GameState로 이전되어 연동될 예정
+	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	uint8 CountDownNum = 3;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Options|UI", meta = (AllowPrivateAccess = true))
-	FString StartText;
+	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
+	FString StartText = TEXT("GO!");
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CountDownText;
