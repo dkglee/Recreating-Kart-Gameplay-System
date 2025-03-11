@@ -15,7 +15,6 @@ class PROJECTR_API UKartSuspensionComponent : public USceneComponent
 public:
 	// Sets default values for this component's properties
 	UKartSuspensionComponent();
-	bool GetLandScapeNormal(FVector& OutNormam, FVector& OutLocation);
 	bool ProcessSuspension();
 
 protected:
@@ -39,8 +38,6 @@ private:
 	float ForceScale = 85000.0f * 3.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
 	int SuspensionLength = 60.0f;
-
-	bool bHitLandScape = false;
-	FVector LandScapeNormal = FVector::ZeroVector;
-	FVector LandScapeLocation = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
+	float DamperScale = 1000.0f;
 };

@@ -2,6 +2,8 @@
 
 
 #include "KartSuspensionComponent.h"
+
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -19,15 +21,6 @@ UKartSuspensionComponent::UKartSuspensionComponent()
 	
 	SetIsReplicatedByDefault(true);
 }
-
-bool UKartSuspensionComponent::GetLandScapeNormal(FVector& OutNormal, FVector& OutLocation)
-{
-	OutNormal = LandScapeNormal;
-	OutLocation = LandScapeLocation;
-	
-	return bHitLandScape;
-}
-
 
 // Called when the game starts
 void UKartSuspensionComponent::BeginPlay()
@@ -76,24 +69,15 @@ bool UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
-		
 		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
 		DistanceNormalized = 1 - DistanceNormalized;
 		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
-		
-		FVector Force = Direction * DistanceNormalized * ForceScale;
-		
-		float ForceLength = Force.Length();
 
-		// Force가 안정화된 값(예: 26464)에 근접하면 고정
-		const float StableForce = 26464.0f; // 원하는 Force 크기
-		const float Threshold = 100.0f; // 오차 허용 범위
+		// Damper 안정성 조정
+		float Damper = FVector::DotProduct(Kart->GetVelocity(), GetUpVector()) * -DamperScale;
+		float ResultForceScale = Damper + ForceScale;
 		
-		if (FMath::Abs(ForceLength - StableForce) < Threshold)
-		{
-			// Force를 StableForce 크기로 고정
-			Force = Force.GetSafeNormal() * StableForce;
-		}
+		FVector Force = Direction * DistanceNormalized * ResultForceScale;
 
 		if (KartBody)
 		{
