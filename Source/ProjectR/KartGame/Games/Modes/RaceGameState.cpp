@@ -109,6 +109,8 @@ void ARaceGameState::SortRank()
 		
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
 		PS->SetRanking(Rank);
+
+		UE_LOG(LogTemp, Display, TEXT("%d위 : %s"), PS->GetRanking(), *PS->GetName());
 	}
 	
 	// 랭킹들이 정렬되는 시점에 이벤트들을 실행시켜준다.

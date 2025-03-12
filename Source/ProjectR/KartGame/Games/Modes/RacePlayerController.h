@@ -19,9 +19,13 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+	FTimerHandle TimerHandle;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainUI> MainHUDClass;
 
 	UPROPERTY()
 	TObjectPtr<UMainUI> MainHUD;
+
+	void SetHUDToStart();
 };

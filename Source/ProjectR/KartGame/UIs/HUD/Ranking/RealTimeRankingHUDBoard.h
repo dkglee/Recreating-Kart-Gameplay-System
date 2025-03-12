@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RealTimeRankingHUDBoard.generated.h"
 
+class URealTimeRankingHUDItem;
 class UTextBlock;
 
 UCLASS()
@@ -13,14 +14,16 @@ class PROJECTR_API URealTimeRankingHUDBoard : public UUserWidget
 
 protected:
 	virtual void NativeOnInitialized() override;
+	
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
-	UPROPERTY()
-	TMap<APlayerState*, UTextBlock*> RankingListView;
-	
-	UPROPERTY()
-	TMap<APlayerState*, uint8> RankViewData;
+	UPROPERTY(EditDefaultsOnly, Category = "Options|List", meta = (AllowPrivateAccess = true))
+	TSubclassOf<URealTimeRankingHUDItem> RankItemClass;
 
+	UPROPERTY()
+	TArray<TObjectPtr<URealTimeRankingHUDItem>> RankListItem;
+	
 	UFUNCTION()
 	void OnChangedRanking(TArray<APlayerState*> PlayerList);
 };
