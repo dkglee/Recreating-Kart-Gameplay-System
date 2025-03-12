@@ -1,6 +1,7 @@
 ﻿#include "RealTimeRankingHUDBoard.h"
 
 #include "RealTimeRankingHUDItem.h"
+#include "Components/Overlay.h"
 #include "GameFramework/PlayerState.h"
 #include "KartGame/Games/Modes/RaceGameState.h"
 #include "KartGame/Games/Modes/RiderPlayerState.h"
@@ -15,7 +16,10 @@ void URealTimeRankingHUDBoard::NativeOnInitialized()
 
 		URealTimeRankingHUDItem* NewRankBoard = CreateWidget<URealTimeRankingHUDItem>(this, RankItemClass);
 		NewRankBoard->InitializeData(PS);
+		RankListOverlay->AddChildToOverlay(NewRankBoard);
+		
 		NewRankBoard->AddToViewport();
+
 		RankListItem.Add(NewRankBoard);
 	}
 	

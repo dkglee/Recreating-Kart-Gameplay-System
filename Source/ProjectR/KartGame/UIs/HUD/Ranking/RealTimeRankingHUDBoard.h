@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RealTimeRankingHUDBoard.generated.h"
 
+class UOverlay;
 class URealTimeRankingHUDItem;
 class UTextBlock;
 
@@ -23,6 +24,9 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<URealTimeRankingHUDItem>> RankListItem;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> RankListOverlay;
 	
 	UFUNCTION()
 	void OnChangedRanking(TArray<APlayerState*> PlayerList);
