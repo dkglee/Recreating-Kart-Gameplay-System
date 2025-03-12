@@ -7,9 +7,8 @@ void UGameStartLobbyUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	StartCinematicUI->OnAnimationEndNotified.Clear();
-	StartCinematicUI->OnAnimationEndNotified.BindDynamic(this, &ThisClass::GoNextSubUI);
-	BindToAnimationFinished(StartCinematicUI->GetCinematicEndNearAnimation(), StartCinematicUI->OnAnimationEndNotified);
+	StartCinematicUI->OnCinematicEndNotified.Clear();
+	StartCinematicUI->OnCinematicEndNotified.AddDynamic(this, &ThisClass::GoNextSubUI);
 }
 
 void UGameStartLobbyUI::GoNextSubUI()

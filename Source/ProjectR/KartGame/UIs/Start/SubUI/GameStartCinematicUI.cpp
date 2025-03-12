@@ -6,6 +6,11 @@ void UGameStartCinematicUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	OnAnimationEndNotified.Clear();
+	OnAnimationEndNotified.BindDynamic(this, &ThisClass::OnCinematicEnd);
+
+	BindToAnimationFinished(CinematicEndNearAnimation, OnAnimationEndNotified);
+
 	if (StartCinematic->OpenSource(StartCinematicSource))
 	{
 		StartCinematic->Rewind();
@@ -27,4 +32,9 @@ void UGameStartCinematicUI::NativeTick(const FGeometry& MyGeometry, float InDelt
 			PlayAnimation(CinematicEndNearAnimation);
 		}
 	}
+}
+
+void UGameStartCinematicUI::OnCinematicEnd()
+{
+	OnCinematicEndNotified.Broadcast();
 }
