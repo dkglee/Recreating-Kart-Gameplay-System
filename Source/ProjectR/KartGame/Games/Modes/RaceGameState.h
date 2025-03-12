@@ -6,6 +6,8 @@
 
 class ACheckPoint;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRankingChangeNotified, TArray<APlayerState*>, PlayerList);
+
 UCLASS()
 class PROJECTR_API ARaceGameState : public AGameStateBase
 {
@@ -16,6 +18,8 @@ public:
 	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
 	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
 	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
+
+	FOnRankingChangeNotified OnRankingChangeNotified;
 
 protected:
 	virtual void BeginPlay() override;

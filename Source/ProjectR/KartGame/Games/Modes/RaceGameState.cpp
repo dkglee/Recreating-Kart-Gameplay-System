@@ -109,7 +109,8 @@ void ARaceGameState::SortRank()
 		
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
 		PS->SetRanking(Rank);
-		UE_LOG(LogTemp, Display, TEXT("현재 %d등 (체크포인트: %d [%s]): %s"),
-			Rank, PS->GetCurrentMainCheckPoint(), *PS->GetCurrentKartCheckPoint(), *PS->GetName());
 	}
+	
+	// 랭킹들이 정렬되는 시점에 이벤트들을 실행시켜준다.
+	OnRankingChangeNotified.Broadcast(PlayerArray);
 }
