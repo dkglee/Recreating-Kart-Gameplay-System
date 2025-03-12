@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/Actor.h"
 #include "KartGame/Items/BaseItem.h"
 #include "Missile.generated.h"
@@ -20,11 +21,21 @@ protected:
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	UFUNCTION()
+	void OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                           const FHitResult& SweepResult);
+	
+public:
+	GETTER_SETTER(class AKart*, LockOnPlayer);
 
+	void MovetoTarget(float DeltaTime);
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UMissileMovementComponent* MissileMovementComponent = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class AKart* LockOnPlayer = nullptr;
-	
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float speed = 1000.0f;
 };

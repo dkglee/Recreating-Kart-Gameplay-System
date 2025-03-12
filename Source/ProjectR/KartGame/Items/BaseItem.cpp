@@ -35,6 +35,7 @@ void ABaseItem::InitComponents()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 void ABaseItem::SetOwningPlayer(class AKart* player)
