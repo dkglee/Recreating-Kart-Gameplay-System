@@ -27,7 +27,7 @@ protected:
 	                           const FHitResult& SweepResult);
 	
 public:
-	GETTER_SETTER(class AKart*, LockOnPlayer);
+	SETTER(class AKart*, LockOnPlayer);
 
 	void MovetoTarget(float DeltaTime);
 	
@@ -38,4 +38,13 @@ private:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float speed = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float Amplitude = 5.0f; //파동의 높이
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float Frequency = 15.0f; // 파동의 주기
+	
+	float ElapsedTime = 0;
+	
 };
