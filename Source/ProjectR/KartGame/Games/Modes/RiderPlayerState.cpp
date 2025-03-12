@@ -5,10 +5,30 @@
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
 #include "ProjectR/KartGame/Utils/CheckPointUtil.h"
 
+ARiderPlayerState::ARiderPlayerState()
+{
+	SetReplicates(true);
+}
+
 void ARiderPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
+		PlayerCurrentCheckPointPinList);
+}
+
+void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
+	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
+}
+
+void ARiderPlayerState::SetCheckPoint(const FString& CheckPointNum)
+{
+	CurrentKartCheckPoint = CheckPointNum;
 	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
 		PlayerCurrentCheckPointPinList);
 }
@@ -22,14 +42,18 @@ TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextNearCheckPoint() const
 {
 	const ACheckPoint* CurrentCheckPointPin = GetWorld()->GetGameState<ARaceGameState>()
 				->GetCheckPointData().FindRef(CurrentKartCheckPoint);
+
+	if (!IsValid(CurrentCheckPointPin))
+	{
+		return nullptr;
+	}
+	
 	return GetWorld()->GetGameState<ARaceGameState>()
 				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
 }
-
-void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+	
+void ARiderPlayerState::OnRep_CurrentKartCheckPointUpdate()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
-	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
+	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
+		PlayerCurrentCheckPointPinList);
 }

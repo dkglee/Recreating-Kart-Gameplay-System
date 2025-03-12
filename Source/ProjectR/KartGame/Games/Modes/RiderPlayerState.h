@@ -12,9 +12,11 @@ class PROJECTR_API ARiderPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
+	ARiderPlayerState();
+	
 	FORCEINLINE FString GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
 	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
-	FORCEINLINE void SetCheckPoint(const FString& CheckPointNum) { CurrentKartCheckPoint = CheckPointNum; }
+	void SetCheckPoint(const FString& CheckPointNum);
 	FORCEINLINE void GoNextLap() { CurrentLap += 1; CurrentKartCheckPoint = TEXT("0"); }
 	
 	uint16 GetCurrentMainCheckPoint() const;
@@ -26,11 +28,15 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
+	UPROPERTY()
 	TArray<uint16> PlayerCurrentCheckPointPinList;
 	
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_CurrentKartCheckPointUpdate)
 	FString CurrentKartCheckPoint = TEXT("0");
 
 	UPROPERTY(Replicated)
 	uint8 CurrentLap = 0;
+
+	UFUNCTION()
+	void OnRep_CurrentKartCheckPointUpdate();
 };

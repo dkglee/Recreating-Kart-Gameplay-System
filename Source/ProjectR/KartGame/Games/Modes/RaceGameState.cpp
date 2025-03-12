@@ -52,8 +52,23 @@ void ARaceGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	SortRank();
+}
+
+void ARaceGameState::SortRank()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	Algo::HeapSort(PlayerArray, [](const APlayerState* A, const APlayerState* B)
 	{
+		if (!IsValid(A) || !IsValid(B))
+		{
+			return true;
+		}
+		
 		const ARiderPlayerState* PSA = Cast<ARiderPlayerState>(A);
 		const ARiderPlayerState* PSB = Cast<ARiderPlayerState>(B);
 
@@ -70,11 +85,29 @@ void ARaceGameState::Tick(float DeltaSeconds)
 		}
 
 		// 여기서부터는 수식이 들어간다. 가장 가까운 다음 체크포인트 정보를 비교하는 방식으로 처리한다.
-		return true;
+		if (!PSA->GetNextNearCheckPoint())
+		{
+			return true;
+		}
+	
+		if (!PSB->GetNextNearCheckPoint())
+		{
+			return true;
+		}
+		
+		const float DistanceA = (PSA->GetNextNearCheckPoint()->GetActorLocation() - PSA->GetPawn()->GetActorLocation()).Length();
+		const float DistanceB = (PSA->GetNextNearCheckPoint()->GetActorLocation() - PSB->GetPawn()->GetActorLocation()).Length();
+		
+		return DistanceA < DistanceB;
 	});
 
-	// for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
-	// {
-	// 	UE_LOG(LogTemp, Display, TEXT("현재 순서: %s"), *PlayerState->GetName());
-	// }
+	int Rank = 0;
+	for (const auto PlayerState : PlayerArray)
+	{
+		Rank += 1;
+		
+		const ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
+		UE_LOG(LogTemp, Display, TEXT("현재 %d등 (체크포인트: %d): %s"),
+			Rank, PS->GetCurrentMainCheckPoint(), *PlayerState->GetName());
+	}
 }

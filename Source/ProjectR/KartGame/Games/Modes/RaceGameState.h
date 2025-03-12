@@ -30,4 +30,6 @@ private:
 
 	UPROPERTY()
 	TMap<FString, ACheckPoint*> CheckPointData;
+
+	void SortRank();
 };
