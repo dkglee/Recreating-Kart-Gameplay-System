@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/PlayerState.h"
 #include "RiderPlayerState.generated.h"
 
@@ -22,6 +23,8 @@ public:
 	uint16 GetCurrentMainCheckPoint() const;
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
+	GETTER_SETTER(uint8, Ranking);
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -31,12 +34,12 @@ private:
 	UPROPERTY()
 	TArray<uint16> PlayerCurrentCheckPointPinList;
 	
-	UPROPERTY(Replicated, ReplicatedUsing = OnRep_CurrentKartCheckPointUpdate)
+	UPROPERTY(Replicated)
 	FString CurrentKartCheckPoint = TEXT("0");
 
 	UPROPERTY(Replicated)
 	uint8 CurrentLap = 0;
 
-	UFUNCTION()
-	void OnRep_CurrentKartCheckPointUpdate();
+	UPROPERTY(Replicated)
+	uint8 Ranking = 0;
 };

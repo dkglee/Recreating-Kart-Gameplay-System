@@ -24,6 +24,7 @@ void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 
 	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
 	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
+	DOREPLIFETIME(ARiderPlayerState, Ranking);
 }
 
 void ARiderPlayerState::SetCheckPoint(const FString& CheckPointNum)
@@ -50,10 +51,4 @@ TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextNearCheckPoint() const
 	
 	return GetWorld()->GetGameState<ARaceGameState>()
 				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
-}
-	
-void ARiderPlayerState::OnRep_CurrentKartCheckPointUpdate()
-{
-	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
-		PlayerCurrentCheckPointPinList);
 }

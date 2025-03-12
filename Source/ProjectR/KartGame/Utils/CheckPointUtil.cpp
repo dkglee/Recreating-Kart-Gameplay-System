@@ -2,6 +2,8 @@
 
 void FCheckPointUtil::GetCheckPointPinInfo(const FString& Pin, TArray<uint16>& PinList)
 {
+	PinList.Empty();
+	
 	FString Temp;
 	// wchar_t -> 확장형 문자 타입으로 OS 별 모든 것을 지원하는
 	// FString을 구성하는 문자 요소인 것으로 추정

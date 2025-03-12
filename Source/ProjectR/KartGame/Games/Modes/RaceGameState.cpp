@@ -72,31 +72,32 @@ void ARaceGameState::SortRank()
 		const ARiderPlayerState* PSA = Cast<ARiderPlayerState>(A);
 		const ARiderPlayerState* PSB = Cast<ARiderPlayerState>(B);
 
+		// 서로 이동한 랩 정보가 다르다면, 랩을 더 많이 돌은 사람이 우선순위가 높다.
 		if (PSA->GetCurrentLap() != PSB->GetCurrentLap())
 		{
 			return PSA->GetCurrentLap() > PSB->GetCurrentLap();
 		}
 
-		// 세부 체크포인트 끼리에 대한 것은 아래에서 처리할 수 있다.
-		// 우선은 세부의 세부로 들어갈 일은 없어 당장은 간단하게 처리하고 생각한다.
+		// 체크포인트 끼리 닿은 경우에 대해서는 서브 체크포인트가 아닌
+		// 메인 체크포인트 번호를 비교해서 처리한다.
 		if (PSA->GetCurrentKartCheckPoint() != PSB->GetCurrentKartCheckPoint())
 		{
 			return PSA->GetCurrentMainCheckPoint() > PSB->GetCurrentMainCheckPoint();
 		}
-
+		
 		// 여기서부터는 수식이 들어간다. 가장 가까운 다음 체크포인트 정보를 비교하는 방식으로 처리한다.
 		if (!PSA->GetNextNearCheckPoint())
 		{
 			return true;
 		}
-	
+		
 		if (!PSB->GetNextNearCheckPoint())
 		{
 			return true;
 		}
 		
 		const float DistanceA = (PSA->GetNextNearCheckPoint()->GetActorLocation() - PSA->GetPawn()->GetActorLocation()).Length();
-		const float DistanceB = (PSA->GetNextNearCheckPoint()->GetActorLocation() - PSB->GetPawn()->GetActorLocation()).Length();
+		const float DistanceB = (PSB->GetNextNearCheckPoint()->GetActorLocation() - PSB->GetPawn()->GetActorLocation()).Length();
 		
 		return DistanceA < DistanceB;
 	});
@@ -106,8 +107,9 @@ void ARaceGameState::SortRank()
 	{
 		Rank += 1;
 		
-		const ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
-		UE_LOG(LogTemp, Display, TEXT("현재 %d등 (체크포인트: %d): %s"),
-			Rank, PS->GetCurrentMainCheckPoint(), *PlayerState->GetName());
+		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
+		PS->SetRanking(Rank);
+		UE_LOG(LogTemp, Display, TEXT("현재 %d등 (체크포인트: %d [%s]): %s"),
+			Rank, PS->GetCurrentMainCheckPoint(), *PS->GetCurrentKartCheckPoint(), *PS->GetName());
 	}
 }

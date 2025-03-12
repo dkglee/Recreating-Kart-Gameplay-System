@@ -28,6 +28,11 @@ void ACheckPoint::OnMoveToCheckPoint(UPrimitiveComponent* OverlappedComponent
 
 void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	const APawn* PlayerKart = Cast<APawn>(CheckKart);
 	if (!PlayerKart)
 	{
