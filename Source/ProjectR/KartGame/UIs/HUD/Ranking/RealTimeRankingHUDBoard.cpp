@@ -15,23 +15,16 @@ void URealTimeRankingHUDBoard::NativeOnInitialized()
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
 
 		URealTimeRankingHUDItem* NewRankBoard = CreateWidget<URealTimeRankingHUDItem>(this, RankItemClass);
-		NewRankBoard->InitializeData(PS);
 		RankListOverlay->AddChildToOverlay(NewRankBoard);
 		
 		NewRankBoard->AddToViewport();
+		NewRankBoard->InitializeData(PS);
 
 		RankListItem.Add(NewRankBoard);
 	}
-	
-	GetWorld()->GetGameState<ARaceGameState>()->OnRankingChangeNotified.AddDynamic(this, &ThisClass::OnChangedRanking);
 }
 
 void URealTimeRankingHUDBoard::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-}
-
-void URealTimeRankingHUDBoard::OnChangedRanking(TArray<APlayerState*> PlayerList)
-{
-	
 }

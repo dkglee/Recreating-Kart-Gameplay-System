@@ -27,7 +27,4 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> RankListOverlay;
-	
-	UFUNCTION()
-	void OnChangedRanking(TArray<APlayerState*> PlayerList);
 };

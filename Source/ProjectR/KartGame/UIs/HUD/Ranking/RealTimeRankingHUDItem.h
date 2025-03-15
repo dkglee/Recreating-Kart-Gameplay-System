@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RealTimeRankingHUDItem.generated.h"
 
+class UOverlay;
 class ARiderPlayerState;
 class UTextBlock;
 
@@ -21,8 +22,19 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
+	bool IsInitializedToSetPosition = false;
+	
+	uint8 CurrentRank = 0;
+	
+	float DeltaTimeStack = 0;
+	
+	float OverlayHeight = 0;
+	
 	UPROPERTY()
 	TObjectPtr<ARiderPlayerState> RiderPlayerState;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> RankBoard;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> RankView;

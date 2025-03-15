@@ -1,5 +1,6 @@
 ﻿#include "RealTimeRankingHUDItem.h"
 
+#include "Components/Overlay.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
 #include "KartGame/Games/Modes/RiderPlayerState.h"
@@ -17,9 +18,24 @@ void URealTimeRankingHUDItem::NativeTick(const FGeometry& MyGeometry, float InDe
 	{
 		return;
 	}
+
+	// 초기화를 위한 조건
+	// 1. 랭크가 0이 아닐 것 (즉 Initialize과정이 거쳐진 것)
+	// 2. Overlay의 Height가 계산이 될 것
+	if (!IsInitializedToSetPosition && CurrentRank != 0 && RankBoard->GetDesiredSize().Y != 0)
+	{
+		IsInitializedToSetPosition = true;
+		OverlayHeight = RankBoard->GetDesiredSize().Y;
+		SetPadding(FMargin(0.f, (CurrentRank - 1) * OverlayHeight * 1.5, 0.f, 0.f));
+		return;
+	}
 	
-	RankView->SetText(FText::FromString(FString::FromInt(RiderPlayerState->GetRanking())));
-	SetPadding(FMargin(0.f, (RiderPlayerState->GetRanking() - 1) * 160, 0.f, 0.f));
+	// TODO: 실제는 해당 UI가 게임 로딩을 위해 유저
+	CurrentRank = RiderPlayerState->GetRanking();
+	RankView->SetText(FText::FromString(FString::FromInt(CurrentRank)));
+	const float NewTopPadding =
+		FMath::FInterpTo(GetPadding().Top, (RiderPlayerState->GetRanking() - 1) * OverlayHeight * 1.5, InDeltaTime, 5);
+	SetPadding(FMargin(0.f, NewTopPadding, 0.f, 0.f));
 }
 
 void URealTimeRankingHUDItem::InitializeData(APlayerState* PS)
@@ -31,7 +47,9 @@ void URealTimeRankingHUDItem::InitializeData(APlayerState* PS)
 	}
 	
 	RiderPlayerState = RiderPS;
-	SetPadding(FMargin(0.f, RiderPS->GetRanking() - 1 * GetCachedGeometry().Size.Y, 0.f, 0.f));
+	CurrentRank = RiderPS->GetRanking();
+	IsInitializedToSetPosition = false;
+	
 	RankView->SetText(FText::FromString(FString::FromInt(RiderPS->GetRanking())));
 	RiderName->SetText(FText::FromString(PS->GetName()));
 }
