@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -43,7 +44,7 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		if (kart == LockOnPlayer)
 		{
-			FFastLogger::LogConsole(TEXT("Hit LockOnPlayer"));
+			kart->GetItemInteractionComponent()->MissileHitInteraction();
 			Destroy();
 		}
 	}

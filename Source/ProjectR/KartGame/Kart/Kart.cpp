@@ -11,6 +11,7 @@
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "CommonUtil.h"
+#include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -68,7 +69,8 @@ AKart::AKart()
 	AccelerationComponent->SetIsReplicated(true);
 
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
-
+	ItemInteractionComponent = CreateDefaultSubobject<UItemInteractionComponent>(TEXT("ItemInteractionComponent"));
+	
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);

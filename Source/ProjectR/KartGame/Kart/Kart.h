@@ -32,6 +32,7 @@ public:
 
 #pragma region GetterSetter
 	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
+	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
 #pragma endregion
 	
@@ -64,4 +65,6 @@ private:
 	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UItemInteractionComponent* ItemInteractionComponent = nullptr;
 };
