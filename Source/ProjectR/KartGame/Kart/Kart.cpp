@@ -22,7 +22,6 @@ AKart::AKart()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
-	// SetNetAddressable();
 	Super::SetReplicateMovement(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART

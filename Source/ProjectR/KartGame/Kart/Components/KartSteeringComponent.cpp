@@ -17,7 +17,7 @@ UKartSteeringComponent::UKartSteeringComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	// SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 	// ...
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_STEERING
 	(TEXT("/Game/Kart/Input/InputAction/IA_KartSteering.IA_KartSteering"));
@@ -83,7 +83,6 @@ void UKartSteeringComponent::ProcessSteeringAndTorque()
 		ApplySteeringToKart(TargetSteering);
 		ApplyTorqueToKartV2(SteeringIntensity);
 	}
-	FFastLogger::LogScreen(FColor::Red, TEXT("SteeringIntensity : %f"), SteeringIntensity);
 }
 
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
