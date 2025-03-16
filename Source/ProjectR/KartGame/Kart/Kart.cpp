@@ -11,6 +11,8 @@
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "CommonUtil.h"
+#include "FastLogger.h"
+#include "KartFrictionComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -20,7 +22,7 @@ AKart::AKart()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
-	SetNetAddressable();
+	// SetNetAddressable();
 	Super::SetReplicateMovement(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
@@ -85,6 +87,10 @@ AKart::AKart()
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);
+
+	FrictionComponent = CreateDefaultSubobject<UKartFrictionComponent>(TEXT("FrictionComponent"));
+	FrictionComponent->SetNetAddressable();
+	FrictionComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -128,6 +134,7 @@ void AKart::Tick(float DeltaTime)
 	{
 		SteeringComponent->ProcessSteeringAndTorque();
 		AccelerationComponent->ApplyAcceleration(DeltaTime);
+		FrictionComponent->ApplyFriction(DeltaTime);
 	}
 }
 

@@ -4,8 +4,12 @@
 #include "KartFrictionComponent.h"
 
 #include "EnhancedInputComponent.h"
-#include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "FastLogger.h"
+#include "InputMappingContext.h"
+#include "InputAction.h"
+#include "Kart.h"
 
 
 // Sets default values for this component's properties
@@ -15,6 +19,13 @@ UKartFrictionComponent::UKartFrictionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> IA_DRIFT
+	(TEXT("/Game/Kart/Input/InputAction/IA_KartDrift.IA_KartDrift"));
+	if (IA_DRIFT.Succeeded())
+	{
+		IA_Drift = IA_DRIFT.Object;
+	}
 }
 
 
@@ -37,8 +48,21 @@ void UKartFrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
+void UKartFrictionComponent::ApplyFriction(float DeltaTime)
+{
+	if (Kart->HasAuthority())
+	{
+		ApplyFrictionToKart_Implementation(bDrift, DeltaTime);
+	}
+	else
+	{
+		ApplyFrictionToKart(bDrift, DeltaTime);
+	}
+}
+
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
 {
+	bDrift = InputActionValue.Get<bool>();
 }
 
 void UKartFrictionComponent::InitializeComponent()
@@ -57,4 +81,27 @@ void UKartFrictionComponent::SetupInputBinding(class UEnhancedInputComponent* Pl
 {
 	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Completed, this, &UKartFrictionComponent::OnDriftInputDetected);
 	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Triggered, this, &UKartFrictionComponent::OnDriftInputDetected);
+}
+
+// 마찰력 적용
+void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift, float DeltaTime)
+{
+	if (!bInDrift)
+	{
+		KartBody->SetAngularDamping(3.5f);
+	}
+	else
+	{
+		KartBody->SetAngularDamping(0.9f);
+	}
+	// Base 드리프트 입력하지 않을 경우 마찰력을 최대로 함
+	FVector RightVector = KartBody->GetRightVector();
+	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+	float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+
+	// if (!bDrift)
+	FVector FrictionForce = RightVector * Velocity * -1.5f * 1.0f * 20.0f;
+
+	// FFastLogger::LogConsole(TEXT("Friction Force : %s"), *FrictionForce.ToString());
+	KartBody->AddForce(FrictionForce, NAME_None, true);
 }

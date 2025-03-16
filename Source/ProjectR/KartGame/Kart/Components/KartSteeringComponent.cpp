@@ -83,14 +83,15 @@ void UKartSteeringComponent::ProcessSteeringAndTorque()
 		ApplySteeringToKart(TargetSteering);
 		ApplyTorqueToKartV2(SteeringIntensity);
 	}
+	FFastLogger::LogScreen(FColor::Red, TEXT("SteeringIntensity : %f"), SteeringIntensity);
 }
 
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
 {
 	// 1. 카트의 로컬 축 벡터 구하기
-	// FVector RightVector = KartBody->GetRightVector();     // Roll 축 (X)
-	FVector UpVector = KartBody->GetUpVector();           // Pitch 축 (Y)
-	FVector ForwardVector = KartBody->GetForwardVector(); // Yaw 축 (Z) - 기울어진 상태 고려됨
+	// FVector RightVector = KartBody->GetRightVector();
+	FVector UpVector = KartBody->GetUpVector();
+	FVector ForwardVector = KartBody->GetForwardVector();
 
 	// 2. 현재 속도 방향 구하기
 	FVector Velocity = KartBody->GetComponentVelocity();
@@ -117,7 +118,6 @@ void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerati
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetSteering = InputActionValue.Get<float>();
-	FFastLogger::LogConsole(TEXT("Target Steering Value: %f"), TargetSteering);
 }
 
 // 해당 함수는 앞바퀴를 회전하는 용도로 사용될 거임
@@ -129,7 +129,7 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 
 	TArray<UKartSuspensionComponent*> Wheels = {LF_Wheel, RF_Wheel};
 
-	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 2.0f;
+	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 10.0f;
 
 	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), SteerRate);
 
