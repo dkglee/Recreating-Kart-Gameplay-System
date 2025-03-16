@@ -8,8 +8,6 @@
 #include "KartAccelerationComponent.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAcceleartionDelegate, float, AccelerationIntensity);
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartAccelerationComponent : public UActorComponent
 {
@@ -32,7 +30,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	FOnAcceleartionDelegate OnAccelerationDelegate;
+	void ApplyAcceleration(float DeltaTime);
 
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
@@ -60,10 +58,7 @@ private:
 
 	// 엔진에 따라서 변경될 수 있음
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	float MaxAcceleration = 1000.0f;
+	float MaxAcceleration = 5000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	FVector CenterOfMass = {20.0f, 0.0f, 0.0f};
 };

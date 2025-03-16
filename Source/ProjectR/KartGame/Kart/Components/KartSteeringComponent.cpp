@@ -53,11 +53,6 @@ void UKartSteeringComponent::InitializeComponent()
 	{
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartSteeringComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
-		// UKartAccelerationComponent* Comp = Kart->GetAccelerationComponent();
-		// if (Comp)
-		// {
-		// 	Comp->OnAccelerationDelegate.AddDynamic(this, &UKartSteeringComponent::OnAccelerationInputDetected);
-		// }
 	}
 }
 
@@ -67,27 +62,11 @@ void UKartSteeringComponent::SetupInputBinding(class UEnhancedInputComponent* Pl
 	PlayerInputComponent->BindAction(IA_Steering, ETriggerEvent::Completed, this, &UKartSteeringComponent::OnSteeringInputDetected);
 }
 
-// void UKartSteeringComponent::OnAccelerationInputDetected(float InAccelerationIntensity)
-// {
-// 	AccelerationIntensity = InAccelerationIntensity;
-// }
-
 // Called every frame
 void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                            FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// // ...
-	// if (Kart->HasAuthority())
-	// {
-	// 	ApplyTorqueToKart_Implementation(AccelerationIntensity, SteeringIntensity);
-	// }
-	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	// {
-	// 	ApplyTorqueToKart(AccelerationIntensity, SteeringIntensity);
-	// }
-	// ProcessSteering();
 }
 
 void UKartSteeringComponent::ProcessSteeringAndTorque()
@@ -135,16 +114,10 @@ void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerati
 	}
 }
 
-void UKartSteeringComponent::ProcessSteering()
-{
-	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, 0.0f, GetWorld()->GetDeltaSeconds(), DampingCoefficient);
-}
-
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetSteering = InputActionValue.Get<float>();
 	FFastLogger::LogConsole(TEXT("Target Steering Value: %f"), TargetSteering);
-	// SteeringIntensity = FMath::FInterpTo(SteeringIntensity, TargetSteer, GetWorld()->GetDeltaSeconds(), SteerRate);
 }
 
 // 해당 함수는 앞바퀴를 회전하는 용도로 사용될 거임

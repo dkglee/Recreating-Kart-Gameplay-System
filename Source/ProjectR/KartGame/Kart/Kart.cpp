@@ -38,7 +38,8 @@ AKart::AKart()
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
 
-	RootBox->SetLinearDamping(3.0f);
+	RootBox->SetLinearDamping(0.9f);
+	RootBox->SetAngularDamping(0.9f);
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootBox);
@@ -117,11 +118,17 @@ void AKart::Tick(float DeltaTime)
 	{
 		CalcuateNormalizedSpeed();
 	}
-	LR_Wheel->ProcessSuspension();
-	RR_Wheel->ProcessSuspension();
-	LF_Wheel->ProcessSuspension();
-	RF_Wheel->ProcessSuspension();
-	SteeringComponent->ProcessSteeringAndTorque();
+	bool flag = true;
+	
+	flag &= LR_Wheel->ProcessSuspension();
+	flag &= RR_Wheel->ProcessSuspension();
+	flag &= LF_Wheel->ProcessSuspension();
+	flag &= RF_Wheel->ProcessSuspension();
+	if (flag)
+	{
+		SteeringComponent->ProcessSteeringAndTorque();
+		AccelerationComponent->ApplyAcceleration(DeltaTime);
+	}
 }
 
 // Called to bind functionality to input
