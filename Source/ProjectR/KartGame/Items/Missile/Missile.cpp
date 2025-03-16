@@ -51,26 +51,22 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 
 void AMissile::MovetoTarget(float DeltaTime)
 {
-	// TODO
-	// 현재 목표위치에 도달햇지만 회전으로 인해 미사일이 맞지않고 계속 회전하는 현상이 있음
-	// 타겟과의 거리에 따라서 파동의 높이와 주기를 줄이면 해결될 문제
+	DistanceToTarget = FVector::Dist(GetActorLocation(), LockOnPlayer->GetActorLocation());
+	
 	FVector p0 = GetActorLocation();
 	FVector dir = (LockOnPlayer->GetActorLocation() - p0).GetSafeNormal();
-	FVector vt = dir * speed * DeltaTime;
-	FVector p = p0 + vt;
+	float speedFactor = FMath::Clamp(DistanceToTarget / 100.0f, 0.5f, 2.0f);
+	FVector vt = dir * speed * speedFactor * DeltaTime;
 
 	ElapsedTime += DeltaTime;
-	
-	float SinValue = FMath::Sin(ElapsedTime * Frequency);
-	float CosValue = FMath::Cos(ElapsedTime * Frequency);
+	float DistanceFactor = FMath::Clamp(DistanceToTarget / 1000.0f, 0.1f, 1.0f);
+	float YOffset = FMath::Cos(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
+	float ZOffset = FMath::Sin(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
 
+	FVector p = p0 + vt;
+	p.Y += YOffset;
+	p.Z += ZOffset;
 	
-	float YOffset = CosValue * Amplitude;
-	float ZOffset = SinValue * Amplitude;
-	
-	p.Y = p0.Y + YOffset;
-	p.Z = p0.Z + ZOffset;
-
 	SetActorLocation(p);
 
 	FRotator rot = GetActorRotation();

@@ -46,5 +46,7 @@ public:
 	float Frequency = 15.0f; // 파동의 주기
 	
 	float ElapsedTime = 0;
+
+	float DistanceToTarget = 0;
 	
 };
