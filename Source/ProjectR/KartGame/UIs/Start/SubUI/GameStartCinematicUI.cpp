@@ -1,10 +1,15 @@
-﻿#include "GameStartUI.h"
+﻿#include "GameStartCinematicUI.h"
 
 #include "MediaPlayer.h"
 
-void UGameStartUI::NativeConstruct()
+void UGameStartCinematicUI::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	OnAnimationEndNotified.Clear();
+	OnAnimationEndNotified.BindDynamic(this, &ThisClass::OnCinematicEnd);
+
+	BindToAnimationFinished(CinematicEndNearAnimation, OnAnimationEndNotified);
 
 	if (StartCinematic->OpenSource(StartCinematicSource))
 	{
@@ -12,7 +17,7 @@ void UGameStartUI::NativeConstruct()
 	}
 }
 
-void UGameStartUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UGameStartCinematicUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
@@ -27,4 +32,9 @@ void UGameStartUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			PlayAnimation(CinematicEndNearAnimation);
 		}
 	}
+}
+
+void UGameStartCinematicUI::OnCinematicEnd()
+{
+	OnCinematicEndNotified.Broadcast();
 }
