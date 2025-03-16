@@ -2,9 +2,12 @@
 #include "KartSteeringComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
+#include "Curves/CurveFloat.h"
 #include "Math/BigInt.h"
 
 // Sets default values for this component's properties
@@ -21,6 +24,13 @@ UKartSteeringComponent::UKartSteeringComponent()
 	if (IA_STEERING.Succeeded())
 	{
 		IA_Steering = IA_STEERING.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> C_STEERINGCURVE
+	(TEXT("/Game/Kart/Curves/SteeringCurve.SteeringCurve"));
+	if (C_STEERINGCURVE.Succeeded())
+	{
+		SteeringCurve = C_STEERINGCURVE.Object;
 	}
 }
 
@@ -43,23 +53,24 @@ void UKartSteeringComponent::InitializeComponent()
 	{
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartSteeringComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
-		UKartAccelerationComponent* Comp = Kart->GetAccelerationComponent();
-		if (Comp)
-		{
-			Comp->OnAccelerationDelegate.AddDynamic(this, &UKartSteeringComponent::OnAccelerationInputDetected);
-		}
+		// UKartAccelerationComponent* Comp = Kart->GetAccelerationComponent();
+		// if (Comp)
+		// {
+		// 	Comp->OnAccelerationDelegate.AddDynamic(this, &UKartSteeringComponent::OnAccelerationInputDetected);
+		// }
 	}
 }
 
 void UKartSteeringComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Steering, ETriggerEvent::Triggered, this, &UKartSteeringComponent::OnSteeringInputDetected);
+	PlayerInputComponent->BindAction(IA_Steering, ETriggerEvent::Completed, this, &UKartSteeringComponent::OnSteeringInputDetected);
 }
 
-void UKartSteeringComponent::OnAccelerationInputDetected(float InAccelerationIntensity)
-{
-	AccelerationIntensity = InAccelerationIntensity;
-}
+// void UKartSteeringComponent::OnAccelerationInputDetected(float InAccelerationIntensity)
+// {
+// 	AccelerationIntensity = InAccelerationIntensity;
+// }
 
 // Called every frame
 void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -67,16 +78,32 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// // ...
+	// if (Kart->HasAuthority())
+	// {
+	// 	ApplyTorqueToKart_Implementation(AccelerationIntensity, SteeringIntensity);
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	ApplyTorqueToKart(AccelerationIntensity, SteeringIntensity);
+	// }
+	// ProcessSteering();
+}
+
+void UKartSteeringComponent::ProcessSteeringAndTorque()
+{
 	if (Kart->HasAuthority())
 	{
-		ApplyTorqueToKart_Implementation(AccelerationIntensity, SteeringIntensity);
+		ApplySteeringToKart_Implementation(TargetSteering);
+		ApplyTorqueToKartV2_Implementation(SteeringIntensity);
 	}
 	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
 	{
-		ApplyTorqueToKart(AccelerationIntensity, SteeringIntensity);
+		// 로컬 및 서버 둘 다 실행
+		ApplySteeringToKart_Implementation(TargetSteering);
+		ApplySteeringToKart(TargetSteering);
+		ApplyTorqueToKartV2(SteeringIntensity);
 	}
-	ProcessSteering();
 }
 
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
@@ -115,6 +142,52 @@ void UKartSteeringComponent::ProcessSteering()
 
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
 {
-	float TargetSteer = InputActionValue.Get<float>();
-	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, TargetSteer, GetWorld()->GetDeltaSeconds(), SteerRate);
+	TargetSteering = InputActionValue.Get<float>();
+	FFastLogger::LogConsole(TEXT("Target Steering Value: %f"), TargetSteering);
+	// SteeringIntensity = FMath::FInterpTo(SteeringIntensity, TargetSteer, GetWorld()->GetDeltaSeconds(), SteerRate);
+}
+
+// 해당 함수는 앞바퀴를 회전하는 용도로 사용될 거임
+void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSteering)
+{
+	// 카트 바디의 앞바퀴들을 가져옴
+	UKartSuspensionComponent* LF_Wheel = Kart->GetLF_Wheel();
+	UKartSuspensionComponent* RF_Wheel = Kart->GetRF_Wheel();
+
+	TArray<UKartSuspensionComponent*> Wheels = {LF_Wheel, RF_Wheel};
+
+	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 2.0f;
+
+	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), SteerRate);
+
+	// Rotate the wheels
+	for (UKartSuspensionComponent* Wheel : Wheels)
+	{
+		float Alpha = (SteeringIntensity + 1.0f) / 2.0f;
+		FRotator NewRotation = FMath::Lerp(FRotator{0, MaxRotation, 0}, FRotator{0, -MaxRotation, 0}, Alpha);
+		Wheel->SetRelativeRotation(NewRotation);
+	}
+}
+
+// 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임
+void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering)
+{
+	float InNormalizedSpeed = Kart->GetNormalizedSpeed();
+	float SteeringPower = SteeringCurve->GetFloatValue(InNormalizedSpeed);
+
+	FVector ForwardVector = KartBody->GetForwardVector();
+	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	float KartSign = FMath::Sign(KartSpeed);
+	
+	float TurnValue = InSteering * SteeringPower * TurnScaling * KartSign;
+	// TODO: 땅에 닿았을 때만 할 수 있도록 조건을 추가할지 말지 고민해야 함. (추후에)
+	// TurnValue = bGrounded ? TurnValue : 0.0f;
+	
+	// Torque Vector 생성
+	FVector KartUpVector = KartBody->GetUpVector();
+	FVector Torque = KartUpVector * TurnValue;
+
+	// KartBody에 Torque 적용
+	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);
 }

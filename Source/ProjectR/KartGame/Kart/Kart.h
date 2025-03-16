@@ -31,12 +31,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 #pragma region GetterSetter
-	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
+	GETTER(float, NormalizedSpeed);
+	GETTER(class UItemInventoryComponent*, ItemInventoryComponent)
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+	GETTER(class UKartSuspensionComponent*, LF_Wheel);
+	GETTER(class UKartSuspensionComponent*, RF_Wheel);
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
 private:
+	void CalcuateNormalizedSpeed();
 	// Input Mapping Context
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* Imc_Kart = nullptr;
@@ -64,4 +68,9 @@ private:
 	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	float MaxSpeed = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	float NormalizedSpeed = 0.0f;
 };

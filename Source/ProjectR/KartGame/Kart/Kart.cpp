@@ -20,6 +20,7 @@ AKart::AKart()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+	SetNetAddressable();
 	Super::SetReplicateMovement(true);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
@@ -53,15 +54,26 @@ AKart::AKart()
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
 	LF_Wheel->SetRelativeLocation({100, -50, 0});
+	LF_Wheel->SetNetAddressable();
+	LF_Wheel->SetIsReplicated(true);
+	
 	RF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RF_Wheel"));
 	RF_Wheel->SetupAttachment(RootBox);
 	RF_Wheel->SetRelativeLocation({100, 50, 0});
+	RF_Wheel->SetNetAddressable();
+	RF_Wheel->SetIsReplicated(true);
+	
 	LR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LR_Wheel"));
 	LR_Wheel->SetupAttachment(RootBox);
 	LR_Wheel->SetRelativeLocation({-100, -50, 0});
+	LR_Wheel->SetNetAddressable();
+	LR_Wheel->SetIsReplicated(true);
+	
 	RR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RR_Wheel"));
 	RR_Wheel->SetupAttachment(RootBox);
 	RR_Wheel->SetRelativeLocation({-100, 50, 0});
+	RR_Wheel->SetNetAddressable();
+	RR_Wheel->SetIsReplicated(true);
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 	AccelerationComponent->SetNetAddressable();
@@ -72,9 +84,6 @@ AKart::AKart()
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);
-	//
-	// RootBox->SetLinearDamping(0.0f);
-	// RootBox->SetAngularDamping(0.0f);
 }
 
 // Called when the game starts or when spawned
@@ -104,10 +113,15 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (HasAuthority())
+	{
+		CalcuateNormalizedSpeed();
+	}
 	LR_Wheel->ProcessSuspension();
 	RR_Wheel->ProcessSuspension();
 	LF_Wheel->ProcessSuspension();
 	RF_Wheel->ProcessSuspension();
+	SteeringComponent->ProcessSteeringAndTorque();
 }
 
 // Called to bind functionality to input
@@ -120,4 +134,12 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
+}
+
+void AKart::CalcuateNormalizedSpeed()
+{
+	FVector ForwardVector = RootBox->GetForwardVector();
+	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
+	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
 }

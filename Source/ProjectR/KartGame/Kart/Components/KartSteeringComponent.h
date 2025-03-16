@@ -22,20 +22,28 @@ protected:
 	virtual void InitializeComponent() override;
 	UFUNCTION()
 	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
-	UFUNCTION()
-	void OnAccelerationInputDetected(float InAccelerationIntensity);
+	// UFUNCTION()
+	// void OnAccelerationInputDetected(float InAccelerationIntensity);
 
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+	void ProcessSteeringAndTorque();
 
 private:
 	void ProcessSteering();
 	void OnSteeringInputDetected(const FInputActionValue& InputActionValue);
+	// Client, Server 둘 다 호출되어야 함. (클라이언트에서 호출)
+	UFUNCTION(Server, Reliable)
+	void ApplySteeringToKart(float InTargetSteering);
+	// 서버에서 호출되어야 함. (클라이언트에서 호출)
+	UFUNCTION(Server, Reliable)
+	void ApplyTorqueToKartV2(float InSteering);
 
 	UFUNCTION(Server, Reliable)
 	void ApplyTorqueToKart(float InAccerlationIntensity, float InSteeringIntensity);
+	// 바퀴가 어디로 움직였는지. 혹은 앞으로 계산할 때 해당 변수가 필요할 수도 있음.
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -48,11 +56,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteeringIntensity = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	float SteerRate = 2.0f;
+	float SteerRate = 6.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteerPower = 50000000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float DampingCoefficient = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float AccelerationIntensity = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float TargetSteering = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float MaxRotation = 25.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	class UCurveFloat* SteeringCurve = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float TurnScaling = 300.0f;
 };

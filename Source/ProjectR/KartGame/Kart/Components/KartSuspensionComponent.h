@@ -28,14 +28,13 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	
 	UPROPERTY()
 	class AKart* Kart = nullptr;
 	UPROPERTY()
 	class UBoxComponent* KartBody = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
-	float ForceScale = 85000.0f * 3.0f;
+	float SpringStrength = 4000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
 	int SuspensionLength = 60.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
