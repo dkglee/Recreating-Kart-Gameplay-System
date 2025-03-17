@@ -186,6 +186,6 @@ void AKart::UpdateSpeedUI()
 		{
 			return ;
 		}
-		DashBoardUI->SetDashBoardValue(KartSpeed, MaxSpeed);
+		DashBoardUI->SetDashBoardValue(KartSpeed, TotalMaxSpeed);
 	}
 }

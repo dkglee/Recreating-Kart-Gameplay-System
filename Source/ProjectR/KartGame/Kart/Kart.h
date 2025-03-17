@@ -40,6 +40,7 @@ public:
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
 	GETTER(class UKartSuspensionComponent*, LR_Wheel);
 	GETTER(class UKartSuspensionComponent*, RR_Wheel);
+	GETTER(float, MaxSpeed);
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
@@ -78,7 +79,9 @@ private:
 	class UKartFrictionComponent* FrictionComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	float MaxSpeed = 2000.0f;
+	float MaxSpeed = 4000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	float TotalMaxSpeed = 10000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float NormalizedSpeed = 0.0f;
 
