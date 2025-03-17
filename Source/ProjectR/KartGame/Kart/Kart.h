@@ -31,9 +31,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 #pragma region GetterSetter
+	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
+	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
 	GETTER(float, NormalizedSpeed);
-	GETTER(class UItemInventoryComponent*, ItemInventoryComponent)
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+	GETTER(class UBoxComponent*, RootBox);
 	GETTER(class UKartSuspensionComponent*, LF_Wheel);
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
 	GETTER(class UKartSuspensionComponent*, LR_Wheel);
@@ -70,6 +72,8 @@ private:
 	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UItemInteractionComponent* ItemInteractionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartFrictionComponent* FrictionComponent = nullptr;
 

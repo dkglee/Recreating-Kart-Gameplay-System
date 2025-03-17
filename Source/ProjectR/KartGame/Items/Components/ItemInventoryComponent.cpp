@@ -14,8 +14,8 @@
 UItemInventoryComponent::UItemInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 	bWantsInitializeComponent = true;
+	
 	ConstructorHelpers::FObjectFinder<UInputAction> ia_useitem(TEXT("'/Game/Kart/Input/InputAction/IA_UseItem.IA_UseItem'"));
 	if (ia_useitem.Succeeded())
 	{
@@ -96,10 +96,8 @@ void UItemInventoryComponent::LockPlayer()
 	{
 		return;
 	}
-	//const FItemTable* usingItem = Inventory[0];
 
 	FVector start = Kart->GetRootComponent()->GetComponentLocation();
-	
 	FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * MaxLockOnDist;
 
 	FVector BoxHalfSize(FVector(100.f,100.f,50.f));

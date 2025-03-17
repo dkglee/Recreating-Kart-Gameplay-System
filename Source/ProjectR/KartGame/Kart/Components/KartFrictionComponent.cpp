@@ -88,12 +88,12 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift, f
 {
 	if (!bInDrift)
 	{
-		FFastLogger::LogScreen(FColor::Green, TEXT("Kart[%s}, No Drift"), *Kart->GetName());
+		//FFastLogger::LogScreen(FColor::Green, TEXT("Kart[%s}, No Drift"), *Kart->GetName());
 		KartBody->SetAngularDamping(3.5f);
 	}
 	else
 	{
-		FFastLogger::LogScreen(FColor::Red, TEXT("Kart[%s] Drift"), *Kart->GetName());
+		//FFastLogger::LogScreen(FColor::Red, TEXT("Kart[%s] Drift"), *Kart->GetName());
 		KartBody->SetAngularDamping(0.9f);
 	}
 	
