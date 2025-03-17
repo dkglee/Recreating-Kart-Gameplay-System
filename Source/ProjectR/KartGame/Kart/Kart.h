@@ -34,7 +34,6 @@ public:
 	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
 	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
 	GETTER(float, NormalizedSpeed);
-	GETTER(class UItemInventoryComponent*, ItemInventoryComponent)
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
 	GETTER(class UBoxComponent*, RootBox);
 	GETTER(class UKartSuspensionComponent*, LF_Wheel);

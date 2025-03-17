@@ -6,6 +6,14 @@
 #include "Components/ActorComponent.h"
 #include "ItemInteractionComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class EInteractionType : uint8
+{
+	None,
+	Explosion,
+	Water,
+};
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UItemInteractionComponent : public UActorComponent
@@ -28,17 +36,24 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
+	EInteractionType CurrentType = EInteractionType::None;
 	
 public:
-	FTimerHandle KnockbackTimerHandle;
-	
-	float KnockbackElapsedTime = 0.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float KnockbackTime = 1.5f;
-
 	bool bIsInteraction = false;
 
+	// 미사일 변수
+	FVector InitialPos;
 	FQuat InitialQuat;
+
+	float MissileKnockbackElapsedTime = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float MissileKnockbackTime = 1.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float MissileKnockbackRotationNumber = 2.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float MissileKnockbackHeight = 500.f;	
+
 	
 };

@@ -3,6 +3,7 @@
 
 #include "ItemInteractionComponent.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -16,7 +17,6 @@ UItemInteractionComponent::UItemInteractionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 
-	// ...
 }
 
 
@@ -26,7 +26,6 @@ void UItemInteractionComponent::BeginPlay()
 	Super::BeginPlay();
 	Kart = Cast<AKart>(GetOwner());
 
-	// ...
 }
 
 void UItemInteractionComponent::InitializeComponent()
@@ -34,39 +33,54 @@ void UItemInteractionComponent::InitializeComponent()
 	Super::InitializeComponent();
 }
 
-
-// Called every frame
 void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (bIsInteraction)
 	{
-		KnockbackElapsedTime += DeltaTime;
-		float alpha = (KnockbackElapsedTime / KnockbackTime);
-		float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
-		float rotationAngle = 360.f * 2.f * easedAlpha;
-    
-		// 시작 회전에서 현재까지의 회전 계산
-		FQuat rotationQuat = FQuat(FRotator(rotationAngle, 0, 0));
-		FQuat resultQuat = rotationQuat * InitialQuat;
-		Kart->SetActorRotation(resultQuat);
-    
-		if (KnockbackElapsedTime >= KnockbackTime)
+		if (CurrentType == EInteractionType::Explosion)
 		{
-			bIsInteraction = false;
-			Kart->GetRootBox()->SetSimulatePhysics(true);
-			KnockbackElapsedTime = 0.f;
+			MissileKnockbackElapsedTime += DeltaTime;
+			float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
+
+			// 회전계산
+			// ease-out 곡선 적용 (처음엔 빠르게 점점 천천히)
+			float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
+			float rotationAngle = 360.f * MissileKnockbackRotationNumber * easedAlpha;
+			
+			// 시작 회전에서 현재까지의 회전 계산
+			FQuat rotationQuat = FQuat(FRotator(rotationAngle, 0, 0));
+			FQuat resultQuat = rotationQuat * InitialQuat;
+			Kart->SetActorRotation(resultQuat);
+
+			// 위치계산
+			float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + MissileKnockbackHeight, easedAlpha);
+			
+			FVector newPos = FVector(InitialPos.X, InitialPos.Y, newZ);
+			Kart->SetActorLocation(newPos);
+	    
+			if (MissileKnockbackElapsedTime >= MissileKnockbackTime)
+			{
+				bIsInteraction = false;
+				CurrentType = EInteractionType::None;
+				Kart->GetRootBox()->SetSimulatePhysics(true);
+				MissileKnockbackElapsedTime = 0.f;
+			}
 		}
 	}
 }
 
 void UItemInteractionComponent::MissileHitInteraction()
 {
-	if (Kart == nullptr) return;
+	if (Kart == nullptr)
+	{
+		FFastLogger::LogConsole(TEXT("TargetKart is nullptr"));
+		return;
+	}
 	bIsInteraction = true;
+	CurrentType = EInteractionType::Explosion;
 	Kart->GetRootBox()->SetSimulatePhysics(false);
-	FVector newPos = Kart->GetActorLocation() + FVector(0,0,500.f);
-	Kart->SetActorLocation(newPos);
+	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 }
