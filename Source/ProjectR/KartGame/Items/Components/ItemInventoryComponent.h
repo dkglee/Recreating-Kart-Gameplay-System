@@ -37,6 +37,7 @@ public:
 	void SpawnItem(const FItemTable* itemData);
 
 	void MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize);
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -46,7 +47,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
-	
+
 	TArray<const FItemTable *> Inventory;
 	
 public:

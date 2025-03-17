@@ -3,8 +3,9 @@
 
 #include "ItemInteractionComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values for this component's properties
@@ -23,36 +24,49 @@ UItemInteractionComponent::UItemInteractionComponent()
 void UItemInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	Kart = Cast<AKart>(GetOwner());
 
 	// ...
-	
 }
 
 void UItemInteractionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
-
-	Kart = Cast<AKart>(GetOwner());
 }
 
 
 // Called every frame
-void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                              FActorComponentTickFunction* ThisTickFunction)
+void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (bIsInteraction)
+	{
+		KnockbackElapsedTime += DeltaTime;
+		float alpha = (KnockbackElapsedTime / KnockbackTime);
+		float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
+		float rotationAngle = 360.f * 2.f * easedAlpha;
+    
+		// 시작 회전에서 현재까지의 회전 계산
+		FQuat rotationQuat = FQuat(FRotator(rotationAngle, 0, 0));
+		FQuat resultQuat = rotationQuat * InitialQuat;
+		Kart->SetActorRotation(resultQuat);
+    
+		if (KnockbackElapsedTime >= KnockbackTime)
+		{
+			bIsInteraction = false;
+			Kart->GetRootBox()->SetSimulatePhysics(true);
+			KnockbackElapsedTime = 0.f;
+		}
+	}
 }
 
 void UItemInteractionComponent::MissileHitInteraction()
 {
-
-	UPrimitiveComponent* RootPrimitive = Cast<UPrimitiveComponent>(Kart->GetRootComponent());
-	if (RootPrimitive && RootPrimitive->IsSimulatingPhysics())
-	{
-		FFastLogger::LogConsole(TEXT("Missile Hit!"));
-		RootPrimitive->AddImpulse(FVector(0.f,0.f,100000.f));
-	}
+	if (Kart == nullptr) return;
+	bIsInteraction = true;
+	Kart->GetRootBox()->SetSimulatePhysics(false);
+	FVector newPos = Kart->GetActorLocation() + FVector(0,0,500.f);
+	Kart->SetActorLocation(newPos);
+	InitialQuat = Kart->GetActorQuat();
 }
-

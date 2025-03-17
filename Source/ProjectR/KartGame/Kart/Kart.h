@@ -34,6 +34,7 @@ public:
 	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
 	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+	GETTER(class UBoxComponent*, RootBox);
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;

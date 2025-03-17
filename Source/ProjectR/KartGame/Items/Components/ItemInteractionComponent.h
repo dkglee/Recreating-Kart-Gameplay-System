@@ -30,5 +30,15 @@ private:
 	class AKart* Kart = nullptr;
 	
 public:
+	FTimerHandle KnockbackTimerHandle;
+	
+	float KnockbackElapsedTime = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float KnockbackTime = 1.5f;
+
+	bool bIsInteraction = false;
+
+	FQuat InitialQuat;
 	
 };
