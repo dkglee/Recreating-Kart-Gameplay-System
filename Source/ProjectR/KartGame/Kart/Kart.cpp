@@ -110,8 +110,6 @@ void AKart::BeginPlay()
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
 	}
-
-	
 }
 
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -174,6 +172,16 @@ void AKart::UpdateSpeedUI()
 	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
 	if (PC)
 	{
-		PC->GetMainHUD()->GetWBP_DashBoardUI()->SetDashBoardValue(KartSpeed, MaxSpeed);
+		UMainUI* MainUI = PC->GetMainHUD();
+		if (!MainUI)
+		{
+			return ;
+		}
+		UDashBoardUI* DashBoardUI = MainUI->GetWBP_DashBoardUI();
+		if (!DashBoardUI)
+		{
+			return ;
+		}
+		DashBoardUI->SetDashBoardValue(KartSpeed, MaxSpeed);
 	}
 }

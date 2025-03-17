@@ -17,8 +17,10 @@ void UDashBoardUI::SetDashBoardValue(float CurrentSpeed, float MaxSpeed)
 	float Rate = FMath::Abs(CurrentSpeed) / MaxSpeed;
 	DashBoard_Back->SetValue(Rate);
 
+	// cm/s -> m/s -> km/h
+	float KartSpeedKM = FMath::Abs(CurrentSpeed) * 0.036;
 	// Km/h
-	int32 Speed = FMath::RoundToInt(CurrentSpeed * 3.6f);
+	int32 Speed = FMath::RoundToInt(KartSpeedKM);
 
 	FFastLogger::LogConsole(TEXT("Speed: %d"), Speed);
 	
