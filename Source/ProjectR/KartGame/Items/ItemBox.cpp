@@ -69,6 +69,7 @@ void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryCompon
 {
 	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
 	int32 CurrentWeight = 0;
+	
 	for (const auto& Item : ItemMap)
 	{
 		CurrentWeight += Item.Value->ItemWeight;

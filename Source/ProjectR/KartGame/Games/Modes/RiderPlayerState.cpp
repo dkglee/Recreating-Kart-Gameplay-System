@@ -1,14 +1,21 @@
 ﻿#include "RiderPlayerState.h"
 
 #include "Net/UnrealNetwork.h"
+#include "RaceGameState.h"
+#include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
 #include "ProjectR/KartGame/Utils/CheckPointUtil.h"
 
-uint16 ARiderPlayerState::GetCurrentMainCheckPoint() const
+ARiderPlayerState::ARiderPlayerState()
 {
-	TArray<uint16> CheckPointPinList;
-	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint, CheckPointPinList);
+	SetReplicates(true);
+}
 
-	return CheckPointPinList[0];
+void ARiderPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
+		PlayerCurrentCheckPointPinList);
 }
 
 void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -17,4 +24,31 @@ void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 
 	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
 	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
+	DOREPLIFETIME(ARiderPlayerState, Ranking);
+}
+
+void ARiderPlayerState::SetCheckPoint(const FString& CheckPointNum)
+{
+	CurrentKartCheckPoint = CheckPointNum;
+	FCheckPointUtil::GetCheckPointPinInfo(CurrentKartCheckPoint,
+		PlayerCurrentCheckPointPinList);
+}
+
+uint16 ARiderPlayerState::GetCurrentMainCheckPoint() const
+{
+	return PlayerCurrentCheckPointPinList[0];
+}
+
+TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextNearCheckPoint() const
+{
+	const ACheckPoint* CurrentCheckPointPin = GetWorld()->GetGameState<ARaceGameState>()
+				->GetCheckPointData().FindRef(CurrentKartCheckPoint);
+
+	if (!IsValid(CurrentCheckPointPin))
+	{
+		return nullptr;
+	}
+	
+	return GetWorld()->GetGameState<ARaceGameState>()
+				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
 }

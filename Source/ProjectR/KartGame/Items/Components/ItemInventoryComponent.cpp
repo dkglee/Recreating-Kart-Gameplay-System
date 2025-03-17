@@ -4,8 +4,11 @@
 #include "ItemInventoryComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "Kart.h"
+#include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
+#include "KartGame/Items/WaterBomb/WaterBomb.h"
 
 
 UItemInventoryComponent::UItemInventoryComponent()
@@ -55,7 +58,7 @@ void UItemInventoryComponent::GetItem(const FItemTable* itemData)
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("GetItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(itemData->ItemName));
+	FFastLogger::LogScreen(FColor::Green, TEXT("GetItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(itemData->ItemName));
 	Inventory.Add(itemData);
 
 	if (Inventory.Num() == MaxInventorySpace)
@@ -73,7 +76,8 @@ void UItemInventoryComponent::UseItem()
 	}
 
 	const FItemTable* usingItem = Inventory[0];
-	UE_LOG(LogTemp, Warning, TEXT("Using Item : %s"), *FCommonUtil::GetClassEnumKeyAsString(usingItem->ItemName));
+	FFastLogger::LogScreen(FColor::Green, TEXT("UsingItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(usingItem->ItemName));
+
 
 	SpawnItem(usingItem);
 	Inventory.RemoveAt(0);
@@ -82,43 +86,126 @@ void UItemInventoryComponent::UseItem()
 
 void UItemInventoryComponent::LockPlayer()
 {
-	if (!Inventory[0]->ItemType) return;
-	const FItemTable* usingItem = Inventory[0];
+	if (Inventory.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
+		return;
+	}
+	
+	if (!Inventory[0]->ItemType)
+	{
+		return;
+	}
+	//const FItemTable* usingItem = Inventory[0];
 
-	// 사용자 정면 기준으로 lay를 쏜다
-	// lay안에 상대가 있으면 그 상대를 instance에 저장한다
-	// 해당 instance를 조준형 아이템에 전달한다.
-	FVector start = Kart->GetActorLocation();
-	FVector end = Kart->GetActorForwardVector() * MaxLockOnDist;
-	FVector BoxHalfSize(100.f);
+	FVector start = Kart->GetRootComponent()->GetComponentLocation();
+	
+	FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * MaxLockOnDist;
+
+	FVector BoxHalfSize(FVector(100.f,100.f,50.f));
 	MakeTraceBoxAndCheckHit(start, end, BoxHalfSize);
 }
 
 void UItemInventoryComponent::SpawnItem(const FItemTable* itemData)
 {
 	// 아이템 스폰
+	FTransform t;
+	t.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
+	t.SetRotation(Kart->GetActorRotation().Quaternion());
+	t.SetScale3D(FVector(1.0f));
 	switch (itemData->ItemName)
 	{
 	case EItemName::Missile:
-		GetWorld()->SpawnActor<AMissile>(itemData->ItemClass);
-		break;
+		{
+			if (LockedTarget == nullptr)
+			{
+				FFastLogger::LogConsole(TEXT("lock missed"));
+			}
+			else
+			{
+				t.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
+				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData->ItemClass, t);
+				missile->SetLockOnPlayer(LockedTarget);
+			}
+			break;
+		}
+	case EItemName::WaterBomb:
+		{
+			GetWorld()->SpawnActor<AWaterBomb>(itemData->ItemClass, t);
+			break;
+		}
+	case EItemName::Booster:
+		{
+			GetWorld()->SpawnActor<ABooster>(itemData->ItemClass, t);
+			break;
+		}
 	default:
-		break;
+			break;
 	}
 }
 
 void UItemInventoryComponent::MakeTraceBoxAndCheckHit(FVector start, FVector end, FVector boxHalfSize)
 {
 	FCollisionQueryParams Params;
-	TArray<FHitResult> HitResults;
+	Params.AddIgnoredActor(GetOwner());
 
+
+	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
+	AKart* FinalTarget = nullptr;
+	float ClosestDistance = TNumericLimits<float>::Max();
+
+	TArray<FHitResult> InitialHitResults;
+	FVector InitialBoxSize = boxHalfSize;
+	InitialBoxSize.Y *= 4.0f;
+
+	bool bInitialHit = GetWorld()->SweepMultiByChannel(
+		InitialHitResults,
+		start,
+		end,
+		Kart->GetRootComponent()->GetComponentQuat(),
+		ECC_Visibility,
+		FCollisionShape::MakeBox(InitialBoxSize),
+		Params);
+
+	if (bInitialHit)
+	{
+		for (const FHitResult& Hit : InitialHitResults)
+		{
+			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
+			if (PotentialTarget)
+			{
+				float Distance = FVector::Distance(start, Hit.ImpactPoint);
+				if (Distance < ClosestDistance)
+				{
+					ClosestDistance = Distance;
+					FinalTarget = PotentialTarget;
+				}
+			}
+		}
+	}
+
+	// 박스의 scale y 보간
+	float MinYScale = 0.5f;
+	float MaxYScale = 2.0f;
+	float DistanceScale = MaxYScale;
+
+	if (FinalTarget)
+	{
+		DistanceScale = FMath::Lerp(MinYScale, MaxYScale, ClosestDistance / MaxLockOnDist);
+	}
+
+	FVector AdjustedBoxHalfSize = boxHalfSize;
+	AdjustedBoxHalfSize.Y *= DistanceScale;
+
+	// 조정된 박스크기로 실제 트레이스 실행
+	TArray<FHitResult> HitResults;
 	bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
 		start,
 		end,
-		FQuat::Identity,
+		Kart->GetRootComponent()->GetComponentQuat(),
 		ECC_Visibility,
-		FCollisionShape::MakeBox(boxHalfSize),
+		FCollisionShape::MakeBox(AdjustedBoxHalfSize),
 		Params);
 
 	FColor BoxColor = FColor::Green;
@@ -146,8 +233,7 @@ void UItemInventoryComponent::MakeTraceBoxAndCheckHit(FVector start, FVector end
 		float Alpha = (float)i / NumSteps;
 		FVector DebugLocation = FMath::Lerp(start, end, Alpha);
 	
-		DrawDebugBox(GetWorld(), DebugLocation, boxHalfSize, FQuat::Identity, BoxColor, false, 0.1f);
+		DrawDebugBox(GetWorld(), DebugLocation, AdjustedBoxHalfSize, Kart->GetRootComponent()->GetComponentQuat(), BoxColor, false, 0.1f);
 	}
-	
 }
 

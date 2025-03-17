@@ -57,5 +57,5 @@ public:
 	bool bInventoryIsFull = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	float MaxLockOnDist = 1000.f;
+	float MaxLockOnDist = 3000.f;
 };

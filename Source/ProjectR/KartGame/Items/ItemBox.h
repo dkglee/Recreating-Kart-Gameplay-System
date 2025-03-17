@@ -33,16 +33,17 @@ private:
 	class UDataTable* Items;
 	
 	TMap<int, FItemTable*> ItemMap;
-	
-	int32 TotalWeight = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
+	int32 TotalWeight = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	FItemTable RandomItemData;
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	class UBoxComponent* Root;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	class UStaticMeshComponent* Mesh;
 };

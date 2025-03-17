@@ -6,6 +6,7 @@
 
 class ACheckPoint;
 
+
 UCLASS()
 class PROJECTR_API ARaceGameState : public AGameStateBase
 {
@@ -15,6 +16,7 @@ public:
 	ARaceGameState();
 	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
 	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
+	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,5 +30,7 @@ private:
 	uint16 MaxCheckPoint = 0;
 
 	UPROPERTY()
-	TMap<FString, const ACheckPoint*> CheckPointData;
+	TMap<FString, ACheckPoint*> CheckPointData;
+
+	void SortRank();
 };

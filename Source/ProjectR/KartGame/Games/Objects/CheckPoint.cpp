@@ -19,8 +19,6 @@ void ACheckPoint::BeginPlay()
 	CheckBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnMoveToCheckPoint);
 }
 
-
-
 void ACheckPoint::OnMoveToCheckPoint(UPrimitiveComponent* OverlappedComponent
 	, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex
 	, bool bFromSweep, const FHitResult& SweepResult)
@@ -30,6 +28,11 @@ void ACheckPoint::OnMoveToCheckPoint(UPrimitiveComponent* OverlappedComponent
 
 void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	const APawn* PlayerKart = Cast<APawn>(CheckKart);
 	if (!PlayerKart)
 	{
