@@ -15,7 +15,11 @@ class PROJECTR_API UKartSuspensionComponent : public USceneComponent
 public:
 	// Sets default values for this component's properties
 	UKartSuspensionComponent();
+
 	bool ProcessSuspension();
+
+	UFUNCTION(Server, Reliable)
+	void ApplySuspensionToKart(bool bIsGrounded, float DeltaTime);
 
 protected:
 	// Called when the game starts

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/PlayerController.h"
 #include "RacePlayerController.generated.h"
 
@@ -15,8 +16,14 @@ class PROJECTR_API ARacePlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+#pragma region GetterSetter
+	GETTER(TObjectPtr<UMainUI>, MainHUD);
+#pragma endregion
+	
 protected:
 	virtual void BeginPlay() override;
+
 	
 private:
 	FTimerHandle TimerHandle;

@@ -11,7 +11,7 @@ public class ProjectR : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-			"UMG", "SlateCore", "Slate", "MediaAssets"
+			"UMG", "SlateCore", "Slate", "MediaAssets", "AdvancedWidgets"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

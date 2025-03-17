@@ -13,6 +13,9 @@
 #include "CommonUtil.h"
 #include "FastLogger.h"
 #include "KartFrictionComponent.h"
+#include "KartGame/Games/Modes/RacePlayerController.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -107,6 +110,8 @@ void AKart::BeginPlay()
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
 	}
+
+	
 }
 
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -124,17 +129,20 @@ void AKart::Tick(float DeltaTime)
 		CalcuateNormalizedSpeed();
 	}
 	bool flag = true;
-	
+
 	flag &= LR_Wheel->ProcessSuspension();
 	flag &= RR_Wheel->ProcessSuspension();
 	flag &= LF_Wheel->ProcessSuspension();
 	flag &= RF_Wheel->ProcessSuspension();
+	
 	if (flag)
 	{
 		SteeringComponent->ProcessSteeringAndTorque();
 		AccelerationComponent->ApplyAcceleration(DeltaTime);
 		FrictionComponent->ApplyFriction(DeltaTime);
 	}
+
+	UpdateSpeedUI();
 }
 
 // Called to bind functionality to input
@@ -155,4 +163,17 @@ void AKart::CalcuateNormalizedSpeed()
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
 	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
+}
+
+void AKart::UpdateSpeedUI()
+{
+	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
+	FVector ForwardVector = RootBox->GetForwardVector();
+	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+
+	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
+	if (PC)
+	{
+		PC->GetMainHUD()->GetWBP_DashBoardUI()->SetDashBoardValue(KartSpeed, MaxSpeed);
+	}
 }

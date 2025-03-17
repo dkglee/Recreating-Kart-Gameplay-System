@@ -77,4 +77,8 @@ private:
 	float MaxSpeed = 2000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float NormalizedSpeed = 0.0f;
+
+#pragma region UI
+	void UpdateSpeedUI();
+	#pragma endregion
 };

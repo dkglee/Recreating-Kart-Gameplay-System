@@ -48,13 +48,20 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
                                              FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-	// ProcessSuspension();
 }
 
 bool UKartSuspensionComponent::ProcessSuspension()
 {
+	// if (Kart->IsLocallyControlled())
+	// {
+	// 	ApplySuspensionToKart_Implementation(true, 0.0f);
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	ApplySuspensionToKart(true, 0.0f);
+	// }
+	// return true;
+	
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetUpVector() * -SuspensionLength;
 
@@ -86,5 +93,9 @@ bool UKartSuspensionComponent::ProcessSuspension()
 		return true;
 	}
 	return false;
+}
+
+void UKartSuspensionComponent::ApplySuspensionToKart_Implementation(bool bIsGrounded, float DeltaTime)
+{
 }
 
