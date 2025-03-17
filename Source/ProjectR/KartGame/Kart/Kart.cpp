@@ -11,6 +11,8 @@
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "CommonUtil.h"
+#include "FastLogger.h"
+#include "KartFrictionComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -37,7 +39,8 @@ AKart::AKart()
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
 
-	RootBox->SetLinearDamping(3.0f);
+	RootBox->SetLinearDamping(0.9f);
+	RootBox->SetAngularDamping(0.9f);
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootBox);
@@ -53,15 +56,26 @@ AKart::AKart()
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
 	LF_Wheel->SetRelativeLocation({100, -50, 0});
+	LF_Wheel->SetNetAddressable();
+	LF_Wheel->SetIsReplicated(true);
+	
 	RF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RF_Wheel"));
 	RF_Wheel->SetupAttachment(RootBox);
 	RF_Wheel->SetRelativeLocation({100, 50, 0});
+	RF_Wheel->SetNetAddressable();
+	RF_Wheel->SetIsReplicated(true);
+	
 	LR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LR_Wheel"));
 	LR_Wheel->SetupAttachment(RootBox);
 	LR_Wheel->SetRelativeLocation({-100, -50, 0});
+	LR_Wheel->SetNetAddressable();
+	LR_Wheel->SetIsReplicated(true);
+	
 	RR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RR_Wheel"));
 	RR_Wheel->SetupAttachment(RootBox);
 	RR_Wheel->SetRelativeLocation({-100, 50, 0});
+	RR_Wheel->SetNetAddressable();
+	RR_Wheel->SetIsReplicated(true);
 
 	AccelerationComponent = CreateDefaultSubobject<UKartAccelerationComponent>(TEXT("AccelerationComponent"));
 	AccelerationComponent->SetNetAddressable();
@@ -72,9 +86,10 @@ AKart::AKart()
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);
-	//
-	// RootBox->SetLinearDamping(0.0f);
-	// RootBox->SetAngularDamping(0.0f);
+
+	FrictionComponent = CreateDefaultSubobject<UKartFrictionComponent>(TEXT("FrictionComponent"));
+	FrictionComponent->SetNetAddressable();
+	FrictionComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -104,10 +119,22 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	LR_Wheel->ProcessSuspension();
-	RR_Wheel->ProcessSuspension();
-	LF_Wheel->ProcessSuspension();
-	RF_Wheel->ProcessSuspension();
+	if (HasAuthority())
+	{
+		CalcuateNormalizedSpeed();
+	}
+	bool flag = true;
+	
+	flag &= LR_Wheel->ProcessSuspension();
+	flag &= RR_Wheel->ProcessSuspension();
+	flag &= LF_Wheel->ProcessSuspension();
+	flag &= RF_Wheel->ProcessSuspension();
+	if (flag)
+	{
+		SteeringComponent->ProcessSteeringAndTorque();
+		AccelerationComponent->ApplyAcceleration(DeltaTime);
+		FrictionComponent->ApplyFriction(DeltaTime);
+	}
 }
 
 // Called to bind functionality to input
@@ -120,4 +147,12 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
+}
+
+void AKart::CalcuateNormalizedSpeed()
+{
+	FVector ForwardVector = RootBox->GetForwardVector();
+	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
+	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
 }

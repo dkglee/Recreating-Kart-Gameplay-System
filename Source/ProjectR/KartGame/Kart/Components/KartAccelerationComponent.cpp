@@ -47,12 +47,9 @@ void UKartAccelerationComponent::InitializeComponent()
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartAccelerationComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 
-		TArray<UKartSuspensionComponent*> FoundWheels;
-		Kart->GetComponents<UKartSuspensionComponent>(FoundWheels);
-		for (auto Wheel : FoundWheels)
-		{
-			Wheels.Add(Wheel);
-		}
+		Wheels.Empty();
+		Wheels.Add(Kart->GetLR_Wheel());
+		Wheels.Add(Kart->GetRR_Wheel());
 	}
 }
 
@@ -71,8 +68,10 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
                                                FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	// ...
+void UKartAccelerationComponent::ApplyAcceleration(float DeltaTime)
+{
 	ProcessAcceleration(DeltaTime);
 	if (Kart->HasAuthority())
 	{
@@ -83,7 +82,6 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	{
 		ApplyForceToKart(Acceleration, DeltaTime);
 	}
-	OnAccelerationDelegate.Broadcast(AccelerationInput);
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)

@@ -55,11 +55,8 @@ void UKartSuspensionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 bool UKartSuspensionComponent::ProcessSuspension()
 {
-	// TODO: 리펙토링의 여지가 있음
-	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-	
 	FVector Start = GetComponentLocation();
-	FVector End = Start + Kart->GetActorUpVector() * -SuspensionLength;
+	FVector End = Start + GetUpVector() * -SuspensionLength;
 
 	FHitResult HitResult;
 
@@ -69,20 +66,23 @@ bool UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
-		float DistanceNormalized = UKismetMathLibrary::NormalizeToRange(HitResult.Distance, 0.0f, SuspensionLength);
-		DistanceNormalized = 1 - DistanceNormalized;
-		FVector Direction = UKismetMathLibrary::GetDirectionUnitVector(HitResult.TraceEnd, HitResult.TraceStart);
+		// Offset을 구한 뒤 Offset에 따른 힘을 가해준다.
+		float Offset = SuspensionLength - HitResult.Distance;
 
-		// Damper 안정성 조정
-		float Damper = FVector::DotProduct(Kart->GetVelocity(), Direction) * -DamperScale;
-		float ResultForceScale = Damper + ForceScale;
+		// 바퀴의 LinearVelocity를 구한다.
+		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocityAtPoint(Start);
+
+		// 바퀴의 UpVector와 LinearVelocity의 내적을 구한다. (위로 향하는 속도를 구함)
+		float Velocity = FVector::DotProduct(GetUpVector(), LinearVelocity);
+
+		// 바퀴에 가할 Force를 구함
+		float Force = Offset * SpringStrength - Velocity * DamperScale;
+		Force = FMath::Clamp(Force, 0.0f, SpringStrength * 50.0f);
+
+		// 바퀴의 UpVector에 Force를 곱해줌
+		FVector ForceVector = GetUpVector() * Force;
+		KartBody->AddForceAtLocation(ForceVector, Start);
 		
-		FVector Force = Direction * DistanceNormalized * ResultForceScale;
-
-		if (KartBody)
-		{
-			KartBody->AddForceAtLocation(Force, Start);
-		}
 		return true;
 	}
 	return false;
