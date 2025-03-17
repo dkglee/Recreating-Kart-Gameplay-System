@@ -73,15 +73,14 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void UKartAccelerationComponent::ApplyAcceleration(float DeltaTime)
 {
 	ProcessAcceleration(DeltaTime);
-	if (Kart->HasAuthority())
-	{
-		// FFastLogger::LogScreen(FColor::Red, TEXT("Client Cart[%s] : %f"), *Kart->GetName(), AccelerationInput);
+	// if (Kart->HasAuthority())
+	// {
 		ApplyForceToKart_Implementation(Acceleration, DeltaTime);
-	}
-	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		ApplyForceToKart(Acceleration, DeltaTime);
-	}
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	ApplyForceToKart(Acceleration, DeltaTime);
+	// }
 }
 
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)

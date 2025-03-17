@@ -14,6 +14,7 @@
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "FastLogger.h"
 #include "KartFrictionComponent.h"
+#include "KartNetworkSyncComponent.h"
 #include "KartGame/Games/Modes/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
@@ -26,7 +27,9 @@ AKart::AKart()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
-	Super::SetReplicateMovement(true);
+	Super::SetReplicateMovement(false);
+
+	SetNetUpdateFrequency(1000.0f);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
 	(TEXT("/Game/Kart/Input/IMC_Kart.IMC_Kart"));
@@ -45,6 +48,10 @@ AKart::AKart()
 
 	RootBox->SetLinearDamping(0.9f);
 	RootBox->SetAngularDamping(0.9f);
+
+	// 클라이언트에서 물리가 실행되게끔 해줄 수 있음.
+	// 그렇다면 클라에서 실행된 물리가 서버로 동기화가 되어야 함.
+	RootBox->bReplicatePhysicsToAutonomousProxy = false;
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootBox);
@@ -95,6 +102,10 @@ AKart::AKart()
 	FrictionComponent = CreateDefaultSubobject<UKartFrictionComponent>(TEXT("FrictionComponent"));
 	FrictionComponent->SetNetAddressable();
 	FrictionComponent->SetIsReplicated(true);
+
+	NetworkSyncComponent = CreateDefaultSubobject<UKartNetworkSyncComponent>(TEXT("NetworkSyncComponent"));
+	NetworkSyncComponent->SetNetAddressable();
+	NetworkSyncComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -112,6 +123,15 @@ void AKart::BeginPlay()
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
 	}
+
+	if (IsLocallyControlled())
+	{
+		RootBox->SetSimulatePhysics(true);
+	}
+	else
+	{
+		RootBox->SetSimulatePhysics(false);
+	}
 }
 
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -124,12 +144,12 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(ItemInteractionComponent->bIsInteraction == false)
+	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
-		if (HasAuthority())
-		{
-			CalcuateNormalizedSpeed();
-		}
+		// if (HasAuthority())
+		// {
+		CalcuateNormalizedSpeed();
+		// }
 		bool flag = true;
 		
 		flag &= LR_Wheel->ProcessSuspension();

@@ -77,6 +77,9 @@ private:
 	class UItemInteractionComponent* ItemInteractionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartFrictionComponent* FrictionComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float MaxSpeed = 4000.0f;

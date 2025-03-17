@@ -71,18 +71,18 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UKartSteeringComponent::ProcessSteeringAndTorque()
 {
-	if (Kart->HasAuthority())
-	{
+	// if (Kart->HasAuthority())
+	// {
 		ApplySteeringToKart_Implementation(TargetSteering);
 		ApplyTorqueToKartV2_Implementation(SteeringIntensity);
-	}
-	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		// 로컬 및 서버 둘 다 실행
-		ApplySteeringToKart_Implementation(TargetSteering);
-		ApplySteeringToKart(TargetSteering);
-		ApplyTorqueToKartV2(SteeringIntensity);
-	}
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	// 로컬 및 서버 둘 다 실행
+	// 	ApplySteeringToKart_Implementation(TargetSteering);
+	// 	ApplySteeringToKart(TargetSteering);
+	// 	ApplyTorqueToKartV2(SteeringIntensity);
+	// }
 }
 
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
@@ -159,6 +159,9 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	// Torque Vector 생성
 	FVector KartUpVector = KartBody->GetUpVector();
 	FVector Torque = KartUpVector * TurnValue;
+
+	// FString DebugString = FString::Printf(TEXT("SteeringIntensity: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, SteeringPower, TurnValue, *Torque.ToString());
+	// DrawDebugString(GetWorld(), Kart->GetActorLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);

@@ -50,14 +50,14 @@ void UKartFrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UKartFrictionComponent::ApplyFriction(float DeltaTime)
 {
-	if (Kart->HasAuthority())
-	{
+	// if (Kart->HasAuthority())
+	// {
 		ApplyFrictionToKart_Implementation(bDrift, DeltaTime);
-	}
-	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		ApplyFrictionToKart(bDrift, DeltaTime);
-	}
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	ApplyFrictionToKart(bDrift, DeltaTime);
+	// }
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
