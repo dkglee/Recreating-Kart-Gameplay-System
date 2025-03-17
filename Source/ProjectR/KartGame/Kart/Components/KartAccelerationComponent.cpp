@@ -100,6 +100,17 @@ void UKartAccelerationComponent::ProcessAcceleration(float DeltaTime)
 
 void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration, float DeltaTime)
 {
+	FVector Forward = KartBody->GetForwardVector();
+	FVector Velocity = KartBody->GetPhysicsLinearVelocity();
+	float ForwardSpeed = FVector::DotProduct(Forward, Velocity); // cm/s
+
+	// MaxSpeed 제한 (MaxSpeed는 cm/s 기준이어야 함) // 부스터 사용 X
+	if (ForwardSpeed >= Kart->GetMaxSpeed() && InAcceleration > 0.0f)
+	{
+		// 이미 MaxSpeed 이상인데 더 가속하는 경우, 무시
+		return;
+	}
+	
 	FVector Force = KartBody->GetForwardVector() * InAcceleration * KartBody->GetMass();
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)

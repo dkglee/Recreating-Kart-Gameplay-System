@@ -14,6 +14,9 @@
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "FastLogger.h"
 #include "KartFrictionComponent.h"
+#include "KartGame/Games/Modes/RacePlayerController.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -140,6 +143,8 @@ void AKart::Tick(float DeltaTime)
 			FrictionComponent->ApplyFriction(DeltaTime);
 		}
 	}
+
+	UpdateSpeedUI();
 }
 
 // Called to bind functionality to input
@@ -160,4 +165,27 @@ void AKart::CalcuateNormalizedSpeed()
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
 	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
+}
+
+void AKart::UpdateSpeedUI()
+{
+	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
+	FVector ForwardVector = RootBox->GetForwardVector();
+	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+
+	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
+	if (PC)
+	{
+		UMainUI* MainUI = PC->GetMainHUD();
+		if (!MainUI)
+		{
+			return ;
+		}
+		UDashBoardUI* DashBoardUI = MainUI->GetWBP_DashBoardUI();
+		if (!DashBoardUI)
+		{
+			return ;
+		}
+		DashBoardUI->SetDashBoardValue(KartSpeed, TotalMaxSpeed);
+	}
 }

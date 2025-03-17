@@ -8,6 +8,8 @@ void ARacePlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::SetHUDToStart, 5.0f);
+
+	// SetHUDToStart();
 }
 
 void ARacePlayerController::SetHUDToStart()
