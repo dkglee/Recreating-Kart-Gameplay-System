@@ -28,4 +28,7 @@ private:
 
 	UFUNCTION()
 	void GoNextSubUI();
+	
+	UFUNCTION()
+	void EndSubUI();
 };

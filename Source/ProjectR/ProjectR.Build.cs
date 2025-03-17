@@ -10,11 +10,10 @@ public class ProjectR : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-			"UMG", "SlateCore", "Slate", "MediaAssets", "AdvancedWidgets", "Niagara"
+			"Core", "CoreUObject", "Engine", "InputCore", "UMG"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "MediaAssets", "SlateCore", "Slate", "EnhancedInput", "AdvancedWidgets", "Niagara" });
 		
 		PublicIncludePaths.AddRange(new string[]
 		{
@@ -24,13 +23,5 @@ public class ProjectR : ModuleRules
 			"ProjectR/KartGame/Kart/Components/Legacy/",
 			"ProjectR/KartGame/Utils/"
 		});
-
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
-		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
-
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 	}
 }
