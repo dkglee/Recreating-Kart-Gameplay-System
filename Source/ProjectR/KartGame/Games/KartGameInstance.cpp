@@ -1,4 +1,18 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "KartGameInstance.h"
 
+#include "FastLogger.h"
+#include "OnlineSubsystem.h"
 
-#include "KartGameInstance.h"
+void UKartGameInstance::Init()
+{
+	Super::Init();
+
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+
+	if (!OnlineSubsystem)
+	{
+		return;
+	}
+
+	FFastLogger::LogScreen(FColor::Red, TEXT("하이 세션: %s"), *OnlineSubsystem->GetSubsystemName().ToString());
+}

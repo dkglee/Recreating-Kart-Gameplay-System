@@ -15,10 +15,11 @@ void UGameStartLobbyUI::NativeConstruct()
 
 void UGameStartLobbyUI::GoNextSubUI()
 {
-	UISwitcher->SetActiveWidgetIndex(UISwitcher->GetActiveWidgetIndex() + 1);
+	StartSubUISwitcher->SetActiveWidgetIndex(StartSubUISwitcher->GetActiveWidgetIndex() + 1);
 }
 
 void UGameStartLobbyUI::EndSubUI()
 {
-	UISwitcher->SetVisibility(ESlateVisibility::Hidden);
+	StartSubUISwitcher->SetVisibility(ESlateVisibility::Hidden);
+	LobbySubUISwitcher->SetVisibility(ESlateVisibility::Collapsed);
 }

@@ -13,7 +13,11 @@ public class ProjectR : ModuleRules
 			"Core", "CoreUObject", "Engine", "InputCore", "UMG"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "MediaAssets", "SlateCore", "Slate", "EnhancedInput", "AdvancedWidgets", "Niagara" });
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
+			"MediaAssets", "SlateCore", "Slate", "EnhancedInput",
+			"AdvancedWidgets", "OnlineSubsystem", "OnlineSubsystemNull", "OnlineSubsystemSteam", "Niagara"
+		});
 		
 		PublicIncludePaths.AddRange(new string[]
 		{

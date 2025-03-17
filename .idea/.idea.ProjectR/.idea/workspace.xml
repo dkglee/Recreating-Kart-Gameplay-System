@@ -14,13 +14,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Games/Maps/MainLobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Maps/MainLobby.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UIs/Start/WBP_GameStartLobbyUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UIs/Start/WBP_GameStartLobbyUI.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectR.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectR.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Start/GameStartLobbyUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Start/GameStartLobbyUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Start/GameStartLobbyUI.cpp~" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Start/GameStartLobbyUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Start/GameStartLobbyUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,9 +52,23 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/ProjectR/UHT/RiderPlayerState.gen.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Project/ProjectR/Source/ProjectR/KartGame/Kart/Kart.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Project/ProjectR/Source/ProjectR/KartGame/Kart/Kart.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Plugins/Enterprise/VariantManager/Source/VariantManager/Private/DisplayNodes/VariantManagerColorPropertyNode.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Algo/HeapSort.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Algo/Impl/BinaryHeap.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Misc/MTAccessDetector.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Templates/Invoke.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectPtr.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/UnrealType.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/PrimitiveComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Actor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Public/Net/UnrealNetwork.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/VulkanRHI/Private/Linux/VulkanLinuxPlatform.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/ThirdParty/Steamworks/Steamworks.build.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -58,22 +78,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C/C++ Project.ProjectR.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/item-table",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C/C++ Project.ProjectR.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/lobby-with-steam&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C/C++ Project.ProjectR">
     <configuration name="ProjectR" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -226,6 +246,7 @@
       <workItem from="1742196333477" duration="385000" />
       <workItem from="1742196735978" duration="42000" />
       <workItem from="1742196810548" duration="1610000" />
+      <workItem from="1742209824717" duration="2437000" />
     </task>
     <servers />
   </component>

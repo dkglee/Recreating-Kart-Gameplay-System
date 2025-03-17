@@ -18,7 +18,10 @@ protected:
 	
 private:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UWidgetSwitcher> UISwitcher;
+	TObjectPtr<UWidgetSwitcher> StartSubUISwitcher;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UWidgetSwitcher> LobbySubUISwitcher;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UGameStartCinematicUI> StartCinematicUI;
