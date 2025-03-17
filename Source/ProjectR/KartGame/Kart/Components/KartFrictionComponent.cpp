@@ -50,14 +50,14 @@ void UKartFrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UKartFrictionComponent::ApplyFriction(float DeltaTime)
 {
-	if (Kart->HasAuthority())
-	{
+	// if (Kart->HasAuthority())
+	// {
 		ApplyFrictionToKart_Implementation(bDrift, DeltaTime);
-	}
-	else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		ApplyFrictionToKart(bDrift, DeltaTime);
-	}
+	// }
+	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+	// {
+	// 	ApplyFrictionToKart(bDrift, DeltaTime);
+	// }
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -88,12 +88,10 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift, f
 {
 	if (!bInDrift)
 	{
-		//FFastLogger::LogScreen(FColor::Green, TEXT("Kart[%s}, No Drift"), *Kart->GetName());
 		KartBody->SetAngularDamping(3.5f);
 	}
 	else
 	{
-		//FFastLogger::LogScreen(FColor::Red, TEXT("Kart[%s] Drift"), *Kart->GetName());
 		KartBody->SetAngularDamping(0.9f);
 	}
 	
@@ -102,7 +100,6 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift, f
 	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 	float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
 
-	// if (!bDrift)
 	FVector FrictionForce = RightVector * Velocity * -1.5f * 1.0f * 10.0f;
 
 	KartBody->AddForce(FrictionForce, NAME_None, true);
