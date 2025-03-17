@@ -1,10 +1,11 @@
-﻿#include "GameStartLobbyUI.h"
+﻿#include "GameStartUI.h"
 
 #include "Components/WidgetSwitcher.h"
+#include "Kismet/GameplayStatics.h"
 #include "SubUI/GameStartCinematicUI.h"
 #include "SubUI/LicenseUI.h"
 
-void UGameStartLobbyUI::NativeConstruct()
+void UGameStartUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -13,13 +14,15 @@ void UGameStartLobbyUI::NativeConstruct()
 	LicenseUI->OnLicenseEndNotified.AddDynamic(this, &ThisClass::EndSubUI);
 }
 
-void UGameStartLobbyUI::GoNextSubUI()
+void UGameStartUI::GoNextSubUI()
 {
 	StartSubUISwitcher->SetActiveWidgetIndex(StartSubUISwitcher->GetActiveWidgetIndex() + 1);
 }
 
-void UGameStartLobbyUI::EndSubUI()
+void UGameStartUI::EndSubUI()
 {
-	StartSubUISwitcher->SetVisibility(ESlateVisibility::Hidden);
-	LobbySubUISwitcher->SetVisibility(ESlateVisibility::Collapsed);
+	RemoveFromParent();
+
+	// 로컬 컨트롤러 가져옴
+	UGameplayStatics::GetPlayerController(GetWorld(), 0);
 }

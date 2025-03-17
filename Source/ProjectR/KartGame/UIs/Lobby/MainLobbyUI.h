@@ -4,8 +4,17 @@
 #include "Blueprint/UserWidget.h"
 #include "MainLobbyUI.generated.h"
 
+class UWidgetSwitcher;
+
 UCLASS()
 class PROJECTR_API UMainLobbyUI : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void NativeConstruct() override;
+	
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UWidgetSwitcher> LobbyUISwitcher;
 };

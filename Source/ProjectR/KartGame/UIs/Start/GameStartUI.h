@@ -2,14 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GameStartLobbyUI.generated.h"
+#include "GameStartUI.generated.h"
 
 class ULicenseUI;
 class UGameStartCinematicUI;
 class UWidgetSwitcher;
 
 UCLASS()
-class PROJECTR_API UGameStartLobbyUI : public UUserWidget
+class PROJECTR_API UGameStartUI : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -19,9 +19,6 @@ protected:
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> StartSubUISwitcher;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UWidgetSwitcher> LobbySubUISwitcher;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UGameStartCinematicUI> StartCinematicUI;

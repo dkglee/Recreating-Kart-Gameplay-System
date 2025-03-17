@@ -2,8 +2,8 @@
 
 #include "Components/BoxComponent.h"
 #include "ProjectR/KartGame/Utils/CheckPointUtil.h"
-#include "ProjectR/KartGame/Games/Modes/RaceGameState.h"
-#include "ProjectR/KartGame/Games/Modes/RiderPlayerState.h"
+#include "KartGame/Games/Modes/Race/RaceGameState.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 ACheckPoint::ACheckPoint()
 {

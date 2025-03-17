@@ -3,8 +3,8 @@
 #include "RealTimeRankingHUDItem.h"
 #include "Components/Overlay.h"
 #include "GameFramework/PlayerState.h"
-#include "KartGame/Games/Modes/RaceGameState.h"
-#include "KartGame/Games/Modes/RiderPlayerState.h"
+#include "KartGame/Games/Modes/Race/RaceGameState.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 void URealTimeRankingHUDBoard::NativeOnInitialized()
 {

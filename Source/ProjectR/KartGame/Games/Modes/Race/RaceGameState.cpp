@@ -2,7 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
-#include "ProjectR/KartGame/Games/Modes/RiderPlayerState.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 ARaceGameState::ARaceGameState()
 {
