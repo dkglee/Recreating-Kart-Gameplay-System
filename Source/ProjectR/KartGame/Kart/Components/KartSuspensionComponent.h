@@ -18,9 +18,6 @@ public:
 
 	bool ProcessSuspension();
 
-	UFUNCTION(Server, Reliable)
-	void ApplySuspensionToKart(bool bIsGrounded, float DeltaTime);
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

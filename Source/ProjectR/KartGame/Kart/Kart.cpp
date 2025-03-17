@@ -144,26 +144,25 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
-		// if (HasAuthority())
-		// {
 		CalcuateNormalizedSpeed();
-		// }
+		
 		bool flag = true;
 		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();
 		flag &= LF_Wheel->ProcessSuspension();
 		flag &= RF_Wheel->ProcessSuspension();
+		
 		if (flag)
 		{
 			SteeringComponent->ProcessSteeringAndTorque();
-			AccelerationComponent->ApplyAcceleration(DeltaTime);
-			FrictionComponent->ApplyFriction(DeltaTime);
+			AccelerationComponent->ProcessAcceleration();
+			FrictionComponent->ProcessFriction();
 		}
 	}
-
 	UpdateSpeedUI();
 }
 

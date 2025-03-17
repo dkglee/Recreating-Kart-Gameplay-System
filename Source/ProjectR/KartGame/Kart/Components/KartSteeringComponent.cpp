@@ -71,18 +71,8 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UKartSteeringComponent::ProcessSteeringAndTorque()
 {
-	// if (Kart->HasAuthority())
-	// {
-		ApplySteeringToKart_Implementation(TargetSteering);
-		ApplyTorqueToKartV2_Implementation(SteeringIntensity);
-	// }
-	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	// {
-	// 	// 로컬 및 서버 둘 다 실행
-	// 	ApplySteeringToKart_Implementation(TargetSteering);
-	// 	ApplySteeringToKart(TargetSteering);
-	// 	ApplyTorqueToKartV2(SteeringIntensity);
-	// }
+	ApplySteeringToKart_Implementation(TargetSteering);
+	ApplyTorqueToKartV2_Implementation(SteeringIntensity);
 }
 
 void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)

@@ -48,16 +48,9 @@ void UKartFrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-void UKartFrictionComponent::ApplyFriction(float DeltaTime)
+void UKartFrictionComponent::ProcessFriction()
 {
-	// if (Kart->HasAuthority())
-	// {
-		ApplyFrictionToKart_Implementation(bDrift, DeltaTime);
-	// }
-	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	// {
-	// 	ApplyFrictionToKart(bDrift, DeltaTime);
-	// }
+	ApplyFrictionToKart_Implementation(bDrift);
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -84,7 +77,7 @@ void UKartFrictionComponent::SetupInputBinding(class UEnhancedInputComponent* Pl
 }
 
 // 마찰력 적용
-void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift, float DeltaTime)
+void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 {
 	if (!bInDrift)
 	{

@@ -30,14 +30,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void ApplyAcceleration(float DeltaTime);
-
+	void ProcessAcceleration();
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
-	void ProcessAcceleration(float DeltaTime);
 
 	UFUNCTION(Server, Reliable)
-	void ApplyForceToKart(float InAcceleration, float DeltaTime);
+	void ApplyForceToKart(float InAcceleration);
 
 	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
@@ -61,4 +59,6 @@ private:
 	float MaxAcceleration = 3000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	float TargetAcceleration;
 };
