@@ -11,6 +11,7 @@
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "CommonUtil.h"
+#include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "FastLogger.h"
 #include "KartFrictionComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -82,7 +83,8 @@ AKart::AKart()
 	AccelerationComponent->SetIsReplicated(true);
 
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
-
+	ItemInteractionComponent = CreateDefaultSubobject<UItemInteractionComponent>(TEXT("ItemInteractionComponent"));
+	
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();
 	SteeringComponent->SetIsReplicated(true);
@@ -119,21 +121,24 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (HasAuthority())
+	if(ItemInteractionComponent->bIsInteraction == false)
 	{
-		CalcuateNormalizedSpeed();
-	}
-	bool flag = true;
-	
-	flag &= LR_Wheel->ProcessSuspension();
-	flag &= RR_Wheel->ProcessSuspension();
-	flag &= LF_Wheel->ProcessSuspension();
-	flag &= RF_Wheel->ProcessSuspension();
-	if (flag)
-	{
-		SteeringComponent->ProcessSteeringAndTorque();
-		AccelerationComponent->ApplyAcceleration(DeltaTime);
-		FrictionComponent->ApplyFriction(DeltaTime);
+		if (HasAuthority())
+		{
+			CalcuateNormalizedSpeed();
+		}
+		bool flag = true;
+		
+		flag &= LR_Wheel->ProcessSuspension();
+		flag &= RR_Wheel->ProcessSuspension();
+		flag &= LF_Wheel->ProcessSuspension();
+		flag &= RF_Wheel->ProcessSuspension();
+		if (flag)
+		{
+			SteeringComponent->ProcessSteeringAndTorque();
+			AccelerationComponent->ApplyAcceleration(DeltaTime);
+			FrictionComponent->ApplyFriction(DeltaTime);
+		}
 	}
 }
 
