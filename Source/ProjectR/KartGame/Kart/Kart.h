@@ -41,10 +41,17 @@ public:
 	GETTER(class UKartSuspensionComponent*, LR_Wheel);
 	GETTER(class UKartSuspensionComponent*, RR_Wheel);
 	GETTER(float, MaxSpeed);
+	GETTER_SETTER(bool, bCanMove);
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
+
 private:
+	
+#pragma region ForeignVariable
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	bool bCanMove = true;
+#pragma endregion
 
 #pragma region CoreSkills
 	void CalcuateNormalizedSpeed();

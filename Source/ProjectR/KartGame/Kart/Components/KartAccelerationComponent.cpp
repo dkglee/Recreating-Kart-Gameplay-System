@@ -76,12 +76,15 @@ void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue
 	TargetAcceleration = InputActionValue.Get<float>();
 }
 
-void UKartAccelerationComponent::ProcessAcceleration()
+void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)
 {
-	ApplyForceToKart_Implementation(Acceleration);
+	if (bGameStart)
+	{
+		ApplyForceToKart_Implementation();
+	}
 }
 
-void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration)
+void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 {
 	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.4f, 1.0f);
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
@@ -93,13 +96,13 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceler
 	float ForwardSpeed = FVector::DotProduct(Forward, Velocity); // cm/s
 
 	// MaxSpeed 제한 (MaxSpeed는 cm/s 기준이어야 함) // 부스터 사용 X
-	if (ForwardSpeed >= Kart->GetMaxSpeed() && InAcceleration > 0.0f)
+	if (ForwardSpeed >= Kart->GetMaxSpeed() && Acceleration > 0.0f)
 	{
 		// 이미 MaxSpeed 이상인데 더 가속하는 경우, 무시
 		return;
 	}
 	
-	FVector Force = KartBody->GetForwardVector() * InAcceleration * KartBody->GetMass();
+	FVector Force = KartBody->GetForwardVector() * Acceleration * KartBody->GetMass();
 	
 	for (int32 i = 0; i < Wheels.Num(); i++)
 	{

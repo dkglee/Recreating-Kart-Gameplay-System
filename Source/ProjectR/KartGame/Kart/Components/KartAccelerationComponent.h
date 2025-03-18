@@ -30,12 +30,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void ProcessAcceleration();
+	void ProcessAcceleration(bool bGameStart);
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)
-	void ApplyForceToKart(float InAcceleration);
+	void ApplyForceToKart();
 
 	// InitializeComponent에서 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))

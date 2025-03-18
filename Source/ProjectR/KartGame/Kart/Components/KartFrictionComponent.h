@@ -34,6 +34,7 @@ public:
 
 #pragma region GetterSetters
 	GETTER(bool, bDrift);
+	GETTER_SETTER(float, FrictionGrip);
 #pragma endregion
 	
 private:
