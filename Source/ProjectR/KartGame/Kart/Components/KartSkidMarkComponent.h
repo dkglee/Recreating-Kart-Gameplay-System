@@ -27,10 +27,11 @@ public:
 	void ProcessSkidMark(bool bIsSkidding);
 
 private:
+	void ProcessSkidMark_Internal(bool bIsSkidding);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skid Mark", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_SetIsSkidActive(bool bIsSkidding);
 	
 	// 서버에서 업데이트

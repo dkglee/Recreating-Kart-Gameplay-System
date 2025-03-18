@@ -56,52 +56,55 @@ void UKartSkidMarkComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePr
 
 void UKartSkidMarkComponent::ProcessSkidMark(bool bIsSkidding)
 {
+	// 로컬에서만 상태 변화 감지
 	if (Kart->IsLocallyControlled())
 	{
-		if (bIsSkidding)
-		{
-			if (bIsSkidActive) return;
-		
-			bIsSkidActive = true;
-			DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Skidding", nullptr, FColor::Red, 0.0f, true);
-			Activate(true);
-		}
-		else
-		{
-			if (!bIsSkidActive) return;
-		
-			bIsSkidActive = false;
-			DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Not Skidding", nullptr, FColor::Red, 0.0f, true);
-			Deactivate();
-		}
-	}
+		if (bIsSkidActive == bIsSkidding)
+			return;
 
-	if (!Kart->HasAuthority())
-	{
-		Server_SetIsSkidActive(bIsSkidding);
+		bIsSkidActive = bIsSkidding;
+		ProcessSkidMark_Internal(bIsSkidding);
+
+		// 서버 동기화
+		if (!Kart->HasAuthority())
+		{
+			Server_SetIsSkidActive(bIsSkidding);
+		}
 	}
 }
 
-void UKartSkidMarkComponent::Server_SetIsSkidActive_Implementation(bool bIsSkidding)
+void UKartSkidMarkComponent::ProcessSkidMark_Internal(bool bIsSkidding)
 {
-	bIsSkidActive = bIsSkidding;
+	DrawDebugString(GetWorld(), Kart->GetActorLocation(),
+		bIsSkidding ? "Skidding" : "Not Skidding", nullptr, FColor::Red, 0.0f, true);
 
-	OnRep_bIsSkidActive();
-}
-
-void UKartSkidMarkComponent::OnRep_bIsSkidActive()
-{
-	if (Kart->IsLocallyControlled())
-	{
-		return ;
-	}
-	
-	if (bIsSkidActive)
+	if (bIsSkidding)
 	{
 		Activate(true);
 	}
 	else
 	{
 		Deactivate();
+	}
+}
+
+void UKartSkidMarkComponent::Server_SetIsSkidActive_Implementation(bool bIsSkidding)
+{
+	bIsSkidActive = bIsSkidding;
+	OnRep_bIsSkidActive();
+}
+
+bool UKartSkidMarkComponent::Server_SetIsSkidActive_Validate(bool bIsSkidding)
+{
+	// 필요시 추가 검증 가능
+	return true;
+}
+
+void UKartSkidMarkComponent::OnRep_bIsSkidActive()
+{
+	// 리모트 클라이언트에서만 동작
+	if (!Kart->IsLocallyControlled())
+	{
+		ProcessSkidMark_Internal(bIsSkidActive);
 	}
 }
