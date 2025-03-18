@@ -1,4 +1,12 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "LobbyPlayerController.h"
 
+#include "Blueprint/UserWidget.h"
+#include "KartGame/UIs/Lobby/MainLobbyUI.h"
 
-#include "LobbyPlayerController.h"
+void ALobbyPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	MainLobbyUI = CreateWidget<UMainLobbyUI>(this, MainLobbyUIClass);
+	MainLobbyUI->AddToViewport(0);
+}

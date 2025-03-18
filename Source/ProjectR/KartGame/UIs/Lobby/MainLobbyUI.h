@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainLobbyUI.generated.h"
 
+class UGameLobbySubUI;
 class UWidgetSwitcher;
 
 UCLASS()
@@ -17,4 +18,10 @@ protected:
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> LobbyUISwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UGameLobbySubUI> GameLobbySubUI;
+
+	UFUNCTION()
+	void CreateGameSessions();
 };

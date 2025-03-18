@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "OnlineSubsystem.h"
 #include "Engine/GameInstance.h"
+#include "Interfaces/OnlineSessionDelegates.h"
 #include "KartGameInstance.generated.h"
 
 class IOnlineSession;
@@ -12,12 +14,24 @@ UCLASS()
 class PROJECTR_API UKartGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-
+	
+public:
+	UKartGameInstance();
+	
+	void CreateNewGameSession();
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	
 protected:
 	virtual void Init() override;
 
 private:
 	// ESPMode::ThreadSafe -> 멀티 스레드 환경에서도 공유되도록 설정하는 Key로 인지 중
 	// TODO: 정확한 의미 파악하기.
-	TSharedPtr<IOnlineSession, ESPMode::ThreadSafe> OnlineSessionInterface;
+	// TSharedPtr<IOnlineSession, ESPMode::ThreadSafe> OnlineSessionInterface;
+
+	// 현재 만들어진 온라인 세션 관리가 필요할 때 사용하는 값
+	IOnlineSessionPtr OnlineSessionInterface;
+
+	UFUNCTION()
+	void OnSessionCreated(FName SessionName, bool IsCreateSuccess);
 };
