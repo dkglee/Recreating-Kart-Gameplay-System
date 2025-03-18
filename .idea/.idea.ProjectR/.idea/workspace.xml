@@ -14,16 +14,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/GameMode/ItemGameModeSelectList.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/GameMode/ItemGameModeSelectList.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/SubUI/SelectGameModeMainUI.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/SubUI/SelectGameModeMainUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Games/Lobby/Mode/BP_LobbyGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Lobby/Mode/BP_LobbyGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Games/Race/Tracks/DebugTrack.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Race/Tracks/DebugTrack.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UIs/Lobby/Main/WBP_GameLobbySubUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UIs/Lobby/Main/WBP_GameLobbySubUI.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Lobby/LobbyPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Lobby/LobbyPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Lobby/LobbyPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Lobby/LobbyPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/MainLobbyUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/SubUI/GameChannel/ItemGameChannelList.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/Lobby/SubUI/GameChannel/ItemGameChannelList.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,8 +52,11 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://2" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Plugins/Enterprise/VariantManager/Source/VariantManager/Private/DisplayNodes/VariantManagerColorPropertyNode.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Editor/SceneOutliner/Private/SceneOutlinerActorInfoColumn.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Algo/HeapSort.h" root0="FORCE_HIGHLIGHTING" />
@@ -70,6 +76,7 @@
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/VulkanRHI/Private/Linux/VulkanLinuxPlatform.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/ThirdParty/Steamworks/Steamworks.build.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -253,6 +260,8 @@
       <workItem from="1742257398563" duration="1799000" />
       <workItem from="1742267793566" duration="8456000" />
       <workItem from="1742279402533" duration="2650000" />
+      <workItem from="1742282832247" duration="4865000" />
+      <workItem from="1742289524377" duration="8102000" />
     </task>
     <servers />
   </component>

@@ -2,12 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ItemGameChannelList.generated.h"
+#include "SelectGameModeMainUI.generated.h"
 
-class UButton;
+class UWidgetSwitcher;
 
 UCLASS()
-class PROJECTR_API UItemGameChannelList : public UUserWidget
+class PROJECTR_API USelectGameModeMainUI : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -16,8 +16,5 @@ protected:
 	
 private:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> CreateSessionButton;
-
-	UFUNCTION()
-	void CreateNewSession();
+	TObjectPtr<UWidgetSwitcher> GameModeSwitcher;
 };
