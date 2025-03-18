@@ -5,7 +5,9 @@
 #include "OnlineSessionSettings.h"
 
 UKartGameInstance::UKartGameInstance()
-: OnCreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnSessionCreated))
+: OnCreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnSessionCreated)),
+OnFindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSession)),
+OnJoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnJoinSession))
 {
 }
 
@@ -20,6 +22,9 @@ void UKartGameInstance::Init()
 	}
 
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
+	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
+	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
+	OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 }
 
 void UKartGameInstance::CreateNewGameSession()
@@ -40,8 +45,6 @@ void UKartGameInstance::CreateNewGameSession()
 		return;
 	}
 	
-	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
-
 	// Shared Ptr로 처리해서 내부 함수에서 만들어진 세팅 값을 외부에서 계속 사용하더라도,
 	// 더이상 사용하지 않을 때 알아서 언리얼 GC에서 관리될 수 있도록 처리해준다.
 	// TODO: 튜토리얼대로 해서 우선은 이리 처리되나 좋은 방법은 아니라고 판단해 리팩토링해야한다.
@@ -63,6 +66,10 @@ void UKartGameInstance::CreateNewGameSession()
 	// 로비 시스템 사용 시 보이스챗 활용 여부
 	SessionSettings->bUseLobbiesVoiceChatIfAvailable = false;
 
+	// 현재 매치 타입이 아이템전임을 의미함
+	SessionSettings->Set(FName("MatchType"), FString("ItemMode"),
+		EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 
 	// 로컬 플레이어 고유 ID를 기반으로 세션 생성
@@ -73,6 +80,60 @@ void UKartGameInstance::OnSessionCreated(FName SessionName, bool IsCreateSuccess
 {
 	if (IsCreateSuccess)
 	{
-		FFastLogger::LogScreen(FColor::Red, TEXT("하이: %s"), *SessionName.ToString());
+		// 호스팅 전용 이동 로비
+		GetWorld()->ServerTravel(FString("/Games/Race/MainRoom?listen"));
 	}
+}
+
+void UKartGameInstance::SearchGameSession()
+{
+	if (!OnlineSessionInterface.IsValid())
+	{
+		FFastLogger::LogScreen(FColor::Red, TEXT("세션이 현재 존재하지 않습니다"));
+		return;
+	}
+	
+	// 단순 C++ 객체를 Unreal GC로 이전시켜 관리한다.
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+	// 최대 검색 수 30개로 제한
+	SessionSearch->MaxSearchResults = 30;
+	// Lan 검색이 아닌 온라인 검색으로 처리
+	SessionSearch->bIsLanQuery = false;
+	// 검색에 필요한 쿼리 세팅
+	// SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+	OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(),
+		SessionSearch.ToSharedRef());
+}
+
+void UKartGameInstance::OnFindSession(bool IsSuccess)
+{
+	FFastLogger::LogScreen(FColor::Yellow, TEXT("나 강림: %d"), SessionSearch->SearchResults.Num());
+	for (FOnlineSessionSearchResult Result : SessionSearch->SearchResults)
+	{
+		FString Id = Result.GetSessionIdStr();
+		FString UserName = Result.Session.OwningUserName;
+		
+		FFastLogger::LogScreen(IsSuccess ? FColor::Green : FColor::Red,
+			TEXT("하이 룸: %s, %s"), *Id, *UserName);
+	}
+}
+
+void UKartGameInstance::JoinGameSession(const FOnlineSessionSearchResult& Result)
+{
+	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+
+	OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
+}
+
+void UKartGameInstance::OnJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Type)
+{
+	FString Address;
+
+	if (OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
+	{
+		FFastLogger::LogScreen(FColor::Magenta, TEXT("하이 브로: %s"), *Address);
+	}
+
+	GetFirstLocalPlayerController()->ClientTravel(Address, TRAVEL_Absolute);
 }
