@@ -15,6 +15,7 @@
 #include "FastLogger.h"
 #include "KartFrictionComponent.h"
 #include "KartNetworkSyncComponent.h"
+#include "KartSkidMarkComponent.h"
 #include "KartGame/Games/Modes/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
@@ -106,6 +107,16 @@ AKart::AKart()
 	NetworkSyncComponent = CreateDefaultSubobject<UKartNetworkSyncComponent>(TEXT("NetworkSyncComponent"));
 	NetworkSyncComponent->SetNetAddressable();
 	NetworkSyncComponent->SetIsReplicated(true);
+
+	LeftSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("LeftSkidMark"));
+	LeftSkidMark->SetupAttachment(LR_Wheel);
+	LeftSkidMark->SetNetAddressable();
+	LeftSkidMark->SetIsReplicated(true);
+
+	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
+	RightSkidMark->SetupAttachment(RR_Wheel);
+	RightSkidMark->SetNetAddressable();
+	RightSkidMark->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -161,6 +172,15 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration();
 			FrictionComponent->ProcessFriction();
+
+			bool bDrift = FrictionComponent->GetbDrift();
+			LeftSkidMark->ProcessSkidMark(bDrift);
+			RightSkidMark->ProcessSkidMark(bDrift);
+		}
+		else
+		{
+			LeftSkidMark->ProcessSkidMark(false);
+			RightSkidMark->ProcessSkidMark(false);
 		}
 	}
 	UpdateSpeedUI();

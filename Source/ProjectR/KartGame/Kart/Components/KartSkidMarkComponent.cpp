@@ -3,15 +3,28 @@
 
 #include "KartSkidMarkComponent.h"
 
+#include "FastLogger.h"
+#include "Kart.h"
+#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
+
 
 // Sets default values for this component's properties
 UKartSkidMarkComponent::UKartSkidMarkComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
+	bWantsInitializeComponent = true;
+	SetIsReplicatedByDefault(true);
 	// ...
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SkidMarkEffectAsset
+	(TEXT("/Game/Kart/NiagaraEffects/NS_SkidMark.NS_SkidMark"));
+	if (SkidMarkEffectAsset.Succeeded())
+	{
+		SetAsset(SkidMarkEffectAsset.Object);
+	}
+	Super::SetAutoActivate(false);
 }
 
 
@@ -21,16 +34,40 @@ void UKartSkidMarkComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	FFastLogger::LogScreen(FColor::Red, TEXT("SkidMark BeginPlay"));
+
+	SetFloatParameter(TEXT("SkidWidth"), 20.0f);
 }
 
-
-// Called every frame
-void UKartSkidMarkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                           FActorComponentTickFunction* ThisTickFunction)
+void UKartSkidMarkComponent::InitializeComponent()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::InitializeComponent();
 
-	// ...
+	Kart = Cast<AKart>(GetOwner());
+}
+
+void UKartSkidMarkComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
+void UKartSkidMarkComponent::ProcessSkidMark(bool bIsSkidding)
+{
+	if (bIsSkidding)
+	{
+		if (bIsSkidActive) return;
+
+		bIsSkidActive = true;
+		DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Skidding", nullptr, FColor::Red, 0.0f, true);
+		Activate(true);
+	}
+	else
+	{
+		if (!bIsSkidActive) return;
+
+		bIsSkidActive = false;
+		DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Not Skidding", nullptr, FColor::Red, 0.0f, true);
+		Deactivate();
+	}
 }
 
