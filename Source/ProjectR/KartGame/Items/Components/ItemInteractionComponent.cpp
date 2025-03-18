@@ -16,6 +16,7 @@ UItemInteractionComponent::UItemInteractionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
+	SetIsReplicatedByDefault(true);
 
 }
 
