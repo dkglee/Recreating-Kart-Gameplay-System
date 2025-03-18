@@ -16,7 +16,8 @@ public class ProjectR : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"MediaAssets", "SlateCore", "Slate", "EnhancedInput",
-			"AdvancedWidgets", "OnlineSubsystem", "OnlineSubsystemNull", "OnlineSubsystemSteam", "Niagara"
+			"AdvancedWidgets", "OnlineSubsystem", "OnlineSubsystemNull",
+			"OnlineSubsystemSteam", "Niagara"
 		});
 		
 		PublicIncludePaths.AddRange(new string[]
