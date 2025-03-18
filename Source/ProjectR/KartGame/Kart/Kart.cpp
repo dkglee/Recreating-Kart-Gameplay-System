@@ -155,12 +155,12 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
 		CalcuateNormalizedSpeed();
 		
-		bool flag = true;
 		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();

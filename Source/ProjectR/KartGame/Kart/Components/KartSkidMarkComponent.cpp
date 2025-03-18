@@ -7,6 +7,7 @@
 #include "Kart.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -49,25 +50,58 @@ void UKartSkidMarkComponent::InitializeComponent()
 void UKartSkidMarkComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UKartSkidMarkComponent, bIsSkidActive);
 }
 
 void UKartSkidMarkComponent::ProcessSkidMark(bool bIsSkidding)
 {
-	if (bIsSkidding)
+	if (Kart->IsLocallyControlled())
 	{
-		if (bIsSkidActive) return;
+		if (bIsSkidding)
+		{
+			if (bIsSkidActive) return;
+		
+			bIsSkidActive = true;
+			DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Skidding", nullptr, FColor::Red, 0.0f, true);
+			Activate(true);
+		}
+		else
+		{
+			if (!bIsSkidActive) return;
+		
+			bIsSkidActive = false;
+			DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Not Skidding", nullptr, FColor::Red, 0.0f, true);
+			Deactivate();
+		}
+	}
 
-		bIsSkidActive = true;
-		DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Skidding", nullptr, FColor::Red, 0.0f, true);
+	if (!Kart->HasAuthority())
+	{
+		Server_SetIsSkidActive(bIsSkidding);
+	}
+}
+
+void UKartSkidMarkComponent::Server_SetIsSkidActive_Implementation(bool bIsSkidding)
+{
+	bIsSkidActive = bIsSkidding;
+
+	OnRep_bIsSkidActive();
+}
+
+void UKartSkidMarkComponent::OnRep_bIsSkidActive()
+{
+	if (Kart->IsLocallyControlled())
+	{
+		return ;
+	}
+	
+	if (bIsSkidActive)
+	{
 		Activate(true);
 	}
 	else
 	{
-		if (!bIsSkidActive) return;
-
-		bIsSkidActive = false;
-		DrawDebugString(GetWorld(), Kart->GetActorLocation(), "Not Skidding", nullptr, FColor::Red, 0.0f, true);
 		Deactivate();
 	}
 }
-
