@@ -43,12 +43,9 @@ private:
 	// 현재 만들어진 온라인 세션 관리가 필요할 때 사용하는 값
 	IOnlineSessionPtr OnlineSessionInterface;
 
-	UFUNCTION()
 	void OnSessionCreated(FName SessionName, bool IsCreateSuccess);
 
-	UFUNCTION()
 	void OnFindSession(bool IsSuccess);
 
-	UFUNCTION()
 	void OnJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Type);
 };
