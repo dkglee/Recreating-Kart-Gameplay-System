@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraComponent.h"
 #include "Components/SceneComponent.h"
 #include "KartSkidMarkComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PROJECTR_API UKartSkidMarkComponent : public USceneComponent
+class PROJECTR_API UKartSkidMarkComponent : public UNiagaraComponent
 {
 	GENERATED_BODY()
 
@@ -19,9 +20,23 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void InitializeComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	void ProcessSkidMark(bool bIsSkidding);
+
+private:
+	void ProcessSkidMark_Internal(bool bIsSkidding);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skid Mark", meta = (AllowPrivateAccess = "true"))
+	class AKart* Kart = nullptr;
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetIsSkidActive(bool bIsSkidding);
+	
+	// 서버에서 업데이트
+	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_bIsSkidActive, BlueprintReadWrite, Category = "Skid Mark", meta = (AllowPrivateAccess = "true"))
+	bool bIsSkidActive = false;
+	UFUNCTION()
+	void OnRep_bIsSkidActive();
 };

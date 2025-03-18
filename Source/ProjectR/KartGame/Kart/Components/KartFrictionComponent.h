@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "InputActionValue.h"
 #include "KartFrictionComponent.generated.h"
@@ -30,6 +31,11 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void ProcessFriction();
+
+#pragma region GetterSetters
+	GETTER(bool, bDrift);
+#pragma endregion
+	
 private:
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);
 	UFUNCTION(Server, Reliable)

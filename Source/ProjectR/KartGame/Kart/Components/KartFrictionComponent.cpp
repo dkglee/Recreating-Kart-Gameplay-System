@@ -85,7 +85,7 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 	}
 	else
 	{
-		KartBody->SetAngularDamping(0.9f);
+		KartBody->SetAngularDamping(0.4f);
 	}
 	
 	// Base 드리프트 입력하지 않을 경우 마찰력을 최대로 함
