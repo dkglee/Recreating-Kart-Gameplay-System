@@ -36,8 +36,6 @@ private:
 	// 서버에서 호출되어야 함. (클라이언트에서 호출)
 	UFUNCTION(Server, Reliable)
 	void ApplyTorqueToKartV2(float InSteering);
-	UFUNCTION(Server, Reliable)
-	void ApplyTorqueToKart(float InAccerlationIntensity, float InSteeringIntensity);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -51,8 +49,6 @@ private:
 	float SteeringIntensity = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteerRate = 6.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	float SteerPower = 50000000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float DampingCoefficient = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))

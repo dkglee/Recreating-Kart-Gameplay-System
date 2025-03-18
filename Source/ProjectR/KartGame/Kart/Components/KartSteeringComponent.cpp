@@ -75,35 +75,6 @@ void UKartSteeringComponent::ProcessSteeringAndTorque()
 	ApplyTorqueToKartV2_Implementation(SteeringIntensity);
 }
 
-void UKartSteeringComponent::ApplyTorqueToKart_Implementation(float InAccelerationIntensity, float InSteeringIntensity)
-{
-	// 1. 카트의 로컬 축 벡터 구하기
-	// FVector RightVector = KartBody->GetRightVector();
-	FVector UpVector = KartBody->GetUpVector();
-	FVector ForwardVector = KartBody->GetForwardVector();
-
-	// 2. 현재 속도 방향 구하기
-	FVector Velocity = KartBody->GetComponentVelocity();
-	ForwardVector.Normalize();
-	Velocity.Normalize();
-
-	// 3. 전진/후진 여부 확인
-	float ForwardIntensity = FVector::DotProduct(ForwardVector, Velocity);
-	float DirectionSign = FMath::Sign(ForwardIntensity); 
-
-	// 4. Steering Torque를 로컬 Yaw 축 기준으로 적용
-	float YawTorqueValue = InSteeringIntensity * SteerPower * DirectionSign;
-
-	// 5. 로컬 Yaw 축을 기준으로 Torque 벡터 생성
-	FVector LocalYawAxis = UpVector; // 카트의 현재 Up 벡터가 기울어진 상태의 Yaw 축
-	FVector Torque = LocalYawAxis * YawTorqueValue;
-
-	// 6. 속도가 충분할 때만 토크 적용
-	if (FMath::Abs(InAccelerationIntensity) > 0.05f) {
-		KartBody->AddTorqueInRadians(Torque);
-	}
-}
-
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetSteering = InputActionValue.Get<float>();
@@ -143,15 +114,10 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	float KartSign = FMath::Sign(KartSpeed);
 	
 	float TurnValue = InSteering * SteeringPower * TurnScaling * KartSign;
-	// TODO: 땅에 닿았을 때만 할 수 있도록 조건을 추가할지 말지 고민해야 함. (추후에)
-	// TurnValue = bGrounded ? TurnValue : 0.0f;
 	
 	// Torque Vector 생성
 	FVector KartUpVector = KartBody->GetUpVector();
 	FVector Torque = KartUpVector * TurnValue;
-
-	// FString DebugString = FString::Printf(TEXT("SteeringIntensity: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, SteeringPower, TurnValue, *Torque.ToString());
-	// DrawDebugString(GetWorld(), Kart->GetActorLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);

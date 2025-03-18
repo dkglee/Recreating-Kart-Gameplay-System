@@ -45,4 +45,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float FrictionGrip = 10.0f;
 };
