@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUtil.h"
 #include "Blueprint/UserWidget.h"
 #include "GameStartCinematicUI.generated.h"
 

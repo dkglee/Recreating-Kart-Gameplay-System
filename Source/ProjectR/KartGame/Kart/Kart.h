@@ -45,6 +45,8 @@ public:
 	
 	FInputBindingDelegate OnInputBindingDelegate;
 private:
+
+#pragma region CoreSkills
 	void CalcuateNormalizedSpeed();
 	// Input Mapping Context
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -87,6 +89,14 @@ private:
 	float TotalMaxSpeed = 10000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float NormalizedSpeed = 0.0f;
+#pragma endregion
+
+#pragma region Niagara
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartSkidMarkComponent* LeftSkidMark = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartSkidMarkComponent* RightSkidMark = nullptr;
+#pragma endregion
 	
 #pragma region UI
 	void UpdateSpeedUI();

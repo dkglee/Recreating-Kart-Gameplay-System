@@ -18,9 +18,24 @@ void ULicenseUI::NativePreConstruct()
 	}
 }
 
+void ULicenseUI::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	OnAnimationEndNotified.Clear();
+	OnAnimationEndNotified.BindDynamic(this, &ThisClass::OnLicenseEnd);
+
+	BindToAnimationFinished(LicenseShowAnimation, OnAnimationEndNotified);
+}
+
 void ULicenseUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	
 	PlayAnimation(LicenseShowAnimation);
+}
+
+void ULicenseUI::OnLicenseEnd()
+{
+	OnLicenseEndNotified.Broadcast();
 }

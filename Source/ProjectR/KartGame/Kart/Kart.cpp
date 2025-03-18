@@ -5,20 +5,17 @@
 #include "KartAccelerationComponent.h"
 #include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Chaos/SoftsSpring.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
-#include "CommonUtil.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
-#include "FastLogger.h"
 #include "KartFrictionComponent.h"
 #include "KartNetworkSyncComponent.h"
-#include "KartGame/Games/Modes/RacePlayerController.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
+#include "KartSkidMarkComponent.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
-#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AKart::AKart()
@@ -111,6 +108,16 @@ AKart::AKart()
 	NetworkSyncComponent = CreateDefaultSubobject<UKartNetworkSyncComponent>(TEXT("NetworkSyncComponent"));
 	NetworkSyncComponent->SetNetAddressable();
 	NetworkSyncComponent->SetIsReplicated(true);
+
+	LeftSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("LeftSkidMark"));
+	LeftSkidMark->SetupAttachment(LR_Wheel);
+	LeftSkidMark->SetNetAddressable();
+	LeftSkidMark->SetIsReplicated(true);
+
+	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
+	RightSkidMark->SetupAttachment(RR_Wheel);
+	RightSkidMark->SetNetAddressable();
+	RightSkidMark->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -149,12 +156,12 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
 		CalcuateNormalizedSpeed();
 		
-		bool flag = true;
 		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();
@@ -166,6 +173,15 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration();
 			FrictionComponent->ProcessFriction();
+
+			bool bDrift = FrictionComponent->GetbDrift();
+			LeftSkidMark->ProcessSkidMark(bDrift);
+			RightSkidMark->ProcessSkidMark(bDrift);
+		}
+		else
+		{
+			LeftSkidMark->ProcessSkidMark(false);
+			RightSkidMark->ProcessSkidMark(false);
 		}
 	}
 	UpdateSpeedUI();
