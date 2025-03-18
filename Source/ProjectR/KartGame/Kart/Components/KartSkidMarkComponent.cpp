@@ -35,8 +35,6 @@ void UKartSkidMarkComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	FFastLogger::LogScreen(FColor::Red, TEXT("SkidMark BeginPlay"));
-
 	SetFloatParameter(TEXT("SkidWidth"), 20.0f);
 }
 
@@ -75,9 +73,6 @@ void UKartSkidMarkComponent::ProcessSkidMark(bool bIsSkidding)
 
 void UKartSkidMarkComponent::ProcessSkidMark_Internal(bool bIsSkidding)
 {
-	DrawDebugString(GetWorld(), Kart->GetActorLocation(),
-		bIsSkidding ? "Skidding" : "Not Skidding", nullptr, FColor::Red, 0.0f, true);
-
 	if (bIsSkidding)
 	{
 		Activate(true);
