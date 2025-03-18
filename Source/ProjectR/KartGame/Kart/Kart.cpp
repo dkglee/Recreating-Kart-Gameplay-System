@@ -161,7 +161,6 @@ void AKart::Tick(float DeltaTime)
 	{
 		CalcuateNormalizedSpeed();
 		
-		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();
 		flag &= LF_Wheel->ProcessSuspension();
@@ -170,7 +169,7 @@ void AKart::Tick(float DeltaTime)
 		if (flag)
 		{
 			SteeringComponent->ProcessSteeringAndTorque();
-			AccelerationComponent->ProcessAcceleration();
+			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
 			bool bDrift = FrictionComponent->GetbDrift();
