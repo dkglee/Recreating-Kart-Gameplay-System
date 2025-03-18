@@ -28,17 +28,18 @@ protected:
 public:
 	UFUNCTION()
 	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
+
+	UFUNCTION(Server, Reliable)
+	void Server_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMultiCast_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
 	
 private:
-	class UDataTable* Items;
-	
-	TMap<int, FItemTable*> ItemMap;
+	TMap<int, FItemTable> ItemMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	int32 TotalWeight = 0;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
-	FItemTable RandomItemData;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")

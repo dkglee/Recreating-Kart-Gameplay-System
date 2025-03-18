@@ -3,7 +3,7 @@
 #include "Components/Overlay.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
-#include "KartGame/Games/Modes/RiderPlayerState.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 void URealTimeRankingHUDItem::NativeConstruct()
 {
