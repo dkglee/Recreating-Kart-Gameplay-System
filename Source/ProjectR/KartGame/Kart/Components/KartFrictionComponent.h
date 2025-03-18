@@ -29,11 +29,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void ApplyFriction(float DeltaTime);
+	void ProcessFriction();
 private:
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);
 	UFUNCTION(Server, Reliable)
-	void ApplyFrictionToKart(bool bInDrift, float DeltaTime);
+	void ApplyFrictionToKart(bool bInDrift);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -45,4 +45,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float FrictionGrip = 10.0f;
 };

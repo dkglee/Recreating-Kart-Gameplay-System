@@ -56,6 +56,7 @@ void UKartAccelerationComponent::InitializeComponent()
 void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &UKartAccelerationComponent::OnMovementInputDetected);
+	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Completed, this, &UKartAccelerationComponent::OnMovementInputDetected);
 }
 
 void UKartAccelerationComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -70,35 +71,23 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UKartAccelerationComponent::ApplyAcceleration(float DeltaTime)
-{
-	ProcessAcceleration(DeltaTime);
-	// if (Kart->HasAuthority())
-	// {
-		ApplyForceToKart_Implementation(Acceleration, DeltaTime);
-	// }
-	// else if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-	// {
-	// 	ApplyForceToKart(Acceleration, DeltaTime);
-	// }
-}
-
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
-	float TargetAcceleration = InputActionValue.Get<float>();
+	TargetAcceleration = InputActionValue.Get<float>();
+}
+
+void UKartAccelerationComponent::ProcessAcceleration()
+{
+	ApplyForceToKart_Implementation(Acceleration);
+}
+
+void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration)
+{
 	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.4f, 1.0f);
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
-}
-
-void UKartAccelerationComponent::ProcessAcceleration(float DeltaTime)
-{
 	Acceleration = MaxAcceleration * AccelerationInput;
+	
 	// 천천히 줄어듬
-	AccelerationInput = FMath::FInterpTo(AccelerationInput, 0.0f, GetWorld()->GetDeltaSeconds(), DragCoefficient);
-}
-
-void UKartAccelerationComponent::ApplyForceToKart_Implementation(float InAcceleration, float DeltaTime)
-{
 	FVector Forward = KartBody->GetForwardVector();
 	FVector Velocity = KartBody->GetPhysicsLinearVelocity();
 	float ForwardSpeed = FVector::DotProduct(Forward, Velocity); // cm/s

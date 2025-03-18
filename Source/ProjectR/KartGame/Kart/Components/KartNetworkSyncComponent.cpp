@@ -83,9 +83,6 @@ void UKartNetworkSyncComponent::OnRep_ServerTransform()
 	{
 		// 서버로부터 받은 위치와 회전값을 적용한다.
 		KartBody->SetWorldTransform(KartTransform);
-
-		// FString DebugString = FString::Printf(TEXT("KartTransform: %s"), *KartTransform.ToString());
-		// DrawDebugString(GetWorld(), Kart->GetActorLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
 	}
 }
 
