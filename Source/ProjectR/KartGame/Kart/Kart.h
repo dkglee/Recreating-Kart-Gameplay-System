@@ -50,7 +50,7 @@ private:
 	
 #pragma region ForeignVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	bool bCanMove = false;
+	bool bCanMove = true;
 #pragma endregion
 
 #pragma region CoreSkills
