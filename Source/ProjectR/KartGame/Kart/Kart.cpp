@@ -93,7 +93,12 @@ AKart::AKart()
 	AccelerationComponent->SetIsReplicated(true);
 
 	ItemInventoryComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent"));
+	ItemInventoryComponent->SetNetAddressable();
+	ItemInventoryComponent->SetIsReplicated(true);
+	
 	ItemInteractionComponent = CreateDefaultSubobject<UItemInteractionComponent>(TEXT("ItemInteractionComponent"));
+	ItemInteractionComponent->SetNetAddressable();
+	ItemInteractionComponent->SetIsReplicated(true);
 	
 	SteeringComponent = CreateDefaultSubobject<UKartSteeringComponent>(TEXT("SteeringComponent"));
 	SteeringComponent->SetNetAddressable();

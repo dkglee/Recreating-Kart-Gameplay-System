@@ -21,18 +21,22 @@ protected:
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	UFUNCTION()
-	void OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	                           const FHitResult& SweepResult);
+	void OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 public:
 	SETTER(class AKart*, LockOnPlayer);
 
-	void MovetoTarget(float DeltaTime);
+	void MovetoTarget();
+
+	UFUNCTION()
+	void OnRep_MovetoTarget();
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class AKart* LockOnPlayer = nullptr;
 
 public:
@@ -40,13 +44,14 @@ public:
 	float speed = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float Amplitude = 5.0f; //파동의 높이
+	float Amplitude = 10.0f; //파동의 높이
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float Frequency = 15.0f; // 파동의 주기
+	float Frequency = 30.0f; // 파동의 주기
 	
 	float ElapsedTime = 0;
 
+	UPROPERTY(Replicated)
 	float DistanceToTarget = 0;
 	
 };

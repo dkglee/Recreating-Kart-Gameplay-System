@@ -38,7 +38,7 @@ void AItemBox::InitComponents()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	Items = LoadObject<UDataTable>(nullptr,TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	UDataTable* Items = LoadObject<UDataTable>(nullptr,TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
 		TArray<FName> RowNames = Items->GetRowNames();
@@ -49,7 +49,7 @@ void AItemBox::InitComponents()
 			if (Row != nullptr)
 			{
 				TotalWeight += Row->ItemWeight;
-				ItemMap.Add(Row->ItemID,Row);
+				ItemMap.Add(Row->ItemID,*Row);
 			}
 		}
 	}
@@ -58,6 +58,7 @@ void AItemBox::InitComponents()
 void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (HasAuthority() == false) return;
 	auto* player = Cast<AKart>(OtherActor);
 	if (player)
 	{
@@ -67,12 +68,22 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
 {
+	Server_MakeRandomItem(ItemInventoryComponent);
+}
+
+void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
+{
+	NetMultiCast_MakeRandomItem(ItemInventoryComponent);
+}
+
+void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
+{
 	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
 	int32 CurrentWeight = 0;
 	
 	for (const auto& Item : ItemMap)
 	{
-		CurrentWeight += Item.Value->ItemWeight;
+		CurrentWeight += Item.Value.ItemWeight;
 		if (RandomValue < CurrentWeight)
 		{
 			ItemInventoryComponent->GetItem(Item.Value);
@@ -82,4 +93,5 @@ void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryCompon
 
 	UE_LOG(LogTemp, Warning, TEXT("데이터가 이상해요"));
 }
+
 

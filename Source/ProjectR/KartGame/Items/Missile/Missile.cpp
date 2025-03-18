@@ -3,11 +3,11 @@
 
 #include "Missile.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -15,7 +15,8 @@ AMissile::AMissile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	bReplicates = true;
+	SetReplicateMovement(true);
 	Root->SetGenerateOverlapEvents(true);
 }
 
@@ -32,8 +33,15 @@ void AMissile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	MovetoTarget(DeltaTime);
-	
+	MovetoTarget();
+}
+
+void AMissile::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMissile, DistanceToTarget);
+	DOREPLIFETIME(AMissile, LockOnPlayer);
 }
 
 void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -50,16 +58,29 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
-void AMissile::MovetoTarget(float DeltaTime)
+void AMissile::MovetoTarget()
+{
+	if (LockOnPlayer == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("타겟한 플레이어가 없슴니다"));
+		return;
+	}
+	
+	OnRep_MovetoTarget();
+}
+
+
+
+void AMissile::OnRep_MovetoTarget()
 {
 	DistanceToTarget = FVector::Dist(GetActorLocation(), LockOnPlayer->GetActorLocation());
 	
 	FVector p0 = GetActorLocation();
 	FVector dir = (LockOnPlayer->GetActorLocation() - p0).GetSafeNormal();
 	float speedFactor = FMath::Clamp(DistanceToTarget / 100.0f, 0.5f, 2.0f);
-	FVector vt = dir * speed * speedFactor * DeltaTime;
+	FVector vt = dir * speed * speedFactor * GetWorld()->DeltaTimeSeconds;
 
-	ElapsedTime += DeltaTime;
+	ElapsedTime += GetWorld()->DeltaTimeSeconds;
 	float DistanceFactor = FMath::Clamp(DistanceToTarget / 1000.0f, 0.1f, 1.0f);
 	float YOffset = FMath::Cos(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
 	float ZOffset = FMath::Sin(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
@@ -72,9 +93,8 @@ void AMissile::MovetoTarget(float DeltaTime)
 
 	FRotator rot = GetActorRotation();
 	FRotator targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),LockOnPlayer->GetActorLocation());
-	FRotator newRot = UKismetMathLibrary::RInterpTo(rot,targetRot,DeltaTime,1.0f);
+	FRotator newRot = UKismetMathLibrary::RInterpTo(rot,targetRot,GetWorld()->DeltaTimeSeconds,1.0f);
 	SetActorRotation(newRot);
 }
-
 
 
