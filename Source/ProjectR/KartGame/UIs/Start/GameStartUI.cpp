@@ -1,7 +1,6 @@
 ﻿#include "GameStartUI.h"
 
 #include "Components/WidgetSwitcher.h"
-#include "Kismet/GameplayStatics.h"
 #include "SubUI/GameStartCinematicUI.h"
 #include "SubUI/LicenseUI.h"
 
@@ -22,7 +21,5 @@ void UGameStartUI::GoNextSubUI()
 void UGameStartUI::EndSubUI()
 {
 	RemoveFromParent();
-
-	// 로컬 컨트롤러 가져옴
-	UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	GetOwningPlayer()->SetShowMouseCursor(true);
 }
