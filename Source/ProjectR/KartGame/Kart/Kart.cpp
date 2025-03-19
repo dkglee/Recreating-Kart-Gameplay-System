@@ -3,6 +3,8 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartDriftSoundComponent.h"
+#include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
@@ -14,6 +16,7 @@
 #include "KartNetworkSyncComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
+#include "KartSystemLibrary.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 
@@ -118,6 +121,14 @@ AKart::AKart()
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+
+	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
+	EngineSoundComponent->SetupAttachment(RootBox);
+	EngineSoundComponent->SetIsReplicated(false);
+
+	DriftSoundComponent = CreateDefaultSubobject<UKartDriftSoundComponent>(TEXT("DriftSoundComponent"));
+	DriftSoundComponent->SetupAttachment(RootBox);
+	DriftSoundComponent->SetIsReplicated(false);
 }
 
 // Called when the game starts or when spawned
@@ -160,20 +171,20 @@ void AKart::Tick(float DeltaTime)
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
-		CalcuateNormalizedSpeed();
+		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();
 		flag &= LF_Wheel->ProcessSuspension();
 		flag &= RF_Wheel->ProcessSuspension();
 		
+		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
-			bool bDrift = FrictionComponent->GetbDrift();
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
 		}
@@ -182,6 +193,9 @@ void AKart::Tick(float DeltaTime)
 			LeftSkidMark->ProcessSkidMark(false);
 			RightSkidMark->ProcessSkidMark(false);
 		}
+
+		EngineSoundComponent->PlayKartEngineSound();
+		DriftSoundComponent->PlayDriftSound(bDrift && flag);
 	}
 	UpdateSpeedUI();
 }
@@ -196,14 +210,6 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
-}
-
-void AKart::CalcuateNormalizedSpeed()
-{
-	FVector ForwardVector = RootBox->GetForwardVector();
-	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
-	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
-	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
 }
 
 void AKart::UpdateSpeedUI()

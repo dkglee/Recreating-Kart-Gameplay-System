@@ -44,7 +44,7 @@ void UKartNetworkSyncComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UKartNetworkSyncComponent, KartTransform);
+	DOREPLIFETIME(UKartNetworkSyncComponent, KartInfo);
 }
 
 // Called every frame
@@ -59,30 +59,37 @@ void UKartNetworkSyncComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	if (Kart->IsLocallyControlled() && !Kart->HasAuthority())
 	{
 		// 서버로 본인의 위치와 회전값을 전달한다.
-		Server_SendKartTransform(KartBody->GetComponentTransform());
+		KartInfo.KartTransform = KartBody->GetComponentTransform();
+		KartInfo.Velocity = KartBody->GetPhysicsLinearVelocity();
+		KartInfo.TorqueInDegrees = KartBody->GetPhysicsAngularVelocityInDegrees();
+		Server_SendKartInfo(KartInfo);
 	}
 	else if (Kart->IsLocallyControlled() && Kart->HasAuthority())
 	{
 		// 서버는 자신의 위치와 회전값을 업데이트한다.
-		KartTransform = KartBody->GetComponentTransform();
+		FKartInfo InKartInfo;
+		InKartInfo.KartTransform = KartBody->GetComponentTransform();
+		InKartInfo.Velocity = KartBody->GetPhysicsLinearVelocity();
+		InKartInfo.TorqueInDegrees = KartBody->GetPhysicsAngularVelocityInDegrees();
+		
+		KartInfo = InKartInfo;
 	}
 }
 
-void UKartNetworkSyncComponent::Server_SendKartTransform_Implementation(FTransform InKartTransform)
-{
-	KartBody->SetWorldTransform(InKartTransform);
-
-	KartTransform = InKartTransform;
-}
-
-void UKartNetworkSyncComponent::OnRep_ServerTransform()
+void UKartNetworkSyncComponent::OnRep_KartInfo()
 {
 	// Local Role : Simulated Proxy
 	// Remote Role : Authority 
 	if (!Kart->IsLocallyControlled())
 	{
 		// 서버로부터 받은 위치와 회전값을 적용한다.
-		KartBody->SetWorldTransform(KartTransform);
+		KartBody->SetWorldTransform(KartInfo.KartTransform);
 	}
 }
 
+void UKartNetworkSyncComponent::Server_SendKartInfo_Implementation(FKartInfo NewKartInfo)
+{
+	KartBody->SetWorldTransform(NewKartInfo.KartTransform);
+
+	KartInfo = NewKartInfo;
+}
