@@ -14,18 +14,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Shield/Shield.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Shield/Shield.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/ItemInventory/ItemInventory.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/ItemInventory/ItemInventory.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/DataTable/ItemTable.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/DataTable/ItemTable.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/MainUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/MainUI.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,22 +84,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C/C++ Project.ProjectR.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/item-UI",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C/C++ Project.ProjectR.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/item-UI&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C/C++ Project.ProjectR">
     <configuration name="ProjectR" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -271,6 +262,7 @@
       <workItem from="1742344573934" duration="5809000" />
       <workItem from="1742351402209" duration="1525000" />
       <workItem from="1742354500260" duration="7636000" />
+      <workItem from="1742365396731" duration="673000" />
     </task>
     <servers />
   </component>
@@ -278,6 +270,9 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnrealLogPanelSettings">
+    <option name="showMessages" value="false" />
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>

@@ -71,7 +71,6 @@ void UItemInventoryComponent::GetItem(const FItemTable itemData)
 		UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
 		return;
 	}
-	FFastLogger::LogScreen(FColor::Green, TEXT("GetItem : %s"), *FCommonUtil::GetClassEnumKeyAsString(itemData.ItemName));
 	
 	Server_GetItem(itemData);
 }
@@ -166,7 +165,6 @@ void UItemInventoryComponent::LockPlayer()
 
 void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 {
-	if (Kart->HasAuthority() == false) return;
 	// 아이템 스폰
 	FTransform itemTransform;
 	itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
@@ -174,7 +172,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	itemTransform.SetScale3D(FVector(1.0f));
 	DrawDebugString(GetWorld(), Kart->GetActorLocation(), TEXT("spawn Item"), 0, FColor::Red, 0, 1);
 
-	
 	switch (itemData.ItemName)
 	{
 	case EItemName::Missile:
@@ -183,13 +180,12 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			{
 				itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
 				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
-				UE_LOG(LogTemp, Warning, TEXT("%s"),*LockedTarget->GetName());
 				missile->SetLockOnPlayer(LockedTarget);
 				LockedTarget = nullptr;
 			}
 			else if (LockedTarget == nullptr)
 			{
-				FFastLogger::LogConsole(TEXT("LockedTarget Is Nullptr"));
+				FFastLogger::LogConsole(TEXT("조준 타겟이 nullptr입니다"));
 			}
 			break;
 		}
