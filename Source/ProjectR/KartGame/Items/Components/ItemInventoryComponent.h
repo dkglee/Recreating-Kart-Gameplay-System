@@ -89,5 +89,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	float MaxLockOnDist = 3000.f;
 
+	// 에임 UI 변수
 	FVector InitialAimUIPos;
+	FVector InitialAimUIScale;
+
+	class AKart* FinalTarget = nullptr;
 };

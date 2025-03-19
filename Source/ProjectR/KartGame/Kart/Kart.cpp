@@ -135,7 +135,7 @@ AKart::AKart()
 	UsingAimComponent->SetCastShadow(false);
 	UsingAimComponent->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	
-	UsingAimComponent->SetRelativeLocation(FVector(200.f,  0.f,  100.f));
+	UsingAimComponent->SetRelativeLocation(FVector(150.f,  0.f,  100.f));
 	UsingAimComponent->SetRelativeRotation(FRotator(0, 180, 0));
 	UsingAimComponent->SetRelativeScale3D(FVector(0.5f));
 	

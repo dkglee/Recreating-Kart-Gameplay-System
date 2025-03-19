@@ -14,19 +14,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/Aim/Aim.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/Aim/Aim.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectR.sln.DotSettings.user" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,6 +246,7 @@
       <workItem from="1742365396731" duration="673000" />
       <workItem from="1742366237323" duration="2425000" />
       <workItem from="1742368694234" duration="6121000" />
+      <workItem from="1742375804966" duration="4971000" />
     </task>
     <servers />
   </component>

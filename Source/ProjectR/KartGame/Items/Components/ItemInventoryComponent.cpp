@@ -33,6 +33,7 @@ void UItemInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	InitialAimUIPos = Kart->GetUsingAimComponent()->GetRelativeLocation();
+	InitialAimUIScale = Kart->GetUsingAimComponent()->GetRelativeScale3D();
 }
 
 void UItemInventoryComponent::InitializeComponent()
@@ -224,8 +225,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
 
-	AKart* FinalTarget = nullptr;
-
+	FinalTarget = nullptr;
 	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
 	float ClosestDistance = TNumericLimits<float>::Max();
 
@@ -306,7 +306,6 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		BoxColor = FColor::Green;
 		LockedTarget = nullptr;
 	}
-
 	
 	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
@@ -349,14 +348,53 @@ void UItemInventoryComponent::SetUsingAimLocation()
 
 	if (aim)
 	{
+		// 조준 성공했을 때는 에임 고정
 		if (LockedTarget != nullptr)
 		{
 			
 			aim->SetWorldLocation(LockedTarget->GetTargetAimComponent()->GetComponentLocation());
+			aim->SetRelativeScale3D(FVector(0.4f));
 		}
+		// 조준 실패 중일 때는 에임을 정면 방향으로 설정
 		else
 		{
-			aim->SetRelativeLocation(InitialAimUIPos);
+			// 주시 중인 상대가 없으면 내 카트 정면에 에임 위치
+			if (FinalTarget == nullptr)
+			{
+				aim->SetRelativeLocation(InitialAimUIPos);
+				aim->SetRelativeScale3D(InitialAimUIScale);
+			}
+			// 에임의 거리는 현재 주시중인 타겟이 내 앞 방향에 가까워짐에 비례하게 에임의 거리가 멀어진다.
+			else
+			{
+				FVector forward = Kart->GetActorForwardVector();
+				FVector rightVector = Kart->GetActorRightVector();
+				FVector targetLocation = FinalTarget->GetActorLocation();
+				FVector kartLocation = Kart->GetActorLocation();
+
+				FVector direction = (targetLocation - kartLocation).GetSafeNormal();
+				float facingDot = FVector::DotProduct(forward, direction);
+				float rightDot = FVector::DotProduct(rightVector, direction);
+				//FFastLogger::LogConsole(TEXT("%f"),facingDot);
+
+				float distance = FVector::Distance(kartLocation, targetLocation);
+				float maxDistance = MaxLockOnDist;
+				float minDistance = 0.0f;
+				float distanceFactor = FMath::Clamp((distance - minDistance) / (maxDistance - minDistance), 0.f, 1.f);
+
+				// 적절한 위치 보정
+				// 좌우 확인
+				// 0.2는 이동 강도 조절을 위한 값
+				FVector lateralOffset = rightVector * rightDot * distance * 0.2f;
+				// 정면 확인
+				// 0.5는 이동 강도 조절을 위한 값
+				FVector forwardOffset = forward * FMath::Clamp(facingDot, 0.0f, 1.0f) * distance * 0.5f;
+
+				FVector newPos = kartLocation + forwardOffset + lateralOffset;
+				newPos.Z = InitialAimUIPos.Z; // Z 값 유지
+
+				aim->SetWorldLocation(newPos);
+			}
 		}
 	}
 }
