@@ -16,6 +16,7 @@ public:
 	
 #pragma region GETTERSETTER
 	GETTER(class UDashBoardUI*, WBP_DashBoardUI);
+	GETTER(class UItemInventory*, WBP_ItemInventory);
 #pragma endregion
 	
 protected:
@@ -23,4 +24,6 @@ protected:
 	TObjectPtr<UCountDownToStart> CountDownToStartWidget;
 	UPROPERTY(meta = (BindWidget))
 	class UDashBoardUI* WBP_DashBoardUI;
+	UPROPERTY(meta = (BindWidget))
+	class UItemInventory* WBP_ItemInventory;
 };
