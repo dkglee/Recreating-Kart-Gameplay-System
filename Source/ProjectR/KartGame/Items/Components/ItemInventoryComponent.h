@@ -82,7 +82,7 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	TArray<FItemTable> Inventory;
-	
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	int32 MaxInventorySpace = 2;
