@@ -1,8 +1,10 @@
 ﻿#include "KartGameInstance.h"
 
 #include "FastLogger.h"
-#include "Interfaces/OnlineSessionInterface.h"
+#include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Interfaces/OnlineFriendsInterface.h"
+#include "Interfaces/OnlineSessionInterface.h"
 
 UKartGameInstance::UKartGameInstance()
 : OnCreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnSessionCreated)),
@@ -100,7 +102,9 @@ void UKartGameInstance::SearchGameSession()
 	// Lan 검색이 아닌 온라인 검색으로 처리
 	SessionSearch->bIsLanQuery = false;
 	// 검색에 필요한 쿼리 세팅
-	// SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	SessionSearch->QuerySettings.Set(FName(TEXT("PRESENCESEARCH")), true, EOnlineComparisonOp::Equals);
+    SessionSearch->QuerySettings.Set(FName(TEXT("LOBBYSEARCH")), true, EOnlineComparisonOp::Equals);
+	
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(),
 		SessionSearch.ToSharedRef());
