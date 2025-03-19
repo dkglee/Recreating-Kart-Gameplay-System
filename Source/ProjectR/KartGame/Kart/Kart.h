@@ -40,6 +40,7 @@ public:
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
 	GETTER(class UKartSuspensionComponent*, LR_Wheel);
 	GETTER(class UKartSuspensionComponent*, RR_Wheel);
+	GETTER(class UKartNetworkSyncComponent*, NetworkSyncComponent);
 	GETTER(float, MaxSpeed);
 	GETTER_SETTER(bool, bCanMove);
 #pragma endregion
