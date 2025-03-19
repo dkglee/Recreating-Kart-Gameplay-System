@@ -6,6 +6,7 @@
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "KartSuspensionComponent.h"
+#include "KartSystemLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Curves/CurveFloat.h"
 #include "Math/BigInt.h"
@@ -105,7 +106,7 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 // 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임
 void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering)
 {
-	float InNormalizedSpeed = Kart->GetNormalizedSpeed();
+	float InNormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
 	float SteeringPower = SteeringCurve->GetFloatValue(InNormalizedSpeed);
 
 	FVector ForwardVector = KartBody->GetForwardVector();
@@ -114,10 +115,13 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	float KartSign = FMath::Sign(KartSpeed);
 	
 	float TurnValue = InSteering * SteeringPower * TurnScaling * KartSign;
-	
+
 	// Torque Vector 생성
 	FVector KartUpVector = KartBody->GetUpVector();
 	FVector Torque = KartUpVector * TurnValue;
+
+	FString DebugString = FString::Printf(TEXT("Steering: %f\r\nNormalizedSpeed: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, InNormalizedSpeed, SteeringPower, TurnValue, *Torque.ToString());
+	DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);

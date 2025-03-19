@@ -7,7 +7,9 @@
 #include "KartInfo.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartSystemLibrary.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Components/BoxComponent.h"
+#include "Sound/SoundBase.h"
 #include "Kismet/KismetStringLibrary.h"
 
 
@@ -20,6 +22,22 @@ UKartEngineSoundComponent::UKartEngineSoundComponent()
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
 	// ...
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> MSS_ENGINE
+	(TEXT("/Game/Kart/Sounds/MSS_Engine.MSS_Engine"));
+	if (MSS_ENGINE.Succeeded())
+	{
+		EngineSoundSource = MSS_ENGINE.Object;
+		SetSound(EngineSoundSource);
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundAttenuation> SA_ENGINE
+	(TEXT("/Game/Kart/Sounds/SA_Engine.SA_Engine"));
+	if (SA_ENGINE.Succeeded())
+	{
+		EngineSoundAttenuation = SA_ENGINE.Object;
+		SetAttenuationSettings(EngineSoundAttenuation);
+	}
 }
 
 
@@ -29,7 +47,7 @@ void UKartEngineSoundComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	Play();
 }
 
 void UKartEngineSoundComponent::InitializeComponent()

@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
@@ -119,6 +120,11 @@ AKart::AKart()
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+
+	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
+	EngineSoundComponent->SetupAttachment(RootBox);
+	EngineSoundComponent->SetNetAddressable();
+	EngineSoundComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned

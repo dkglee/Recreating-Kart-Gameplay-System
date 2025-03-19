@@ -41,7 +41,7 @@ private:
 
 #pragma region CoreSound
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
-	class USoundCue* EngineSoundCue = nullptr;
+	class USoundBase* EngineSoundSource = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
 	class USoundAttenuation* EngineSoundAttenuation = nullptr;
 

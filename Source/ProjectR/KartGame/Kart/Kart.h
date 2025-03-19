@@ -108,4 +108,9 @@ private:
 #pragma region UI
 	void UpdateSpeedUI();
 #pragma endregion
+
+#pragma region Sound
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	class UKartEngineSoundComponent* EngineSoundComponent = nullptr;
+#pragma endregion
 };
