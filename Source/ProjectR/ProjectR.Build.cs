@@ -18,7 +18,7 @@ public class ProjectR : ModuleRules
 			"MediaAssets", "SlateCore", "Slate", "EnhancedInput",
 			"AdvancedWidgets", "OnlineSubsystem", "OnlineSubsystemNull",
 			"OnlineSubsystemSteam", "Niagara", "AudioExtensions", 
-			"MetasoundEngine", "MetasoundFrontend", "MetasoundRuntime"
+			"MetasoundEngine", "MetasoundFrontend"
 		});
 		
 		PublicIncludePaths.AddRange(new string[]
