@@ -50,12 +50,6 @@ public:
 
 	// 아이템 스폰 함수
 	void SpawnItem(const FItemTable itemData);
-
-	UFUNCTION(Server, Reliable)
-	void Server_SpawnItem(const FItemTable itemData);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_SpawnItem(const FItemTable itemData);
 	
 	// 조준형 아이템 함수
 	void LockPlayer();

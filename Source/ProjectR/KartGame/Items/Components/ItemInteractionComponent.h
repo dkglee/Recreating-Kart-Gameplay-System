@@ -14,7 +14,6 @@ enum class EInteractionType : uint8
 	Water,
 };
 
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UItemInteractionComponent : public UActorComponent
 {
@@ -30,8 +29,18 @@ protected:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 public:
 	void MissileHitInteraction();
+	
+	void MissileInteractionMove(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+	void Server_MissileInteractionMove(float DeltaTime);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_MissileInteractionMove(FQuat resultQuat, FVector resultPos);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
@@ -40,6 +49,7 @@ private:
 	EInteractionType CurrentType = EInteractionType::None;
 	
 public:
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool bIsInteraction = false;
 
 	// 미사일 변수
@@ -53,7 +63,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MissileKnockbackRotationNumber = 2.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float MissileKnockbackHeight = 500.f;	
-
-	
+	float MissileKnockbackHeight = 500.f;
 };
