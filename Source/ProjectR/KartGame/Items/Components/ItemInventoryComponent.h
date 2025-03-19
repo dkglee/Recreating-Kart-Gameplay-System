@@ -54,10 +54,10 @@ public:
 	// 조준형 아이템 함수
 	void LockPlayer();
 
-	void TakeAim(FVector start, FVector end, FVector boxHalfSize);
+	void FindTargetAndTakeAim(FVector start, FVector end, FVector boxHalfSize);
 
 	UFUNCTION(Server, Reliable)
-	void Server_TakeAim(FVector start, FVector end, FVector boxHalfSize);
+	void Server_FindTarget(FVector start, FVector end, FVector boxHalfSize);
 	
 	void TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, class AKart* FinalTarget, float ClosestDistance);
 
@@ -65,7 +65,7 @@ public:
 	void Server_TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, class AKart* FinalTarget, float ClosestDistance);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
+	void NetMulticast_DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
