@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
+#include "Components/WidgetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
@@ -31,6 +32,7 @@ UItemInventoryComponent::UItemInventoryComponent()
 void UItemInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	InitialAimUIPos = Kart->GetUsingAimComponent()->GetRelativeLocation();
 }
 
 void UItemInventoryComponent::InitializeComponent()
@@ -138,6 +140,14 @@ void UItemInventoryComponent::NetMulticast_UseItem_Implementation()
 			}
 		}
 	}
+
+	if (usingItem.ItemType)
+	{
+		if (Kart->GetUsingAimComponent())
+		{
+			Kart->GetUsingAimComponent()->SetVisibility(false);
+		}
+	}
 	
 	Inventory.RemoveAt(0);
 	bInventoryIsFull = false;
@@ -214,8 +224,9 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
 
-	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
 	AKart* FinalTarget = nullptr;
+
+	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
 	float ClosestDistance = TNumericLimits<float>::Max();
 
 	TArray<FHitResult> InitialHitResults;
@@ -227,7 +238,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		start,
 		end,
 		Kart->GetRootComponent()->GetComponentQuat(),
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeBox(InitialBoxSize),
 		Params);
 	
@@ -247,22 +258,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 			}
 		}
 	}
-	
-	TakeAimToFindTarget(start, end, boxHalfSize, FinalTarget, ClosestDistance);
-}
 
-
-void UItemInventoryComponent::TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, class AKart* FinalTarget, float ClosestDistance)
-{
-	Server_TakeAimToFindTarget(start, end, boxHalfSize, FinalTarget, ClosestDistance);
-}
-
-void UItemInventoryComponent::Server_TakeAimToFindTarget_Implementation(FVector start, FVector end, FVector boxHalfSize,
-	class AKart* FinalTarget, float ClosestDistance)
-{
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetOwner());
-	
 	// 박스의 scale y 보간
 	float MinYScale = 0.5f;
 	float MaxYScale = 2.0f;
@@ -283,7 +279,7 @@ void UItemInventoryComponent::Server_TakeAimToFindTarget_Implementation(FVector 
 		start,
 		end,
 		Kart->GetRootComponent()->GetComponentQuat(),
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeBox(AdjustedBoxHalfSize),
 		Params);
 
@@ -311,15 +307,23 @@ void UItemInventoryComponent::Server_TakeAimToFindTarget_Implementation(FVector 
 		LockedTarget = nullptr;
 	}
 
-	// 디버그 코드
-	NetMulticast_DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	
+	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
 
-
-void UItemInventoryComponent::NetMulticast_DrawAimLineBox_Implementation(FVector start, FVector end,
+void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
 	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+
+	if (Kart->IsLocallyControlled())
+	{
+		if (Kart->GetUsingAimComponent())
+		{
+			Kart->GetUsingAimComponent()->SetVisibility(true);
+			SetUsingAimLocation();
+		}
+	}
 }
 
 void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor)
@@ -334,5 +338,25 @@ void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector
 		FVector DebugLocation = FMath::Lerp(start, end, Alpha);
 	
 		DrawDebugBox(GetWorld(), DebugLocation, boxHalfSize, Kart->GetRootComponent()->GetComponentQuat(), BoxColor, false, 0.1f);
+	}
+}
+
+void UItemInventoryComponent::SetUsingAimLocation()
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+	auto* aim = Kart->GetUsingAimComponent();
+
+	if (aim)
+	{
+		if (LockedTarget != nullptr)
+		{
+			
+			aim->SetWorldLocation(LockedTarget->GetTargetAimComponent()->GetComponentLocation());
+		}
+		else
+		{
+			aim->SetRelativeLocation(InitialAimUIPos);
+		}
 	}
 }

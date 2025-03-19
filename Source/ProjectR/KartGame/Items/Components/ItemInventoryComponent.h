@@ -59,16 +59,12 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_FindTarget(FVector start, FVector end, FVector boxHalfSize);
 	
-	void TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, class AKart* FinalTarget, float ClosestDistance);
-
-	UFUNCTION(Server, Reliable)
-	void Server_TakeAimToFindTarget(FVector start, FVector end, FVector boxHalfSize, class AKart* FinalTarget, float ClosestDistance);
-
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
+	void NetMulticast_TakeAim(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
+	void SetUsingAimLocation();
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
@@ -92,4 +88,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	float MaxLockOnDist = 3000.f;
+
+	FVector InitialAimUIPos;
 };

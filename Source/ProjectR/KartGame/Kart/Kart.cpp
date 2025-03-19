@@ -14,7 +14,9 @@
 #include "KartNetworkSyncComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
+#include "Components/WidgetComponent.h"
 #include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 
 // Sets default values
@@ -34,6 +36,8 @@ AKart::AKart()
 	{
 		Imc_Kart = IMC_KART.Object;
 	}
+
+
 
 	RootBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	SetRootComponent(RootBox);
@@ -118,6 +122,29 @@ AKart::AKart()
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+
+
+	// Aim UI Widget Component 추가
+	// 장진혁
+	TargetAimComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimComponent"));
+	TargetAimComponent->SetupAttachment(RootComponent);
+	TargetAimComponent->SetRelativeLocation(FVector(-175.f, 0.f, 50.f));
+
+	UsingAimComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("UsingAimComponent"));
+	UsingAimComponent->SetupAttachment(RootComponent);
+	UsingAimComponent->SetCastShadow(false);
+	UsingAimComponent->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+	
+	UsingAimComponent->SetRelativeLocation(FVector(200.f,  0.f,  100.f));
+	UsingAimComponent->SetRelativeRotation(FRotator(0, 180, 0));
+	UsingAimComponent->SetRelativeScale3D(FVector(0.5f));
+	
+	static ConstructorHelpers::FClassFinder<UAim> UsingAimUI(TEXT("'/Game/UIs/HUD/Aim/WBP_Aim.WBP_Aim_C'"));
+	if (UsingAimUI.Succeeded())
+	{
+		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
+	}
+	UsingAimComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned

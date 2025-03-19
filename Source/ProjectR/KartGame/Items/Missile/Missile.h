@@ -47,10 +47,10 @@ public:
 	float speed = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float Amplitude = 10.0f; //파동의 높이
+	float Amplitude = 30.0f; //파동의 높이
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float Frequency = 30.0f; // 파동의 주기
+	float Frequency = 40.0f; // 파동의 주기
 	
 	float ElapsedTime = 0;
 
