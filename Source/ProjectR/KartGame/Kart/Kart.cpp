@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
 #include "Camera/CameraComponent.h"
@@ -123,8 +124,11 @@ AKart::AKart()
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);
-	// EngineSoundComponent->SetNetAddressable();
 	EngineSoundComponent->SetIsReplicated(false);
+
+	DriftSoundComponent = CreateDefaultSubobject<UKartDriftSoundComponent>(TEXT("DriftSoundComponent"));
+	DriftSoundComponent->SetupAttachment(RootBox);
+	DriftSoundComponent->SetIsReplicated(false);
 }
 
 // Called when the game starts or when spawned
@@ -174,13 +178,13 @@ void AKart::Tick(float DeltaTime)
 		flag &= LF_Wheel->ProcessSuspension();
 		flag &= RF_Wheel->ProcessSuspension();
 		
+		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
-			bool bDrift = FrictionComponent->GetbDrift();
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
 		}
@@ -191,6 +195,7 @@ void AKart::Tick(float DeltaTime)
 		}
 
 		EngineSoundComponent->PlayKartEngineSound();
+		DriftSoundComponent->PlayDriftSound(bDrift && flag);
 	}
 	UpdateSpeedUI();
 }

@@ -112,5 +112,7 @@ private:
 #pragma region Sound
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UKartEngineSoundComponent* EngineSoundComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
 #pragma endregion
 };
