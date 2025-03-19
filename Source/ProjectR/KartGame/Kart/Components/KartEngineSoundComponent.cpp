@@ -6,6 +6,7 @@
 #include "Kart.h"
 #include "KartInfo.h"
 #include "KartNetworkSyncComponent.h"
+#include "KartSystemLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetStringLibrary.h"
 
@@ -56,7 +57,19 @@ void UKartEngineSoundComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	FKartInfo KartInfo = KartNetworkSyncComponent->GetKartInfo();
+	PlayKartEngineSound();
+}
 
+void UKartEngineSoundComponent::PlayKartEngineSound()
+{
+	FKartInfo KartInfo = KartNetworkSyncComponent->GetKartInfo();
+	FVector LinearVelocity = KartInfo.Velocity;
+	FVector ForwardVector = KartBody->GetForwardVector();
+	float NormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithVector(LinearVelocity, ForwardVector, Kart->GetMaxSpeed());
+
+	CurrentEngineRPM = MaxEngineRPM * NormalizedSpeed;
+	CurrentEngineRPM = FMath::Clamp(CurrentEngineRPM, 0.0f, MaxEngineRPM);
+
+	
 }
 

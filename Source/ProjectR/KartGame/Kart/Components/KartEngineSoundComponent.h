@@ -28,12 +28,26 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	void PlayKartEngineSound();
+
+#pragma region CachedVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* KartBody = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class UKartNetworkSyncComponent* KartNetworkSyncComponent = nullptr;
+#pragma endregion
 
-	
+#pragma region CoreSound
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* EngineSoundCue = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	class USoundAttenuation* EngineSoundAttenuation = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float MaxEngineRPM = 8000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float CurrentEngineRPM = 0.0f;
+#pragma endregion
 };
