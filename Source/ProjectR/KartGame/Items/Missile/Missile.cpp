@@ -16,7 +16,7 @@ AMissile::AMissile()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
-	SetReplicateMovement(true);
+	Super::SetReplicateMovement(true);
 	Root->SetGenerateOverlapEvents(true);
 }
 
@@ -65,13 +65,14 @@ void AMissile::MovetoTarget()
 		UE_LOG(LogTemp, Error, TEXT("타겟한 플레이어가 없슴니다"));
 		return;
 	}
-	
-	OnRep_MovetoTarget();
+
+	if (HasAuthority())
+	{
+		Server_MovetoTarget();
+	}
 }
 
-
-
-void AMissile::OnRep_MovetoTarget()
+void AMissile::Server_MovetoTarget_Implementation()
 {
 	DistanceToTarget = FVector::Dist(GetActorLocation(), LockOnPlayer->GetActorLocation());
 	
@@ -85,15 +86,20 @@ void AMissile::OnRep_MovetoTarget()
 	float YOffset = FMath::Cos(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
 	float ZOffset = FMath::Sin(ElapsedTime * Frequency) * Amplitude * DistanceFactor;
 
-	FVector p = p0 + vt;
-	p.Y += YOffset;
-	p.Z += ZOffset;
-	
-	SetActorLocation(p);
+	FVector newPos = p0 + vt;
+	newPos.Y += YOffset;
+	newPos.Z += ZOffset;
 
 	FRotator rot = GetActorRotation();
 	FRotator targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),LockOnPlayer->GetActorLocation());
 	FRotator newRot = UKismetMathLibrary::RInterpTo(rot,targetRot,GetWorld()->DeltaTimeSeconds,1.0f);
+	
+	NetMulticast_MovetoTarget(newPos, newRot);
+}
+
+void AMissile::NetMulticast_MovetoTarget_Implementation(FVector newPos, FRotator newRot)
+{
+	SetActorLocation(newPos);
 	SetActorRotation(newRot);
 }
 

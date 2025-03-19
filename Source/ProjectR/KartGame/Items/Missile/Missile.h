@@ -32,8 +32,11 @@ public:
 
 	void MovetoTarget();
 
-	UFUNCTION()
-	void OnRep_MovetoTarget();
+	UFUNCTION(Server, Reliable)
+	void Server_MovetoTarget();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_MovetoTarget(FVector newPos, FRotator newRot);
 	
 private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

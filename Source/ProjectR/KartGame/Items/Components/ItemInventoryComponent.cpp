@@ -129,7 +129,7 @@ void UItemInventoryComponent::LockPlayer()
 	FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * MaxLockOnDist;
 
 	FVector BoxHalfSize(FVector(100.f,100.f,50.f));
-	TakeAim(start, end, BoxHalfSize);
+	FindTargetAndTakeAim(start, end, BoxHalfSize);
 }
 
 void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
@@ -176,12 +176,12 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	}
 }
 
-void UItemInventoryComponent::TakeAim(FVector start, FVector end, FVector boxHalfSize)
+void UItemInventoryComponent::FindTargetAndTakeAim(FVector start, FVector end, FVector boxHalfSize)
 {
-	Server_TakeAim(start, end, boxHalfSize);
+	Server_FindTarget(start, end, boxHalfSize);
 }
 
-void UItemInventoryComponent::Server_TakeAim_Implementation(FVector start, FVector end, FVector boxHalfSize)
+void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FVector end, FVector boxHalfSize)
 {
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
@@ -284,11 +284,11 @@ void UItemInventoryComponent::Server_TakeAimToFindTarget_Implementation(FVector 
 	}
 
 	// 디버그 코드
-	NetMulticast_TakeAimToFindTarget(start, end, boxHalfSize, BoxColor);
+	NetMulticast_DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 }
 
 
-void UItemInventoryComponent::NetMulticast_TakeAimToFindTarget_Implementation(FVector start, FVector end,
+void UItemInventoryComponent::NetMulticast_DrawAimLineBox_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
 	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
@@ -296,6 +296,9 @@ void UItemInventoryComponent::NetMulticast_TakeAimToFindTarget_Implementation(FV
 
 void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor)
 {
+	// 서버만 보이도록 설정
+	if (Kart->HasAuthority() == false) return;
+	
 	int NumSteps = 10;
 	for (int i = 0; i <= NumSteps; i++)
 	{
