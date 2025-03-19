@@ -55,7 +55,6 @@ private:
 #pragma endregion
 
 #pragma region CoreSkills
-	void CalcuateNormalizedSpeed();
 	// Input Mapping Context
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* Imc_Kart = nullptr;

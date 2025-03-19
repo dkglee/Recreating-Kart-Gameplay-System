@@ -25,7 +25,7 @@ public class ProjectR : ModuleRules
 			"ProjectR/",
 			"ProjectR/KartGame/Kart/",
 			"ProjectR/KartGame/Kart/Components/",
-			"ProjectR/KartGame/Kart/Components/Legacy/",
+			"ProjectR/KartGame/Kart/Utils/",
 			"ProjectR/KartGame/Utils/"
 		});
 	}

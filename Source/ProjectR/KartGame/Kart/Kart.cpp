@@ -14,6 +14,7 @@
 #include "KartNetworkSyncComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
+#include "KartSystemLibrary.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 
@@ -160,7 +161,7 @@ void AKart::Tick(float DeltaTime)
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
 	{
-		CalcuateNormalizedSpeed();
+		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
 		flag &= LR_Wheel->ProcessSuspension();
 		flag &= RR_Wheel->ProcessSuspension();
@@ -196,14 +197,6 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		OnInputBindingDelegate.Broadcast(PlayerInput);
 	}
-}
-
-void AKart::CalcuateNormalizedSpeed()
-{
-	FVector ForwardVector = RootBox->GetForwardVector();
-	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
-	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
-	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
 }
 
 void AKart::UpdateSpeedUI()
