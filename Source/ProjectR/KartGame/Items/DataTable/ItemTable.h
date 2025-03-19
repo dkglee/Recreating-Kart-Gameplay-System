@@ -24,7 +24,15 @@ struct PROJECTR_API FItemTable : public FTableRowBase
 	GENERATED_BODY()
 	
 public:
-	FItemTable() : ItemName(EItemName::None), ItemWeight(0), ItemType(false), ItemClass(nullptr) {};
+	FItemTable()
+	{
+		ItemName = EItemName::None;
+		ItemWeight = 0;
+		ItemType = false;
+		ItemClass = nullptr;
+		ItemImage = nullptr;
+	};
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
 	int ItemID = 0;
 
@@ -39,4 +47,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
 	TSubclassOf<AActor> ItemClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
+	class UTexture2D* ItemImage;
 };

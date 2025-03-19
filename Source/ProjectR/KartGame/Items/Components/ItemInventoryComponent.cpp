@@ -6,9 +6,12 @@
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
 #include "KartGame/Items/WaterBomb/WaterBomb.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/ItemInventory/ItemInventory.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -81,6 +84,21 @@ void UItemInventoryComponent::Server_GetItem_Implementation(const FItemTable ite
 void UItemInventoryComponent::NetMulticast_GetItem_Implementation(const FItemTable itemData)
 {
 	Inventory.Add(itemData);
+	
+	ARacePlayerController* pc = Cast<ARacePlayerController>(Kart->GetController());
+	if (pc)
+	{
+		UMainUI* mainUI = pc->GetMainHUD();
+		if (mainUI)
+		{
+			UItemInventory* inventoryUI = mainUI->GetWBP_ItemInventory();
+			if (inventoryUI)
+			{
+				inventoryUI->GetItemUI(itemData.ItemImage);
+			}
+		}
+	}
+	
 	if (Inventory.Num() == MaxInventorySpace)
 	{
 		bInventoryIsFull = true;
@@ -106,8 +124,22 @@ void UItemInventoryComponent::Server_UseItem_Implementation()
 void UItemInventoryComponent::NetMulticast_UseItem_Implementation()
 {
 	const FItemTable usingItem = Inventory[0];
-	
 	SpawnItem(usingItem);
+
+	ARacePlayerController* pc = Cast<ARacePlayerController>(Kart->GetController());
+	if (pc)
+	{
+		UMainUI* mainUI = pc->GetMainHUD();
+		if (mainUI)
+		{
+			UItemInventory* inventoryUI = mainUI->GetWBP_ItemInventory();
+			if (inventoryUI)
+			{
+				inventoryUI->UseItemUI();
+			}
+		}
+	}
+	
 	Inventory.RemoveAt(0);
 	bInventoryIsFull = false;
 }
