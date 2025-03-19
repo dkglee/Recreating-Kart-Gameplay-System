@@ -22,9 +22,6 @@ void UKartGameInstance::Init()
 	}
 
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
-	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
-	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
-	OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 }
 
 void UKartGameInstance::CreateNewGameSession()
@@ -39,11 +36,12 @@ void UKartGameInstance::CreateNewGameSession()
 	FNamedOnlineSession* ExistSession = OnlineSessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistSession)
 	{
-		UE_LOG(LogTemp, Error, TEXT("이미 만들어진 세션이 존재합니다. 보통 내부 로직 이슈입니다."))
+		FFastLogger::LogScreen(FColor::Red, TEXT("이미 만들어진 세션이 존재합니다. 보통 내부 로직 이슈입니다."));
 		OnlineSessionInterface->DestroySession(NAME_GameSession);
-		UE_LOG(LogTemp, Error, TEXT("하지만, 못난 프로그래머를 위해 세션을 제거해드립니다."))
-		return;
+		FFastLogger::LogScreen(FColor::Red, TEXT("하지만, 못난 프로그래머를 위해 세션을 제거해드립니다."));
 	}
+	
+	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
 	
 	// Shared Ptr로 처리해서 내부 함수에서 만들어진 세팅 값을 외부에서 계속 사용하더라도,
 	// 더이상 사용하지 않을 때 알아서 언리얼 GC에서 관리될 수 있도록 처리해준다.
@@ -81,7 +79,7 @@ void UKartGameInstance::OnSessionCreated(FName SessionName, bool IsCreateSuccess
 	if (IsCreateSuccess)
 	{
 		// 호스팅 전용 이동 로비
-		GetWorld()->ServerTravel(FString("/Games/Race/MainRoom?listen"));
+		GetWorld()->ServerTravel(FString("/Game/Games/Race/MainRoom?listen"));
 	}
 }
 
@@ -92,6 +90,8 @@ void UKartGameInstance::SearchGameSession()
 		FFastLogger::LogScreen(FColor::Red, TEXT("세션이 현재 존재하지 않습니다"));
 		return;
 	}
+	
+	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
 	
 	// 단순 C++ 객체를 Unreal GC로 이전시켜 관리한다.
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
@@ -113,6 +113,8 @@ void UKartGameInstance::OnFindSession(bool IsSuccess)
 	{
 		FString Id = Result.GetSessionIdStr();
 		FString UserName = Result.Session.OwningUserName;
+
+		JoinGameSession(Result);
 		
 		FFastLogger::LogScreen(IsSuccess ? FColor::Green : FColor::Red,
 			TEXT("하이 룸: %s, %s"), *Id, *UserName);
@@ -123,6 +125,8 @@ void UKartGameInstance::JoinGameSession(const FOnlineSessionSearchResult& Result
 {
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 
+	OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+	
 	OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
 }
 

@@ -13,9 +13,13 @@ class PROJECTR_API UGameLobbySubUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	GETTER(TObjectPtr<UButton>, GameMoveButton)
+	GETTER(TObjectPtr<UButton>, GameSearchButton)
+	GETTER(TObjectPtr<UButton>, GameCreateButton)
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> GameMoveButton;
+	TObjectPtr<UButton> GameSearchButton;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> GameCreateButton;
 };
