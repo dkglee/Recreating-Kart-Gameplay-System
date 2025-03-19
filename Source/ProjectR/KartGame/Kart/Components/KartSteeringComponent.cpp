@@ -120,8 +120,8 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	FVector KartUpVector = KartBody->GetUpVector();
 	FVector Torque = KartUpVector * TurnValue;
 
-	FString DebugString = FString::Printf(TEXT("Steering: %f\r\nNormalizedSpeed: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, InNormalizedSpeed, SteeringPower, TurnValue, *Torque.ToString());
-	DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
+	// FString DebugString = FString::Printf(TEXT("Steering: %f\r\nNormalizedSpeed: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, InNormalizedSpeed, SteeringPower, TurnValue, *Torque.ToString());
+	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);

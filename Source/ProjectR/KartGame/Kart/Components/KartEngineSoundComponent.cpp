@@ -3,6 +3,7 @@
 
 #include "KartEngineSoundComponent.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "KartInfo.h"
 #include "KartNetworkSyncComponent.h"
@@ -12,7 +13,6 @@
 #include "Sound/SoundBase.h"
 #include "Kismet/KismetStringLibrary.h"
 
-
 // Sets default values for this component's properties
 UKartEngineSoundComponent::UKartEngineSoundComponent()
 {
@@ -20,7 +20,7 @@ UKartEngineSoundComponent::UKartEngineSoundComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	SetIsReplicatedByDefault(true);
+	SetIsReplicatedByDefault(false);
 	// ...
 
 	static ConstructorHelpers::FObjectFinder<USoundBase> MSS_ENGINE
@@ -47,7 +47,11 @@ void UKartEngineSoundComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	Play();
+	if (Kart->IsLocallyControlled())
+	{
+		DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Engine Sound Component Begin Play"), nullptr, FColor::Red, 0.0f);
+		Play();
+	}
 }
 
 void UKartEngineSoundComponent::InitializeComponent()
@@ -67,7 +71,6 @@ void UKartEngineSoundComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
-
 // Called every frame : 모든 클라이언트에게 해당 소리가 들려야 함. 그 말은 각자 알아서 속도 계산하고 소리 내면 된다는 뜻
 void UKartEngineSoundComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
@@ -75,7 +78,11 @@ void UKartEngineSoundComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	PlayKartEngineSound();
+	// if (Kart->IsLocallyControlled())
+	// {
+	// 	PlayKartEngineSound();
+	// }
+	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Tick!!"), nullptr, FColor::Red, 0.0f);
 }
 
 void UKartEngineSoundComponent::PlayKartEngineSound()
@@ -84,10 +91,32 @@ void UKartEngineSoundComponent::PlayKartEngineSound()
 	FVector LinearVelocity = KartInfo.Velocity;
 	FVector ForwardVector = KartBody->GetForwardVector();
 	float NormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithVector(LinearVelocity, ForwardVector, Kart->GetMaxSpeed());
-
+	
 	CurrentEngineRPM = MaxEngineRPM * NormalizedSpeed;
 	CurrentEngineRPM = FMath::Clamp(CurrentEngineRPM, 0.0f, MaxEngineRPM);
-
 	
+	EnginePitch = 1.0f * NormalizedSpeed;
+	EnginePitch = FMath::Clamp(EnginePitch, MinEnginePitch, MaxEnginePitch);
+	
+	if (NormalizedSpeed > 1.10f)
+	{
+		EnginePitchShift = 2.0f;
+	}
+	else
+	{
+		EnginePitchShift = MaxEnginePitchShift * (1.0f - NormalizedSpeed);
+	}
+	
+	SetPitchMultiplier(EnginePitch);
+	SetVolumeMultiplier(EngineVolume);
+	SetFloatParameter(TEXT("PitchShift"), EnginePitchShift);
+	
+	// NormalizedSpeed = NormalizedSpeed > 0.3f ? 1.0f : NormalizedSpeed;
+	NormalizedSpeed *= 1.5f;
+	NormalizedSpeed = FMath::Clamp(NormalizedSpeed, 0.0f, 1.0f);
+	SetFloatParameter(TEXT("Acceleration"), NormalizedSpeed);
+	
+	FString DebugString = FString::Printf(TEXT("NormalizedSpeed: %f\r\nEnginePitch: %f\r\nEnginePitchShift: %f"), NormalizedSpeed, EnginePitch, EnginePitchShift);
+	DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f);
 }
 

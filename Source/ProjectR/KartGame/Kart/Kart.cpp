@@ -123,8 +123,8 @@ AKart::AKart()
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);
-	EngineSoundComponent->SetNetAddressable();
-	EngineSoundComponent->SetIsReplicated(true);
+	// EngineSoundComponent->SetNetAddressable();
+	EngineSoundComponent->SetIsReplicated(false);
 }
 
 // Called when the game starts or when spawned
@@ -189,6 +189,8 @@ void AKart::Tick(float DeltaTime)
 			LeftSkidMark->ProcessSkidMark(false);
 			RightSkidMark->ProcessSkidMark(false);
 		}
+
+		EngineSoundComponent->PlayKartEngineSound();
 	}
 	UpdateSpeedUI();
 }

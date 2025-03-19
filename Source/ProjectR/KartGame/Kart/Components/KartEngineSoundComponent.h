@@ -27,8 +27,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-private:
 	void PlayKartEngineSound();
+private:
 
 #pragma region CachedVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
@@ -49,5 +49,17 @@ private:
 	float MaxEngineRPM = 8000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
 	float CurrentEngineRPM = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float EngineVolume = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float EnginePitch = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float MaxEnginePitch = 1.25f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float MinEnginePitch = 0.125f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float EnginePitchShift = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Sound", meta = (AllowPrivateAccess = "true"))
+	float MaxEnginePitchShift = 3.0f;
 #pragma endregion
 };
