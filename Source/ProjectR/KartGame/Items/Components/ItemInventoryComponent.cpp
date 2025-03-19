@@ -135,7 +135,6 @@ void UItemInventoryComponent::LockPlayer()
 void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 {
 	if (Kart->HasAuthority() == false) return;
-	//Server_SpawnItem(itemData);
 	// 아이템 스폰
 	FTransform itemTransform;
 	itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
@@ -175,53 +174,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	default:
 		break;
 	}
-}
-
-void UItemInventoryComponent::Server_SpawnItem_Implementation(const FItemTable itemData)
-{
-	NetMulticast_SpawnItem(itemData);
-}
-
-void UItemInventoryComponent::NetMulticast_SpawnItem_Implementation(const FItemTable itemData)
-{
-	// // 아이템 스폰
-	// FTransform itemTransform;
-	// itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
-	// itemTransform.SetRotation(Kart->GetActorRotation().Quaternion());
-	// itemTransform.SetScale3D(FVector(1.0f));
-	// DrawDebugString(GetWorld(), Kart->GetActorLocation(), TEXT("spawn Item"), 0, FColor::Red, 0, 1);
-	//
-	//
-	// switch (itemData.ItemName)
-	// {
-	// case EItemName::Missile:
-	// 	{
-	// 		if (LockedTarget != nullptr)
-	// 		{
-	// 			itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
-	// 			auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
-	// 			UE_LOG(LogTemp, Warning, TEXT("%s"),*LockedTarget->GetName());
-	// 			missile->SetLockOnPlayer(LockedTarget);
-	// 		}
-	// 		else if (LockedTarget == nullptr)
-	// 		{
-	// 			FFastLogger::LogConsole(TEXT("lock missed"));
-	// 		}
-	// 		break;
-	// 	}
-	// case EItemName::WaterBomb:
-	// 	{
-	// 		GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
-	// 		break;
-	// 	}
-	// case EItemName::Booster:
-	// 	{
-	// 		GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
-	// 		break;
-	// 	}
-	// default:
-	// 	break;
-	// }
 }
 
 void UItemInventoryComponent::TakeAim(FVector start, FVector end, FVector boxHalfSize)
