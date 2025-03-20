@@ -23,7 +23,7 @@ public:
 	// TODO: 추후 커스텀 방을 위한 Parameter 추가 예정
 	void CreateNewGameSession();
 	void SearchGameSession();
-	void JoinGameSession(const FOnlineSessionSearchResult& Result);
+	void JoinGameSession(FOnlineSessionSearchResult& Result);
 	
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
 	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
