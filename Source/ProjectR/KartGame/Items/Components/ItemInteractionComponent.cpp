@@ -148,9 +148,11 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 {
 	if (Kart)
 	{
-		
-		if (GetOwnerRole() == ROLE_Authority) return;
-		FFastLogger::LogConsole(TEXT("ChangePhysics called. IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
+		if (GetOwnerRole() == ROLE_Authority)
+		{
+			return;
+		}
 		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
+		FFastLogger::LogConsole(TEXT("ChangePhysics called.  IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
 	}
 }

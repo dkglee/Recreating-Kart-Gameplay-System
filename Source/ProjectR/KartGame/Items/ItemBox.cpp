@@ -73,11 +73,6 @@ void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryCompon
 
 void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
 {
-	NetMultiCast_MakeRandomItem(ItemInventoryComponent);
-}
-
-void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
-{
 	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
 	int32 CurrentWeight = 0;
 	
@@ -86,12 +81,15 @@ void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryCo
 		CurrentWeight += Item.Value.ItemWeight;
 		if (RandomValue < CurrentWeight)
 		{
-			ItemInventoryComponent->GetItem(Item.Value);
+			NetMultiCast_MakeRandomItem(ItemInventoryComponent, Item.Value);
 			return;	
 		}
 	}
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("데이터가 이상해요"));
+void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)
+{
+	ItemInventoryComponent->GetItem(Item);
 }
 
 
