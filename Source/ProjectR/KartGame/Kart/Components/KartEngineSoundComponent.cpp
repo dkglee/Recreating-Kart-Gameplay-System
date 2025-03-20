@@ -49,7 +49,7 @@ void UKartEngineSoundComponent::BeginPlay()
 	// ...
 	if (Kart->IsLocallyControlled())
 	{
-		DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Engine Sound Component Begin Play"), nullptr, FColor::Red, 0.0f);
+		// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Engine Sound Component Begin Play"), nullptr, FColor::Red, 0.0f);
 		Play();
 	}
 }
@@ -103,6 +103,6 @@ void UKartEngineSoundComponent::PlayKartEngineSound()
 	SetFloatParameter(TEXT("Acceleration"), NormalizedSpeed);
 	
 	FString DebugString = FString::Printf(TEXT("NormalizedSpeed: %f\r\nEnginePitch: %f\r\nEnginePitchShift: %f"), NormalizedSpeed, EnginePitch, EnginePitchShift);
-	DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f);
+	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f);
 }
 
