@@ -126,7 +126,10 @@ void UItemInventoryComponent::Server_UseItem_Implementation()
 void UItemInventoryComponent::NetMulticast_UseItem_Implementation()
 {
 	const FItemTable usingItem = Inventory[0];
-	SpawnItem(usingItem);
+	if (Kart->HasAuthority())
+	{
+		SpawnItem(usingItem);
+	}
 
 	ARacePlayerController* pc = Cast<ARacePlayerController>(Kart->GetController());
 	if (pc)
@@ -314,7 +317,11 @@ void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start,
 	FVector boxHalfSize, FColor BoxColor)
 {
 	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
-	Kart->GetUsingAimComponent()->SetVisibility(true);
+
+	if (Kart->IsLocallyControlled())
+	{
+		Kart->GetUsingAimComponent()->SetVisibility(true);
+	}
 	SetUsingAimLocation();
 }
 
@@ -335,10 +342,6 @@ void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector
 
 void UItemInventoryComponent::SetUsingAimLocation()
 {
-	//TODO
-	//해당 함수를 RPC로 서버에서 계산만 하고 NetMulticast로 클라에게 뿌리도록 수정해야함
-	//if (Kart->IsLocallyControlled() == false) return;
-
 	auto* aim = Kart->GetUsingAimComponent();
 
 	if (aim)
@@ -346,7 +349,7 @@ void UItemInventoryComponent::SetUsingAimLocation()
 		// 조준 성공했을 때는 에임 고정
 		if (LockedTarget != nullptr)
 		{
-			NetMulticast_SetAimLocation(aim, true, LockedTarget->GetTargetAimComponent()->GetComponentLocation(), FVector(0.4f));
+			NetMulticast_SetUsingAimLocation(aim, true, LockedTarget->GetTargetAimComponent()->GetComponentLocation(), FVector(0.4f));
 		}
 		// 조준 실패 중일 때는 에임을 정면 방향으로 설정
 		else
@@ -354,7 +357,7 @@ void UItemInventoryComponent::SetUsingAimLocation()
 			// 주시 중인 상대가 없으면 내 카트 정면에 에임 위치
 			if (FinalTarget == nullptr)
 			{
-				NetMulticast_SetAimLocation(aim, false, InitialAimUIPos, InitialAimUIScale);
+				NetMulticast_SetUsingAimLocation(aim, false, InitialAimUIPos, InitialAimUIScale);
 			}
 			// 에임의 거리는 현재 주시중인 타겟이 내 앞 방향에 가까워짐에 비례하게 에임의 거리가 멀어진다.
 			else
@@ -364,7 +367,6 @@ void UItemInventoryComponent::SetUsingAimLocation()
 		}
 	}
 }
-
 
 void UItemInventoryComponent::Server_CalcAimLocation_Implementation(class UWidgetComponent* aim)
 {
@@ -389,10 +391,10 @@ void UItemInventoryComponent::Server_CalcAimLocation_Implementation(class UWidge
 	// Z 값 유지
 	newPos.Z = InitialAimUIPos.Z;
 
-	NetMulticast_SetAimLocation(aim, true, newPos, FVector(0.4f));
+	NetMulticast_SetUsingAimLocation(aim, true, newPos, FVector(0.4f));
 }
 
-void UItemInventoryComponent::NetMulticast_SetAimLocation_Implementation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale)
+void UItemInventoryComponent::NetMulticast_SetUsingAimLocation_Implementation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale)
 {
 	if (bIsWorldPos)
 	{

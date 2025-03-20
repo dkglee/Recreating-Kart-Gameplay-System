@@ -39,7 +39,7 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	if (bIsInteraction)
 	{
-		MissileInteractionMove(DeltaTime);	
+		MissileInteraction_Move(DeltaTime);	
 	}
 }
 
@@ -67,15 +67,15 @@ void UItemInteractionComponent::MissileHitInteraction()
 	}
 }
 
-void UItemInteractionComponent::MissileInteractionMove(float DeltaTime)
+void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 {
 	if (Kart->HasAuthority())
 	{
-		Server_MissileInteractionMove(DeltaTime);
+		Server_MissileInteraction_Move(DeltaTime);
 	}
 }
 
-void UItemInteractionComponent::Server_MissileInteractionMove_Implementation(float DeltaTime)
+void UItemInteractionComponent::Server_MissileInteraction_Move_Implementation(float DeltaTime)
 {
 	MissileKnockbackElapsedTime += DeltaTime;
 	float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
@@ -94,18 +94,24 @@ void UItemInteractionComponent::Server_MissileInteractionMove_Implementation(flo
 		
 	FVector resultPos = FVector(InitialPos.X, InitialPos.Y, newZ);
 
-	NetMulticast_MissileInteractionMove(resultQuat, resultPos);
+	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
     
 	if (MissileKnockbackElapsedTime >= MissileKnockbackTime)
 	{
 		bIsInteraction = false;
 		CurrentType = EInteractionType::None;
 		MissileKnockbackElapsedTime = 0.f;
+		if (Kart->HasAuthority() && Kart->IsLocallyControlled())
+		{
+			Kart->GetRootBox()->SetSimulatePhysics(true);
+		}
 	}
 }
 
-void UItemInteractionComponent::NetMulticast_MissileInteractionMove_Implementation(FQuat resultQuat, FVector resultPos)
+void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
 {
+	Kart->GetRootBox()->SetSimulatePhysics(false);
 	Kart->SetActorRotation(resultQuat);
 	Kart->SetActorLocation(resultPos);
 }
+

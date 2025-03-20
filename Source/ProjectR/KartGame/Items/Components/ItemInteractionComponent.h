@@ -34,17 +34,18 @@ protected:
 public:
 	void MissileHitInteraction();
 	
-	void MissileInteractionMove(float DeltaTime);
+	void MissileInteraction_Move(float DeltaTime);
 
 	UFUNCTION(Server, Reliable)
-	void Server_MissileInteractionMove(float DeltaTime);
+	void Server_MissileInteraction_Move(float DeltaTime);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_MissileInteractionMove(FQuat resultQuat, FVector resultPos);
+	void NetMulticast_MissileInteraction_Move(FQuat resultQuat, FVector resultPos);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	EInteractionType CurrentType = EInteractionType::None;
 	
