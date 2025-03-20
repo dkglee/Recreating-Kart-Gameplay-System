@@ -43,6 +43,8 @@ public:
 	GETTER(class UKartNetworkSyncComponent*, NetworkSyncComponent);
 	GETTER(float, MaxSpeed);
 	GETTER_SETTER(bool, bCanMove);
+	GETTER(class USceneComponent*, TargetAimComponent);
+	GETTER(class UWidgetComponent*, UsingAimComponent);
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
@@ -88,6 +90,14 @@ private:
 	class UKartFrictionComponent* FrictionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
+
+	// Aim Widget Component 추가
+	// 장진혁
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* TargetAimComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* UsingAimComponent = nullptr;
+
 	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))

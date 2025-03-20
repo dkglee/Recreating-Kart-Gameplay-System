@@ -9,11 +9,11 @@ USTRUCT()
 struct PROJECTR_API FKartInfo
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY()
-	FTransform KartTransform;
+	FTransform KartTransform = FTransform::Identity;
 	UPROPERTY()
-	FVector Velocity;
+	FVector Velocity = FVector::ZeroVector;
 	UPROPERTY()
-	FVector TorqueInDegrees;
+	FVector TorqueInDegrees = FVector::ZeroVector;
 };

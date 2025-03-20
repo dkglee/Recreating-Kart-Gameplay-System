@@ -62,7 +62,7 @@ void AMissile::MovetoTarget()
 {
 	if (LockOnPlayer == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("타겟한 플레이어가 없슴니다"));
+		UE_LOG(LogTemp, Error, TEXT("타겟한 플레이어가 없습니다"));
 		return;
 	}
 
