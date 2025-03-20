@@ -72,7 +72,7 @@ void UKartGameInstance::OnSessionCreated(FName SessionName, bool IsCreateSuccess
 	if (IsCreateSuccess)
 	{
 		// 호스팅 전용 이동 로비
-		GetWorld()->ServerTravel(FString("/Game/Games/Race/MainRoom?listen"));
+		GetWorld()->ServerTravel(FString("/Game/Games/Session/SessionMap?listen"));
 	}
 }
 

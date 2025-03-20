@@ -1,9 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "Blueprint/UserWidget.h"
 #include "ReadySession.generated.h"
 
+class UCommonButton;
 class UReadySessionPlayerWidget;
 class UUniformGridPanel;
 
@@ -14,6 +16,8 @@ class PROJECTR_API UReadySession : public UUserWidget
 
 public:
 	void UpdatePlayers();
+
+	GETTER(TObjectPtr<UCommonButton>, GameStartButton)
 	
 protected:
 	virtual void NativePreConstruct() override;
@@ -29,6 +33,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UReadySessionPlayerWidget> PlayerInfoClass;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCommonButton> GameStartButton;
 
 	void InitializeWidget();
 };
