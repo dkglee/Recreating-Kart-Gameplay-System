@@ -56,7 +56,7 @@ private:
 
 	// 엔진에 따라서 변경될 수 있음
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
-	float MaxAcceleration = 3000.0f;
+	float MaxAcceleration = 1500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
