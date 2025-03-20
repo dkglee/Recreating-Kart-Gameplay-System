@@ -40,7 +40,7 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	if (bIsInteraction)
 	{
-		MissileInteractionMove(DeltaTime);	
+		MissileInteraction_Move(DeltaTime);	
 	}
 }
 
@@ -59,24 +59,53 @@ void UItemInteractionComponent::MissileHitInteraction()
 		return;
 	}
 
-	if (Kart->HasAuthority())
-	{
-		bIsInteraction = true;
-		CurrentType = EInteractionType::Explosion;
-		InitialPos = Kart->GetActorLocation();
-		InitialQuat = Kart->GetActorQuat();
-	}
+
+	bIsInteraction = true;
+	CurrentType = EInteractionType::Explosion;
+	InitialPos = Kart->GetActorLocation();
+	InitialQuat = Kart->GetActorQuat();
+	Client_ChangePhysics(false);
+
+	FFastLogger::LogConsole(TEXT("MissileHitInteraction called. IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole());
+
 }
 
-void UItemInteractionComponent::MissileInteractionMove(float DeltaTime)
+void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 {
+	if (Kart->HasAuthority() == false) return;
+
 	if (Kart->HasAuthority())
 	{
-		Server_MissileInteractionMove(DeltaTime);
+		MissileKnockbackElapsedTime += DeltaTime;
+		float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
+
+		// 회전계산
+		// ease-out 곡선 적용 (처음엔 빠르게 점점 천천히)
+		float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
+		float rotationAngle = 360.f * MissileKnockbackRotationNumber * easedAlpha;
+			
+		// 시작 회전에서 현재까지의 회전 계산
+		FQuat rotationQuat = FQuat(FRotator(rotationAngle, 0, 0));
+		FQuat resultQuat = rotationQuat * InitialQuat;
+
+		// 위치계산
+		float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + MissileKnockbackHeight, easedAlpha);
+			
+		FVector resultPos = FVector(InitialPos.X, InitialPos.Y, newZ);
+		
+		if (MissileKnockbackElapsedTime >= MissileKnockbackTime)
+		{
+			bIsInteraction = false;
+			CurrentType = EInteractionType::None;
+			MissileKnockbackElapsedTime = 0.f;
+			Client_ChangePhysics(true);
+			return;
+		}
+		NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
 	}
 }
 
-void UItemInteractionComponent::Server_MissileInteractionMove_Implementation(float DeltaTime)
+void UItemInteractionComponent::Server_MissileInteraction_Move_Implementation(float DeltaTime)
 {
 	MissileKnockbackElapsedTime += DeltaTime;
 	float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
@@ -94,19 +123,37 @@ void UItemInteractionComponent::Server_MissileInteractionMove_Implementation(flo
 	float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + MissileKnockbackHeight, easedAlpha);
 		
 	FVector resultPos = FVector(InitialPos.X, InitialPos.Y, newZ);
-
-	NetMulticast_MissileInteractionMove(resultQuat, resultPos);
-    
+	
 	if (MissileKnockbackElapsedTime >= MissileKnockbackTime)
 	{
 		bIsInteraction = false;
 		CurrentType = EInteractionType::None;
 		MissileKnockbackElapsedTime = 0.f;
+		if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
+		{
+			Kart->GetRootBox()->SetSimulatePhysics(true);
+		}
+		return;
 	}
+	
+	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
 }
 
-void UItemInteractionComponent::NetMulticast_MissileInteractionMove_Implementation(FQuat resultQuat, FVector resultPos)
+void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
 {
 	Kart->SetActorRotation(resultQuat);
 	Kart->SetActorLocation(resultPos);
+}
+
+void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
+{
+	if (Kart)
+	{
+		if (GetOwnerRole() == ROLE_Authority)
+		{
+			return;
+		}
+		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
+		FFastLogger::LogConsole(TEXT("ChangePhysics called.  IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
+	}
 }

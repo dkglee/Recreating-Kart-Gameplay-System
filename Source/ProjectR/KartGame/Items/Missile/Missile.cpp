@@ -15,7 +15,6 @@ AMissile::AMissile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	bReplicates = true;
 	Super::SetReplicateMovement(true);
 	Root->SetGenerateOverlapEvents(true);
 }
@@ -47,6 +46,7 @@ void AMissile::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLi
 void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (HasAuthority() == false) return;
 	auto* kart = Cast<AKart>(OtherActor);
 	if (kart)
 	{
