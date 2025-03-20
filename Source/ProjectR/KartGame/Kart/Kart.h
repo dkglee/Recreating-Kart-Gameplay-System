@@ -95,6 +95,8 @@ private:
 	class UKartFrictionComponent* FrictionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartResetComponent* KartResetComponent = nullptr;
 
 	// Aim Widget Component 추가
 	// 장진혁
