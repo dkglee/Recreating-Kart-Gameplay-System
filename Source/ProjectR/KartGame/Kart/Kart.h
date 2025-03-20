@@ -40,6 +40,7 @@ public:
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
 	GETTER(class UKartSuspensionComponent*, LR_Wheel);
 	GETTER(class UKartSuspensionComponent*, RR_Wheel);
+	GETTER(class UKartNetworkSyncComponent*, NetworkSyncComponent);
 	GETTER(float, MaxSpeed);
 	GETTER_SETTER(bool, bCanMove);
 	GETTER(class USceneComponent*, TargetAimComponent);
@@ -56,7 +57,6 @@ private:
 #pragma endregion
 
 #pragma region CoreSkills
-	void CalcuateNormalizedSpeed();
 	// Input Mapping Context
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* Imc_Kart = nullptr;
@@ -117,5 +117,12 @@ private:
 	
 #pragma region UI
 	void UpdateSpeedUI();
+#pragma endregion
+
+#pragma region Sound
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	class UKartEngineSoundComponent* EngineSoundComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
 #pragma endregion
 };
