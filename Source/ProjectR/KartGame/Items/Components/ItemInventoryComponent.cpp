@@ -71,7 +71,7 @@ void UItemInventoryComponent::GetItem(const FItemTable itemData)
 {
 	if (bInventoryIsFull)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
 		return;
 	}
 	
@@ -111,7 +111,7 @@ void UItemInventoryComponent::UseItem()
 {
 	if (Inventory.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
 
@@ -161,7 +161,7 @@ void UItemInventoryComponent::LockPlayer()
 {
 	if (Inventory.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
 	
@@ -184,7 +184,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
 	itemTransform.SetRotation(Kart->GetActorRotation().Quaternion());
 	itemTransform.SetScale3D(FVector(1.0f));
-	//DrawDebugString(GetWorld(), Kart->GetActorLocation(), TEXT("spawn Item"), 0, FColor::Red, 0, 1);
 
 	switch (itemData.ItemName)
 	{
@@ -316,7 +315,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{
