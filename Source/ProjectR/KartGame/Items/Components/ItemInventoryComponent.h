@@ -70,7 +70,7 @@ public:
 	void Server_CalcAimLocation(class UWidgetComponent* aim);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_SetAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
+	void NetMulticast_SetUsingAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))

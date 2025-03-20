@@ -33,7 +33,7 @@ public:
 	void Server_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMultiCast_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
+	void NetMultiCast_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item);
 	
 private:
 	TMap<int, FItemTable> ItemMap;
