@@ -46,6 +46,11 @@ public:
 	GETTER(class USceneComponent*, TargetAimComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
 #pragma endregion
+
+#pragma region ForeignFunction
+	UFUNCTION()
+	void ClearAccelerationInput();
+#pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
 
@@ -99,7 +104,6 @@ private:
 	class UWidgetComponent* UsingAimComponent = nullptr;
 
 	
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	float MaxSpeed = 2000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))

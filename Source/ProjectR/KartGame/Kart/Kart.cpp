@@ -132,7 +132,6 @@ AKart::AKart()
 	DriftSoundComponent->SetupAttachment(RootBox);
 	DriftSoundComponent->SetIsReplicated(false);
 
-
 	// Aim UI Widget Component 추가
 	// 장진혁
 	TargetAimComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimComponent"));
@@ -258,4 +257,9 @@ void AKart::UpdateSpeedUI()
 		}
 		DashBoardUI->SetDashBoardValue(KartSpeed, TotalMaxSpeed);
 	}
+}
+
+void AKart::ClearAccelerationInput()
+{
+	AccelerationComponent->SetAccelerationInput(0.0f);
 }

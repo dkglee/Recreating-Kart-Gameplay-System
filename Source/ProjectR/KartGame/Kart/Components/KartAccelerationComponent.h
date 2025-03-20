@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponent.h"
 #include "KartAccelerationComponent.generated.h"
@@ -31,6 +32,10 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	void ProcessAcceleration(bool bGameStart);
+
+#pragma region GetterSetters
+	GETTER_SETTER(float, AccelerationInput);
+#pragma endregion
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
 
