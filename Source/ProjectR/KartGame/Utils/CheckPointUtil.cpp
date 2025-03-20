@@ -16,7 +16,7 @@ void FCheckPointUtil::GetCheckPointPinInfo(const FString& Pin, TArray<uint16>& P
 			Temp = TEXT("");
 			continue;
 		}
-		Temp.InsertAt(Temp.Len() - 1, Char);
+		Temp += Char;
 	}
 	
 	PinList.Add(FCString::Atoi(*Temp));

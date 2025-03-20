@@ -24,4 +24,7 @@ private:
 
 	UFUNCTION()
 	void CreateGameSessions();
+	
+	UFUNCTION()
+	void SearchGameAndJoinSessions();
 };
