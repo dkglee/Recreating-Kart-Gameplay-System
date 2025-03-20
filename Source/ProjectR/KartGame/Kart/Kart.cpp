@@ -14,6 +14,7 @@
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "KartFrictionComponent.h"
 #include "KartNetworkSyncComponent.h"
+#include "KartResetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
 #include "Components/WidgetComponent.h"
@@ -146,6 +147,10 @@ AKart::AKart()
 	UsingAimComponent->SetRelativeLocation(FVector(150.f,  0.f,  100.f));
 	UsingAimComponent->SetRelativeRotation(FRotator(0, 180, 0));
 	UsingAimComponent->SetRelativeScale3D(FVector(0.5f));
+	
+	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("Kart Reset Component"));
+	KartResetComponent->SetNetAddressable();
+	KartResetComponent->SetIsReplicated(true);
 	
 	static ConstructorHelpers::FClassFinder<UAim> UsingAimUI(TEXT("'/Game/UIs/HUD/Aim/WBP_Aim.WBP_Aim_C'"));
 	if (UsingAimUI.Succeeded())

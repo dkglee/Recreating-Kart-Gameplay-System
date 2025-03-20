@@ -111,3 +111,9 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 	}
 }
 
+void UKartAccelerationComponent::ClearAcceleration()
+{
+	AccelerationInput = 0.f;
+	Acceleration = 0;
+	KartBody->SetPhysicsLinearVelocity(FVector::ZeroVector);
+}

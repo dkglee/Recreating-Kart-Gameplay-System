@@ -20,3 +20,4 @@ void ARacePlayerController::SetHUDToStart()
     	MainHUD->AddToViewport();
     }
 }
+
