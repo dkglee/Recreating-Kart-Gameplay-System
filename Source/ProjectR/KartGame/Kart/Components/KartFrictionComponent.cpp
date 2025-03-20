@@ -26,6 +26,13 @@ UKartFrictionComponent::UKartFrictionComponent()
 	{
 		IA_Drift = IA_DRIFT.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> C_FRICTIONCURVE
+	(TEXT("/Game/Kart/Curves/FrictionCurve.FrictionCurve"));
+	if (C_FRICTIONCURVE.Succeeded())
+	{
+		FrictionCurve = C_FRICTIONCURVE.Object;
+	}
 }
 
 
@@ -79,19 +86,15 @@ void UKartFrictionComponent::SetupInputBinding(class UEnhancedInputComponent* Pl
 // 마찰력 적용
 void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 {
-	if (!bInDrift)
-	{
-		KartBody->SetAngularDamping(3.5f);
-	}
-	else
-	{
-		KartBody->SetAngularDamping(0.4f);
-	}
+	!bInDrift ? KartBody->SetAngularDamping(3.5f) : KartBody->SetAngularDamping(0.9f);
+	// KartBody->SetAngularDamping(3.5f);
 	
 	// Base 드리프트 입력하지 않을 경우 마찰력을 최대로 함
 	FVector RightVector = KartBody->GetRightVector();
 	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 	float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+
+	
 
 	FVector FrictionForce = RightVector * Velocity * -1.5f * 1.0f * FrictionGrip;
 

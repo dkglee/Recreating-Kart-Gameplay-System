@@ -86,7 +86,7 @@ void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)
 
 void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 {
-	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.4f, 1.0f);
+	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.7f, 1.0f);
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
 	Acceleration = MaxAcceleration * AccelerationInput;
 	
@@ -110,3 +110,4 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 		KartBody->AddForceAtLocation(Force, Location);
 	}
 }
+

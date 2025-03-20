@@ -89,6 +89,7 @@ void UKartNetworkSyncComponent::OnRep_KartInfo()
 
 void UKartNetworkSyncComponent::Server_SendKartInfo_Implementation(FKartInfo NewKartInfo)
 {
+	// OnRep_KartInfo();
 	KartBody->SetWorldTransform(NewKartInfo.KartTransform);
 
 	KartInfo = NewKartInfo;

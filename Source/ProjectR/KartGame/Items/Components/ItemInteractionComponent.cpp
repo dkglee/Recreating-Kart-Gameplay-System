@@ -25,12 +25,13 @@ UItemInteractionComponent::UItemInteractionComponent()
 void UItemInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Kart = Cast<AKart>(GetOwner());
 }
 
 void UItemInteractionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
+	
+	Kart = Cast<AKart>(GetOwner());
 }
 
 void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
