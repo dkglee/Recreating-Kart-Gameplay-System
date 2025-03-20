@@ -75,3 +75,4 @@ Plugins
 DerivedDataCache/*
 
 .idea
+/Content/Fab/*
