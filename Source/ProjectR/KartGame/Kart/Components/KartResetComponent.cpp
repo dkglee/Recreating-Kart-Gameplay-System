@@ -60,16 +60,20 @@ void UKartResetComponent::OnRollbackInputDetected()
 		GetWorld()->GetGameState<ARaceGameState>()->
 		GetCheckPointData().FindRef(PS->GetCurrentKartCheckPoint());
 
-	const FVector PrevCheckPointStartLocation = PrevCheckPoint->GetActorLocation();
-	const FVector PrevCheckPointEndLocation = PrevCheckPoint->GetActorLocation() + FVector(0, 0, -3000);
-
-	const TArray<AActor*> IgnoreActorList;
-	FHitResult HitResult;
+	// TODO: 정상적인 Mesh 기반의 트랙인 경우에 아래와 같이 Trace로 처리
+	// const FVector PrevCheckPointStartLocation = PrevCheckPoint->GetActorLocation();
+	// const FVector PrevCheckPointEndLocation = PrevCheckPoint->GetActorLocation() + FVector(0, 0, -3000);
+	//
+	// TArray<AActor*> IgnoreActorList;
+	// IgnoreActorList.Add(GetOwner());
+	// FHitResult HitResult;
+	//
+	// const bool IsDetectedLandscape = UKismetSystemLibrary::LineTraceSingle(GetWorld(), PrevCheckPointStartLocation, PrevCheckPointEndLocation,
+	// 	TraceTypeQuery3, false, IgnoreActorList, EDrawDebugTrace::ForDuration, HitResult, true);
+	//
+	// UE_LOG(LogTemp, Display, TEXT("Test: %s"), *HitResult.Location.ToString());
 	
-	const bool IsDetectedLandscape = UKismetSystemLibrary::LineTraceSingle(GetWorld(), PrevCheckPointStartLocation, PrevCheckPointEndLocation,
-		TraceTypeQuery3, false, IgnoreActorList, EDrawDebugTrace::ForDuration, HitResult, true);
-	
-	Kart->SetActorLocation(IsDetectedLandscape ? HitResult.Location : PrevCheckPoint->GetActorLocation());
+	Kart->SetActorLocation(PrevCheckPoint->GetActorLocation());
 	Kart->GetAccelerationComponent()->ClearAcceleration();
 }
 
