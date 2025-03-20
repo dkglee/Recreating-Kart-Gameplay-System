@@ -10,6 +10,7 @@
 #include "InputMappingContext.h"
 #include "InputAction.h"
 #include "Kart.h"
+#include "KartSystemLibrary.h"
 
 
 // Sets default values for this component's properties
@@ -94,9 +95,11 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 	float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
 
+	float NormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
 	
+	float FrictionData = FrictionCurve->GetFloatValue(NormalizedSpeed);
 
-	FVector FrictionForce = RightVector * Velocity * -1.5f * 1.0f * FrictionGrip;
+	FVector FrictionForce = RightVector * Velocity * -1.5f * FrictionData * FrictionGrip;
 
 	KartBody->AddForce(FrictionForce, NAME_None, true);
 }
