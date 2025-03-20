@@ -306,7 +306,6 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		BoxColor = FColor::Green;
 		LockedTarget = nullptr;
 	}
-
 	
 	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
@@ -315,14 +314,8 @@ void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start,
 	FVector boxHalfSize, FColor BoxColor)
 {
 	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
-	if (Kart->IsLocallyControlled())
-	{
-		if (Kart->GetUsingAimComponent())
-		{
-			Kart->GetUsingAimComponent()->SetVisibility(true);
-			SetUsingAimLocation();
-		}
-	}
+	Kart->GetUsingAimComponent()->SetVisibility(true);
+	SetUsingAimLocation();
 }
 
 void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor)
@@ -344,7 +337,7 @@ void UItemInventoryComponent::SetUsingAimLocation()
 {
 	//TODO
 	//해당 함수를 RPC로 서버에서 계산만 하고 NetMulticast로 클라에게 뿌리도록 수정해야함
-	if (Kart->IsLocallyControlled() == false) return;
+	//if (Kart->IsLocallyControlled() == false) return;
 
 	auto* aim = Kart->GetUsingAimComponent();
 
@@ -353,8 +346,7 @@ void UItemInventoryComponent::SetUsingAimLocation()
 		// 조준 성공했을 때는 에임 고정
 		if (LockedTarget != nullptr)
 		{
-			aim->SetWorldLocation(LockedTarget->GetTargetAimComponent()->GetComponentLocation());
-			aim->SetRelativeScale3D(FVector(0.4f));
+			NetMulticast_SetAimLocation(aim, true, LockedTarget->GetTargetAimComponent()->GetComponentLocation(), FVector(0.4f));
 		}
 		// 조준 실패 중일 때는 에임을 정면 방향으로 설정
 		else
@@ -362,35 +354,53 @@ void UItemInventoryComponent::SetUsingAimLocation()
 			// 주시 중인 상대가 없으면 내 카트 정면에 에임 위치
 			if (FinalTarget == nullptr)
 			{
-				aim->SetRelativeLocation(InitialAimUIPos);
-				aim->SetRelativeScale3D(InitialAimUIScale);
+				NetMulticast_SetAimLocation(aim, false, InitialAimUIPos, InitialAimUIScale);
 			}
 			// 에임의 거리는 현재 주시중인 타겟이 내 앞 방향에 가까워짐에 비례하게 에임의 거리가 멀어진다.
 			else
 			{
-				FVector forward = Kart->GetActorForwardVector();
-				FVector rightVector = Kart->GetActorRightVector();
-				FVector targetLocation = FinalTarget->GetActorLocation();
-				FVector kartLocation = Kart->GetActorLocation();
-
-				FVector direction = (targetLocation - kartLocation).GetSafeNormal();
-				float rightDot = FVector::DotProduct(rightVector, direction);
-				float distance = FVector::Distance(kartLocation, targetLocation);
-				
-				// 적절한 위치 보정
-				// 좌우 위치 보정
-				float lateralFactor = 0.2f;
-				FVector lateralOffset = rightVector * rightDot * distance * lateralFactor;
-				// 전방 위치 보정
-				float forwardFactor = 0.5f;
-				FVector forwardOffset = forward * distance * forwardFactor;
-
-				FVector newPos = kartLocation + forwardOffset + lateralOffset;
-				// Z 값 유지
-				newPos.Z = InitialAimUIPos.Z;
-
-				aim->SetWorldLocation(newPos);
+				Server_CalcAimLocation(aim);
 			}
 		}
 	}
+}
+
+
+void UItemInventoryComponent::Server_CalcAimLocation_Implementation(class UWidgetComponent* aim)
+{
+	FVector forward = Kart->GetActorForwardVector();
+	FVector rightVector = Kart->GetActorRightVector();
+	FVector targetLocation = FinalTarget->GetActorLocation();
+	FVector kartLocation = Kart->GetActorLocation();
+
+	FVector direction = (targetLocation - kartLocation).GetSafeNormal();
+	float rightDot = FVector::DotProduct(rightVector, direction);
+	float distance = FVector::Distance(kartLocation, targetLocation);
+				
+	// 적절한 위치 보정
+	// 좌우 위치 보정
+	float lateralFactor = 0.2f;
+	FVector lateralOffset = rightVector * rightDot * distance * lateralFactor;
+	// 전방 위치 보정
+	float forwardFactor = 0.5f;
+	FVector forwardOffset = forward * distance * forwardFactor;
+
+	FVector newPos = kartLocation + forwardOffset + lateralOffset;
+	// Z 값 유지
+	newPos.Z = InitialAimUIPos.Z;
+
+	NetMulticast_SetAimLocation(aim, true, newPos, FVector(0.4f));
+}
+
+void UItemInventoryComponent::NetMulticast_SetAimLocation_Implementation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale)
+{
+	if (bIsWorldPos)
+	{
+		aim->SetWorldLocation(pos);
+	}
+	else
+	{
+		aim->SetRelativeLocation(pos);
+	}
+	aim->SetRelativeScale3D(scale);
 }

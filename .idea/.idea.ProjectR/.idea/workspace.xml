@@ -14,29 +14,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/DriftSound.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/EngineSound.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/IdleSound.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/MSS_Drift.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/MSS_Engine.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Sounds/SA_Engine.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Kart/KartTestMap/5/TR/3LJJEKH2IWAXE03A9FA6EF.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartDriftSoundComponent.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartDriftSoundComponent.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartEngineSoundComponent.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartEngineSoundComponent.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartInfo.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Utils/KartSystemLibrary.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Utils/KartSystemLibrary.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartNetworkSyncComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartNetworkSyncComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartNetworkSyncComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartNetworkSyncComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartSoundComponent.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartSoundComponent.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartSteeringComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartSteeringComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartInfo.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartInfo.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +70,7 @@
     "C/C++ Project.ProjectR.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging feature/item-UI",
+    "git-widget-placeholder": "feature/item-UI",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -268,6 +249,7 @@
       <workItem from="1742375804966" duration="4971000" />
       <workItem from="1742384102414" duration="1383000" />
       <workItem from="1742429353357" duration="94000" />
+      <workItem from="1742429477191" duration="3850000" />
     </task>
     <servers />
   </component>

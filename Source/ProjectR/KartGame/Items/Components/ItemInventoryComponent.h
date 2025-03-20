@@ -65,6 +65,12 @@ public:
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
 	void SetUsingAimLocation();
+
+	UFUNCTION(Server, Reliable)
+	void Server_CalcAimLocation(class UWidgetComponent* aim);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_SetAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
@@ -93,5 +99,6 @@ public:
 	FVector InitialAimUIPos;
 	FVector InitialAimUIScale;
 
+	UPROPERTY()
 	class AKart* FinalTarget = nullptr;
 };
