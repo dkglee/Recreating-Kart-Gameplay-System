@@ -306,6 +306,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		BoxColor = FColor::Green;
 		LockedTarget = nullptr;
 	}
+
 	
 	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
@@ -314,7 +315,6 @@ void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start,
 	FVector boxHalfSize, FColor BoxColor)
 {
 	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
-
 	if (Kart->IsLocallyControlled())
 	{
 		if (Kart->GetUsingAimComponent())
@@ -342,6 +342,8 @@ void UItemInventoryComponent::DrawAimLineBox(FVector start, FVector end, FVector
 
 void UItemInventoryComponent::SetUsingAimLocation()
 {
+	//TODO
+	//해당 함수를 RPC로 서버에서 계산만 하고 NetMulticast로 클라에게 뿌리도록 수정해야함
 	if (Kart->IsLocallyControlled() == false) return;
 
 	auto* aim = Kart->GetUsingAimComponent();
@@ -351,7 +353,6 @@ void UItemInventoryComponent::SetUsingAimLocation()
 		// 조준 성공했을 때는 에임 고정
 		if (LockedTarget != nullptr)
 		{
-			
 			aim->SetWorldLocation(LockedTarget->GetTargetAimComponent()->GetComponentLocation());
 			aim->SetRelativeScale3D(FVector(0.4f));
 		}
@@ -373,25 +374,20 @@ void UItemInventoryComponent::SetUsingAimLocation()
 				FVector kartLocation = Kart->GetActorLocation();
 
 				FVector direction = (targetLocation - kartLocation).GetSafeNormal();
-				float facingDot = FVector::DotProduct(forward, direction);
 				float rightDot = FVector::DotProduct(rightVector, direction);
-				//FFastLogger::LogConsole(TEXT("%f"),facingDot);
-
 				float distance = FVector::Distance(kartLocation, targetLocation);
-				float maxDistance = MaxLockOnDist;
-				float minDistance = 0.0f;
-				float distanceFactor = FMath::Clamp((distance - minDistance) / (maxDistance - minDistance), 0.f, 1.f);
-
+				
 				// 적절한 위치 보정
-				// 좌우 확인
-				// 0.2는 이동 강도 조절을 위한 값
-				FVector lateralOffset = rightVector * rightDot * distance * 0.2f;
-				// 정면 확인
-				// 0.5는 이동 강도 조절을 위한 값
-				FVector forwardOffset = forward * FMath::Clamp(facingDot, 0.0f, 1.0f) * distance * 0.5f;
+				// 좌우 위치 보정
+				float lateralFactor = 0.2f;
+				FVector lateralOffset = rightVector * rightDot * distance * lateralFactor;
+				// 전방 위치 보정
+				float forwardFactor = 0.5f;
+				FVector forwardOffset = forward * distance * forwardFactor;
 
 				FVector newPos = kartLocation + forwardOffset + lateralOffset;
-				newPos.Z = InitialAimUIPos.Z; // Z 값 유지
+				// Z 값 유지
+				newPos.Z = InitialAimUIPos.Z;
 
 				aim->SetWorldLocation(newPos);
 			}

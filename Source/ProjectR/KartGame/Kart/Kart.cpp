@@ -128,7 +128,7 @@ AKart::AKart()
 	// 장진혁
 	TargetAimComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimComponent"));
 	TargetAimComponent->SetupAttachment(RootComponent);
-	TargetAimComponent->SetRelativeLocation(FVector(-175.f, 0.f, 50.f));
+	TargetAimComponent->SetRelativeLocation(FVector(-50.f, 0.f, 50.f));
 
 	UsingAimComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("UsingAimComponent"));
 	UsingAimComponent->SetupAttachment(RootComponent);
