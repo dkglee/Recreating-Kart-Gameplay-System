@@ -33,6 +33,7 @@ public:
 #pragma region GetterSetter
 	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
 	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
+	GETTER(class UKartSteeringComponent*, SteeringComponent);
 	GETTER(float, NormalizedSpeed);
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
 	GETTER(class UBoxComponent*, RootBox);

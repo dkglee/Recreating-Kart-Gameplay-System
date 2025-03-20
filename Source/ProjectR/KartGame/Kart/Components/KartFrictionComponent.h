@@ -41,6 +41,8 @@ private:
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);
 	UFUNCTION(Server, Reliable)
 	void ApplyFrictionToKart(bool bInDrift);
+	void SetAngularDampling();
+	void DetermineDriftState();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -51,10 +53,19 @@ private:
 	class UInputAction* IA_Drift = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	bool bDriftInput = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float FrictionGrip = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* FrictionCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	float NormalAngularDamping = 0.3f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	float HardDrfitAngularDamping = 0.01f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	float DefaultAngularDamping = 3.5f;
 };
