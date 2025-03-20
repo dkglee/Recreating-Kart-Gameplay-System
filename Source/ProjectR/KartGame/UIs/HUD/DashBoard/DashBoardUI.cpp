@@ -20,7 +20,7 @@ void UDashBoardUI::SetDashBoardValue(float CurrentSpeed, float MaxSpeed)
 	// cm/s -> m/s -> km/h
 	float KartSpeedKM = FMath::Abs(CurrentSpeed) * 0.036;
 	// Km/h
-	int32 Speed = FMath::RoundToInt(KartSpeedKM);
+	int32 Speed = FMath::RoundToInt(KartSpeedKM * 2);
 
 	// 세 자리수로 맞춤 (예: 032, 005, 120)
 	DashBoard_Text->SetText(FText::FromString(FString::Printf(TEXT("%03d"), Speed)));

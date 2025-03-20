@@ -50,7 +50,7 @@ void UKartGameInstance::CreateNewGameSession()
 	// 더이상 사용하지 않을 때 알아서 언리얼 GC에서 관리될 수 있도록 처리해준다.
 	// TODO: 튜토리얼대로 해서 우선은 이리 처리되나 좋은 방법은 아니라고 판단해 리팩토링해야한다.
 	TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShareable(new FOnlineSessionSettings());
-	SessionSettings->bIsLANMatch = true;
+	SessionSettings->bIsLANMatch = false;
 	SessionSettings->NumPublicConnections = 8;
 	SessionSettings->bAllowJoinInProgress = true;
 	SessionSettings->bShouldAdvertise = true;
@@ -91,7 +91,7 @@ void UKartGameInstance::SearchGameSession()
 	// 최대 검색 수 30개로 제한
 	SessionSearch->MaxSearchResults = 30;
 	// Lan 검색이 아닌 온라인 검색으로 처리
-	SessionSearch->bIsLanQuery = true;
+	SessionSearch->bIsLanQuery = false;
 	// 검색에 필요한 쿼리 세팅
 
 	
@@ -118,10 +118,13 @@ void UKartGameInstance::OnFindSession(bool IsSuccess)
 	}
 }
 
-void UKartGameInstance::JoinGameSession(const FOnlineSessionSearchResult& Result)
+void UKartGameInstance::JoinGameSession(FOnlineSessionSearchResult& Result)
 {
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 
+	Result.Session.SessionSettings.bUsesPresence = true;
+	Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
+	
 	OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 	
 	OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
