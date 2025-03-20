@@ -3,6 +3,7 @@
 
 #include "ItemBox.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Components/ItemInventoryComponent.h"
@@ -13,6 +14,8 @@
 AItemBox::AItemBox()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+	Super::SetReplicateMovement(true);
 
 	InitComponents();
 }
@@ -27,6 +30,7 @@ void AItemBox::BeginPlay()
 void AItemBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	RotateBody();
 }
 
 void AItemBox::InitComponents()
@@ -89,7 +93,27 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)
 {
-	ItemInventoryComponent->GetItem(Item);
+	FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
+	
+	if (HasAuthority())
+	{
+		ItemInventoryComponent->GetItem(Item);
+	}
+
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	
+	GetWorldTimerManager().SetTimer(ItemBoxRespawnTimerHandle,  [this]()
+	{
+		SetActorHiddenInGame(false);
+		SetActorEnableCollision(true);
+	}, 5.f, false);
 }
 
-
+void AItemBox::RotateBody()
+{
+	float speed = 100.f;
+	float newYaw = GetActorRotation().Yaw + speed * GetWorld()->GetDeltaSeconds();
+	FRotator newRot(GetActorRotation().Pitch, newYaw, GetActorRotation().Roll);
+	SetActorRotation(newRot);
+}

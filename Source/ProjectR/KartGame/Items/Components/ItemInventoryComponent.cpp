@@ -233,7 +233,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 
 	TArray<FHitResult> InitialHitResults;
 	FVector InitialBoxSize = boxHalfSize;
-	InitialBoxSize.Y *= 4.0f;
+	InitialBoxSize.Y *= InitialBoxSizeOffset;
 
 	bool bInitialHit = GetWorld()->SweepMultiByChannel(
 		InitialHitResults,
@@ -315,7 +315,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{
