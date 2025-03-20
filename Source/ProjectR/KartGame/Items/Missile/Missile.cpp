@@ -47,6 +47,7 @@ void AMissile::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLi
 void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (HasAuthority() == false) return;
 	auto* kart = Cast<AKart>(OtherActor);
 	if (kart)
 	{

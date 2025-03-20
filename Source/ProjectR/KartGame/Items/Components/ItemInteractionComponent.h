@@ -42,6 +42,10 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_MissileInteraction_Move(FQuat resultQuat, FVector resultPos);
 
+	UFUNCTION(Client, Reliable)
+	void Client_ChangePhysics(bool bEnable);
+
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;

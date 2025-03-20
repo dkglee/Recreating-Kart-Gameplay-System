@@ -184,7 +184,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
 	itemTransform.SetRotation(Kart->GetActorRotation().Quaternion());
 	itemTransform.SetScale3D(FVector(1.0f));
-	DrawDebugString(GetWorld(), Kart->GetActorLocation(), TEXT("spawn Item"), 0, FColor::Red, 0, 1);
+	//DrawDebugString(GetWorld(), Kart->GetActorLocation(), TEXT("spawn Item"), 0, FColor::Red, 0, 1);
 
 	switch (itemData.ItemName)
 	{
