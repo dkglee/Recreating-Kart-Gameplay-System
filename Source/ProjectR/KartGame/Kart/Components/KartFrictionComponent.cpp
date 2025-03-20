@@ -93,9 +93,7 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 	FVector RightVector = KartBody->GetRightVector();
 	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 	float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
-
 	
-
 	FVector FrictionForce = RightVector * Velocity * -1.5f * 1.0f * FrictionGrip;
 
 	KartBody->AddForce(FrictionForce, NAME_None, true);
