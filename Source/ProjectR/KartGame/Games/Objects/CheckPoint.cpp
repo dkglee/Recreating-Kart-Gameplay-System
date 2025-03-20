@@ -1,5 +1,6 @@
 ﻿#include "CheckPoint.h"
 
+#include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "ProjectR/KartGame/Utils/CheckPointUtil.h"
 #include "KartGame/Games/Modes/Race/RaceGameState.h"
@@ -33,7 +34,7 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 		return;
 	}
 	
-	const APawn* PlayerKart = Cast<APawn>(CheckKart);
+	const AKart* PlayerKart = Cast<AKart>(CheckKart);
 	if (!PlayerKart)
 	{
 		return;
@@ -61,11 +62,12 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 	// 움직이게 끔 처리된다.
 	// TODO: 해당 부분은 이후 툴 제작에도 영향을 줘야 할 필요가 있다.
 	const bool IsNextPinToMove = CurrentPlayerPinMainNum + 1 == CurrentCheckPointPinMainNum;
-		
+
+	UE_LOG(LogTemp, Display, TEXT("현재 정보: %d Laps, %s CheckPoint"), PS->GetCurrentLap(), *PS->GetCurrentKartCheckPoint());
 	if (IsNextPinToMove)
 	{
 		PS->SetCheckPoint(CurrentCheckPoint);
-		UE_LOG(LogTemp, Display, TEXT("현재 정보: %d Laps, %s CheckPoint"), PS->GetCurrentLap(), *PS->GetCurrentKartCheckPoint());
+		UE_LOG(LogTemp, Display, TEXT("다음 체크포인트 이동"));
 		return;
 	}
 
@@ -77,7 +79,7 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 	if (IsNextLapToMove)
 	{
 		PS->GoNextLap();
-		UE_LOG(LogTemp, Display, TEXT("현재 정보: %d Laps, %s CheckPoint"), PS->GetCurrentLap(), *PS->GetCurrentKartCheckPoint());
+		UE_LOG(LogTemp, Display, TEXT("다음 랩 이동"));
 	}
 }
 
