@@ -264,7 +264,7 @@ void AKart::UpdateSpeedUI()
 	}
 }
 
-void AKart::ClearAccelerationInput()
+void AKart::ClearAcceleration()
 {
-	AccelerationComponent->SetAccelerationInput(0.0f);
+	AccelerationComponent->ClearAcceleration();
 }

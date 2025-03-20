@@ -49,7 +49,7 @@ public:
 
 #pragma region ForeignFunction
 	UFUNCTION()
-	void ClearAccelerationInput();
+	void ClearAcceleration();
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;

@@ -34,6 +34,7 @@ public:
 	void ProcessAcceleration(bool bGameStart);
 
 	void ClearAcceleration();
+	void ResetAcceleration();
 
 #pragma region GetterSetters
 	GETTER_SETTER(float, AccelerationInput);

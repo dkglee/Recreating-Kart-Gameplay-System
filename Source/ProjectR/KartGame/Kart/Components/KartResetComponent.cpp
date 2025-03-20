@@ -74,7 +74,7 @@ void UKartResetComponent::OnRollbackInputDetected()
 	// UE_LOG(LogTemp, Display, TEXT("Test: %s"), *HitResult.Location.ToString());
 	
 	Kart->SetActorLocation(PrevCheckPoint->GetActorLocation());
-	Kart->GetAccelerationComponent()->ClearAcceleration();
+	Kart->GetAccelerationComponent()->ResetAcceleration();
 }
 
 void UKartResetComponent::OnRollbackEffectCallback(const float Value)
