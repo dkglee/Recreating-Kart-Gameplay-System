@@ -21,8 +21,14 @@ protected:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Options", meta = (AllowPrivateAccess = true))
+	uint8 BaseCollisionCooldownFrame = 10.f;
+	
 	UPROPERTY(Replicated)
-	uint8 CollisionCooldownFrame;
+	uint8 CurrentCollisionCooldownFrame;
+	
+	UPROPERTY()
+	float CollisionPower = 0.6;
 	
 	UPROPERTY()
 	class AKart* Kart = nullptr;
