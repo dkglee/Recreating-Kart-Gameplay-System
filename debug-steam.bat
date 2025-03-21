@@ -1,1 +1,1 @@
-"C:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\user\ProjectR\ProjectR.uproject" -game -log -ResX=1440 -ResY=960 -WinX=360 -WinY=240
+"C:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\user\Documents\Github\ProjectR\ProjectR.uproject" -game -log -ResX=1440 -ResY=960 -WinX=360 -WinY=240

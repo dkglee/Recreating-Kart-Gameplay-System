@@ -41,8 +41,10 @@ void UKartDriftSoundComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	Play();
-	// SetVolumeMultiplier(MaxDriftVolume);
+	if (Kart->IsLocallyControlled())
+	{
+		Play();
+	}
 }
 
 void UKartDriftSoundComponent::InitializeComponent()

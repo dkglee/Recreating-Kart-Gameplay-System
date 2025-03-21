@@ -90,17 +90,25 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 
 	TArray<UKartSuspensionComponent*> Wheels = {LF_Wheel, RF_Wheel};
 
-	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 10.0f;
+	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 2.0f;
 
 	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), SteerRate);
 
 	// Rotate the wheels
 	for (UKartSuspensionComponent* Wheel : Wheels)
 	{
+		int Sign = Wheel == LF_Wheel ? 1 : -1;
 		float Alpha = (SteeringIntensity + 1.0f) / 2.0f;
 		FRotator NewRotation = FMath::Lerp(FRotator{0, MaxRotation, 0}, FRotator{0, -MaxRotation, 0}, Alpha);
 		Wheel->SetRelativeRotation(NewRotation);
+
+		// debug
+		FString DebugLog = FString::Printf(TEXT("Wheel Rotation: %s"), *NewRotation.ToString());
+		FVector DebugLocation = Sign > 0 ? KartBody->GetComponentLocation() + FVector(0, 0, 200) : KartBody->GetComponentLocation() + FVector(0, 50, -200);
+		DrawDebugString(GetWorld(), DebugLocation, DebugLog, nullptr, FColor::Red, 0.0f);
 	}
+	FString Log = FString::Printf(TEXT("SteeringIntensity: %f"), SteeringIntensity);
+	DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, 125), Log, nullptr, FColor::Red, 0.0f);
 }
 
 // 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임
@@ -114,14 +122,11 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
 	float KartSign = FMath::Sign(KartSpeed);
 	
-	float TurnValue = InSteering * SteeringPower * TurnScaling * KartSign;
+	float Force = InSteering * SteeringPower * TurnScaling * KartSign;
 
 	// Torque Vector 생성
 	FVector KartUpVector = KartBody->GetUpVector();
-	FVector Torque = KartUpVector * TurnValue;
-
-	// FString DebugString = FString::Printf(TEXT("Steering: %f\r\nNormalizedSpeed: %f\r\nSteeringPower: %f\r\nTurnValue: %f\r\nTorque: %s"), InSteering, InNormalizedSpeed, SteeringPower, TurnValue, *Torque.ToString());
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), DebugString, nullptr, FColor::Red, 0.0f, true);
+	FVector Torque = KartUpVector * Force;
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);

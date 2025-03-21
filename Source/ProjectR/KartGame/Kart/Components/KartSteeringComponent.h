@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "InputActionValue.h"
 #include "Components/ActorComponent.h"
 #include "KartSteeringComponent.generated.h"
@@ -28,6 +29,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void ProcessSteeringAndTorque();
+
+#pragma region GetterSetters
+	GETTER(float, SteeringIntensity);
+	GETTER(float, AccelerationIntensity);
+	GETTER(float, TargetSteering);
+	GETTER(float, MaxRotation);
+#pragma endregion
 private:
 	void OnSteeringInputDetected(const FInputActionValue& InputActionValue);
 	// Client, Server 둘 다 호출되어야 함. (클라이언트에서 호출)
@@ -48,7 +56,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteeringIntensity = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	float SteerRate = 6.0f;
+	float SteerRate = 0.3f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float DampingCoefficient = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
