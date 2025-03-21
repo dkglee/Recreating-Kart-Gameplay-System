@@ -5,6 +5,7 @@
 
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartAccelerationComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -95,6 +96,7 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 			CurrentType = EInteractionType::None;
 			MissileKnockbackElapsedTime = 0.f;
 			Client_ChangePhysics(true);
+			Kart->GetAccelerationComponent()->ResetAcceleration();
 			return;
 		}
 		NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
