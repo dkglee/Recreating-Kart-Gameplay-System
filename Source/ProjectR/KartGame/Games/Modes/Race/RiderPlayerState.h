@@ -7,6 +7,8 @@
 
 class ACheckPoint;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGoNextLapNotified, uint8, LapInfo);
+
 UCLASS()
 class PROJECTR_API ARiderPlayerState : public APlayerState
 {
@@ -18,12 +20,14 @@ public:
 	FORCEINLINE FString GetCurrentKartCheckPoint() const { return CurrentKartCheckPoint; }
 	FORCEINLINE uint16 GetCurrentLap() const { return CurrentLap; }
 	void SetCheckPoint(const FString& CheckPointNum);
-	FORCEINLINE void GoNextLap() { CurrentLap += 1; CurrentKartCheckPoint = TEXT("0"); }
+	void GoNextLap();
 	
 	uint16 GetCurrentMainCheckPoint() const;
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
 	GETTER_SETTER(uint8, Ranking);
+
+	FOnGoNextLapNotified OnGoNextLapNotified;
 
 protected:
 	virtual void BeginPlay() override;
