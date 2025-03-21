@@ -17,6 +17,9 @@ void UCountDownToStart::OnCountDownAnimationEnd()
 		CountDownNum = FMath::Max(0, CountDownNum - 1);
 		UpdateCountDownText();
 		PlayAnimation(CountDownAnimation);
+	} else
+	{
+		OnGameStartNotified.Broadcast();
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartCollisionComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
@@ -152,6 +153,10 @@ AKart::AKart()
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent->SetNetAddressable();
+	KartCollisionComponent->SetIsReplicated(true);
+	
 	static ConstructorHelpers::FClassFinder<UAim> UsingAimUI(TEXT("'/Game/UIs/HUD/Aim/WBP_Aim.WBP_Aim_C'"));
 	if (UsingAimUI.Succeeded())
 	{
@@ -264,7 +269,7 @@ void AKart::UpdateSpeedUI()
 	}
 }
 
-void AKart::ClearAccelerationInput()
+void AKart::ClearAcceleration()
 {
-	AccelerationComponent->SetAccelerationInput(0.0f);
+	AccelerationComponent->ClearAcceleration();
 }
