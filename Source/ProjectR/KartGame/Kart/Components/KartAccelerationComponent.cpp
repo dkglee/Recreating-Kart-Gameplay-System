@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
+#include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -89,6 +90,19 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 	TargetAcceleration = FMath::Clamp(TargetAcceleration, -0.7f, 1.0f);
 	AccelerationInput = FMath::FInterpTo(AccelerationInput, TargetAcceleration, GetWorld()->GetDeltaSeconds(), AccelerationRate);
 	Acceleration = MaxAcceleration * AccelerationInput;
+
+	// 외부 또는 클래스 내에 저장할 변수 필요
+	// 현재 프레임에서 스티어링 입력 여부 체크
+	bool bSteering = !FMath::IsNearlyZero(Kart->GetSteeringComponent()->GetTargetSteering());
+
+	// 상태가 Off -> On 으로 변경될 때만 딱 한 번 줄임
+	if (bSteering)
+	{
+		Acceleration *= 0.55f;
+	}
+
+	// 마지막에 상태 업데이트
+	// bWasSteering = bSteering;
 	
 	// 천천히 줄어듬
 	FVector Forward = KartBody->GetForwardVector();

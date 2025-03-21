@@ -66,4 +66,6 @@ private:
 	float Acceleration = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float TargetAcceleration;
+
+	bool bWasSteering = false;
 };
