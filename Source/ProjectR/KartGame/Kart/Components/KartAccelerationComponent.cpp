@@ -137,5 +137,4 @@ void UKartAccelerationComponent::ResetAcceleration()
 	ClearAcceleration();
 	KartBody->SetPhysicsLinearVelocity(FVector::ZeroVector);
 	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-	KartBody->SetPhysicsLinearVelocity(FVector::ZeroVector);
 }
