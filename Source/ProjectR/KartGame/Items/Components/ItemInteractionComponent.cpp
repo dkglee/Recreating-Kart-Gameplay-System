@@ -59,15 +59,11 @@ void UItemInteractionComponent::MissileHitInteraction()
 		return;
 	}
 
-
 	bIsInteraction = true;
 	CurrentType = EInteractionType::Explosion;
 	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 	Client_ChangePhysics(false);
-
-	FFastLogger::LogConsole(TEXT("MissileHitInteraction called. IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole());
-
 }
 
 void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
@@ -154,6 +150,6 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 			return;
 		}
 		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
-		FFastLogger::LogConsole(TEXT("ChangePhysics called.  IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
+		//FFastLogger::LogConsole(TEXT("ChangePhysics called.  IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
 	}
 }

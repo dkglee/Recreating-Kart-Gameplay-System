@@ -34,12 +34,15 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMultiCast_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item);
-	
+
+	void RotateBody();
 private:
 	TMap<int, FItemTable> ItemMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	int32 TotalWeight = 0;
+
+	FTimerHandle ItemBoxRespawnTimerHandle;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")

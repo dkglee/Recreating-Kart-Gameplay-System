@@ -22,11 +22,13 @@ void URealTimeRankingHUDItem::NativeTick(const FGeometry& MyGeometry, float InDe
 	// 초기화를 위한 조건
 	// 1. 랭크가 0이 아닐 것 (즉 Initialize과정이 거쳐진 것)
 	// 2. Overlay의 Height가 계산이 될 것
+	const float CalcPaddingTopValue = (CurrentRank - 1) * OverlayHeight;
+	
 	if (!IsInitializedToSetPosition && CurrentRank != 0 && RankBoard->GetDesiredSize().Y != 0)
 	{
 		IsInitializedToSetPosition = true;
 		OverlayHeight = RankBoard->GetDesiredSize().Y;
-		SetPadding(FMargin(0.f, (CurrentRank - 1) * OverlayHeight * 1.5, 0.f, 0.f));
+		SetPadding(FMargin(0.f, CalcPaddingTopValue, 0.f, 0.f));
 		return;
 	}
 	
@@ -34,7 +36,7 @@ void URealTimeRankingHUDItem::NativeTick(const FGeometry& MyGeometry, float InDe
 	CurrentRank = RiderPlayerState->GetRanking();
 	RankView->SetText(FText::FromString(FString::FromInt(CurrentRank)));
 	const float NewTopPadding =
-		FMath::FInterpTo(GetPadding().Top, (RiderPlayerState->GetRanking() - 1) * OverlayHeight * 1.5, InDeltaTime, 5);
+		FMath::FInterpTo(GetPadding().Top, CalcPaddingTopValue, InDeltaTime, 5);
 	SetPadding(FMargin(0.f, NewTopPadding, 0.f, 0.f));
 }
 

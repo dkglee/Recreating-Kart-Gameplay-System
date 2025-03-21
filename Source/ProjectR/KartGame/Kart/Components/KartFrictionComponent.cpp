@@ -5,9 +5,6 @@
 
 #include "EnhancedInputComponent.h"
 #include "Components/BoxComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "FastLogger.h"
-#include "InputMappingContext.h"
 #include "InputAction.h"
 #include "Kart.h"
 #include "KartSteeringComponent.h"
@@ -23,6 +20,10 @@ UKartFrictionComponent::UKartFrictionComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
+	
+	FrictionRollbackTimeline
+		= CreateDefaultSubobject<UTimelineComponent>("Friction Rollback Timeline");
+	
 	static ConstructorHelpers::FObjectFinder<UInputAction> IA_DRIFT
 	(TEXT("/Game/Kart/Input/InputAction/IA_KartDrift.IA_KartDrift"));
 	if (IA_DRIFT.Succeeded())
@@ -36,26 +37,36 @@ UKartFrictionComponent::UKartFrictionComponent()
 	{
 		FrictionCurve = C_FRICTIONCURVE.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> C_FRICTIONROLLBACKCURVE
+	(TEXT("/Game/Kart/Curves/FrictionRollbackCurve.FrictionRollbackCurve"));
+	if (C_FRICTIONCURVE.Succeeded())
+	{
+		FrictionRollbackCurve = C_FRICTIONCURVE.Object;
+	}
 }
 
 
-// Called when the game starts
 void UKartFrictionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
+	// 현재 마찰력 값 초기화
+	CurrentFrictionGrip = BaseFrictionGrip;
 	
+	FrictionRollbackCallback.BindDynamic(this, &ThisClass::OnFrictionRollbackCallback);
+	FrictionRollbackFinish.BindDynamic(this, &ThisClass::OnFrictionRollbackFinish);
+	
+	FrictionRollbackTimeline->SetLooping(false);
+	FrictionRollbackTimeline->AddInterpFloat(FrictionRollbackCurve, FrictionRollbackCallback);
+	FrictionRollbackTimeline->SetTimelineFinishedFunc(FrictionRollbackFinish);
 }
 
 
-// Called every frame
 void UKartFrictionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                            FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void UKartFrictionComponent::ProcessFriction()
@@ -213,4 +224,19 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 	FVector FrictionForce = RightVector * Velocity * -1.5f * InFrictionData * InFrictionGrip;
 
 	KartBody->AddForce(FrictionForce, NAME_None, true);
+}
+
+void UKartFrictionComponent::OnFrictionRollbackCallback(const float Value)
+{
+	CurrentFrictionGrip = FMath::Lerp(0, BaseFrictionGrip, Value);
+}
+
+void UKartFrictionComponent::OnFrictionRollbackFinish()
+{
+	CurrentFrictionGrip = BaseFrictionGrip;
+}
+
+void UKartFrictionComponent::RollbackFriction()
+{
+	FrictionRollbackTimeline->PlayFromStart();
 }

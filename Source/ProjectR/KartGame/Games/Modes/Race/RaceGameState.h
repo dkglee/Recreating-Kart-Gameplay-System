@@ -25,7 +25,7 @@ protected:
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|Race", meta = (AllowPrivateAccess = true))
-	uint8 MaxLaps = 1;
+	uint8 MaxLaps = 3;
 	
 	uint16 MaxCheckPoint = 0;
 

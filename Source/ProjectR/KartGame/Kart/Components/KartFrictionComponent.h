@@ -6,6 +6,7 @@
 #include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "InputActionValue.h"
+#include "Components/TimelineComponent.h"
 #include "KartFrictionComponent.generated.h"
 
 
@@ -32,9 +33,11 @@ public:
 
 	void ProcessFriction();
 
+	void RollbackFriction();
+
 #pragma region GetterSetters
 	GETTER(bool, bDrift);
-	GETTER_SETTER(float, FrictionGrip);
+	GETTER_SETTER(float, CurrentFrictionGrip);
 #pragma endregion
 	
 private:
@@ -56,11 +59,32 @@ private:
 	bool bDriftInput = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
+	
+	float CurrentFrictionGrip;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float FrictionGrip = 10.0f;
+	float BaseFrictionGrip = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* FrictionCurve = nullptr;
+
+#pragma region Friction Rollback
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	class UCurveFloat* FrictionRollbackCurve = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> FrictionRollbackTimeline;
+
+	FOnTimelineFloat FrictionRollbackCallback;
+
+	FOnTimelineEvent FrictionRollbackFinish;
+	
+	UFUNCTION()
+	void OnFrictionRollbackCallback(const float Value);
+
+	UFUNCTION()
+	void OnFrictionRollbackFinish();
+#pragma endregion
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float NormalAngularDamping = 0.5f;

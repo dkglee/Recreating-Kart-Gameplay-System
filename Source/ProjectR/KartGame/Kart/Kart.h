@@ -36,6 +36,8 @@ public:
 	GETTER(class UKartSteeringComponent*, SteeringComponent);
 	GETTER(float, NormalizedSpeed);
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
+	GETTER(class UKartFrictionComponent*, FrictionComponent);
+	GETTER(class UKartCollisionComponent*, KartCollisionComponent);
 	GETTER(class UBoxComponent*, RootBox);
 	GETTER(class UKartSuspensionComponent*, LF_Wheel);
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
@@ -44,13 +46,13 @@ public:
 	GETTER(class UKartNetworkSyncComponent*, NetworkSyncComponent);
 	GETTER(float, MaxSpeed);
 	GETTER_SETTER(bool, bCanMove);
-	GETTER(class USceneComponent*, TargetAimComponent);
+	GETTER(class USceneComponent*, TargetAimSocketComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
 #pragma endregion
 
 #pragma region ForeignFunction
 	UFUNCTION()
-	void ClearAccelerationInput();
+	void ClearAcceleration();
 #pragma endregion
 	
 	FInputBindingDelegate OnInputBindingDelegate;
@@ -59,7 +61,7 @@ private:
 	
 #pragma region ForeignVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	bool bCanMove = true;
+	bool bCanMove = false;
 #pragma endregion
 
 #pragma region CoreSkills
@@ -87,6 +89,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartCollisionComponent* KartCollisionComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UItemInventoryComponent* ItemInventoryComponent = nullptr;
@@ -96,11 +100,13 @@ private:
 	class UKartFrictionComponent* FrictionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartResetComponent* KartResetComponent = nullptr;
 
 	// Aim Widget Component 추가
 	// 장진혁
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
-	class USceneComponent* TargetAimComponent = nullptr;
+	class USceneComponent* TargetAimSocketComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* UsingAimComponent = nullptr;
 

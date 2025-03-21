@@ -52,3 +52,23 @@ TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextNearCheckPoint() const
 	return GetWorld()->GetGameState<ARaceGameState>()
 				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
 }
+
+void ARiderPlayerState::GoNextLap()
+{
+	CurrentLap += 1;
+	CurrentKartCheckPoint = TEXT("0");
+
+	if (HasAuthority())
+	{
+		if (!GetPawn()->IsLocallyControlled())
+		{
+			return;
+		}
+		OnGoNextLapNotified.Broadcast(CurrentLap);
+	}
+}
+
+void ARiderPlayerState::OnRep_CurrentLap()
+{
+	OnGoNextLapNotified.Broadcast(CurrentLap);
+}
