@@ -32,6 +32,7 @@ private:
 	TObjectPtr<UMainUI> MainHUD;
 
 	void SetHUDToStart();
-	
-	void RollbackToCurrentCheckPoint();
+
+	UFUNCTION()
+	void KartSetToMove();
 };

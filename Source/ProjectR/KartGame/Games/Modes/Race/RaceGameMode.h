@@ -11,4 +11,6 @@ class PROJECTR_API ARaceGameMode : public AGameModeBase
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual  AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName = L"") override;
 };
