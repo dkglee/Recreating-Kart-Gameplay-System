@@ -6,12 +6,14 @@
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
+#include "Components/Image.h"
 #include "Components/WidgetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
 #include "KartGame/Items/WaterBomb/WaterBomb.h"
 #include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/ItemInventory/ItemInventory.h"
 #include "Net/UnrealNetwork.h"
 
@@ -71,7 +73,6 @@ void UItemInventoryComponent::GetItem(const FItemTable itemData)
 {
 	if (bInventoryIsFull)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Full!"));
 		return;
 	}
 	
@@ -111,7 +112,6 @@ void UItemInventoryComponent::UseItem()
 {
 	if (Inventory.Num() == 0)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
 
@@ -120,17 +120,12 @@ void UItemInventoryComponent::UseItem()
 
 void UItemInventoryComponent::Server_UseItem_Implementation()
 {
+	SpawnItem(Inventory[0]);
 	NetMulticast_UseItem();
 }
 
 void UItemInventoryComponent::NetMulticast_UseItem_Implementation()
 {
-	const FItemTable usingItem = Inventory[0];
-	if (Kart->HasAuthority())
-	{
-		SpawnItem(usingItem);
-	}
-
 	ARacePlayerController* pc = Cast<ARacePlayerController>(Kart->GetController());
 	if (pc)
 	{
@@ -145,12 +140,9 @@ void UItemInventoryComponent::NetMulticast_UseItem_Implementation()
 		}
 	}
 
-	if (usingItem.ItemType)
+	if (Inventory[0].ItemType)
 	{
-		if (Kart->GetUsingAimComponent())
-		{
-			Kart->GetUsingAimComponent()->SetVisibility(false);
-		}
+		Kart->GetUsingAimComponent()->SetVisibility(false);
 	}
 	
 	Inventory.RemoveAt(0);
@@ -161,7 +153,6 @@ void UItemInventoryComponent::LockPlayer()
 {
 	if (Inventory.Num() == 0)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Inventory is Empty!"));
 		return;
 	}
 	
@@ -315,7 +306,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{
@@ -348,11 +339,18 @@ void UItemInventoryComponent::SetUsingAimLocation()
 		// 조준 성공했을 때는 에임 고정
 		if (LockedTarget != nullptr)
 		{
-			NetMulticast_SetUsingAimLocation(aim, true, LockedTarget->GetTargetAimComponent()->GetComponentLocation(), FVector(0.4f));
+			// 에임 색을 빨강으로
+			ChangeAimColor(true);
+			
+			NetMulticast_SetUsingAimLocation(aim, true, LockedTarget->GetTargetAimSocketComponent()->GetComponentLocation(), FVector(0.4f));
+			
 		}
 		// 조준 실패 중일 때는 에임을 정면 방향으로 설정
 		else
 		{
+			// 에임 색을 초록으로
+			ChangeAimColor(false);
+
 			// 주시 중인 상대가 없으면 내 카트 정면에 에임 위치
 			if (FinalTarget == nullptr)
 			{
@@ -404,4 +402,27 @@ void UItemInventoryComponent::NetMulticast_SetUsingAimLocation_Implementation(cl
 		aim->SetRelativeLocation(pos);
 	}
 	aim->SetRelativeScale3D(scale);
+}
+
+void UItemInventoryComponent::ChangeAimColor(bool bIsLockOn)
+{
+	auto* aimWidgetComp = Kart->GetUsingAimComponent();
+	if (aimWidgetComp)
+	{
+		UUserWidget* widgetInst = Cast<UUserWidget>(aimWidgetComp->GetWidget());
+
+		if (widgetInst)
+		{
+			UAim* aimClass = Cast<UAim>(widgetInst);
+
+			if (bIsLockOn)
+			{
+				aimClass->AimImage->SetBrushFromTexture(aimClass->RedAim);
+			}
+			else
+			{
+				aimClass->AimImage->SetBrushFromTexture(aimClass->GreenAim);
+			}
+		}
+	}
 }

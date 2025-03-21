@@ -136,18 +136,25 @@ AKart::AKart()
 
 	// Aim UI Widget Component 추가
 	// 장진혁
-	TargetAimComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimComponent"));
-	TargetAimComponent->SetupAttachment(RootComponent);
-	TargetAimComponent->SetRelativeLocation(FVector(-50.f, 0.f, 50.f));
+	TargetAimSocketComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimSocketComponent"));
+	TargetAimSocketComponent->SetupAttachment(RootComponent);
+	TargetAimSocketComponent->SetRelativeLocation(FVector(-50.f, 0.f, 50.f));
 
 	UsingAimComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("UsingAimComponent"));
 	UsingAimComponent->SetupAttachment(RootComponent);
 	UsingAimComponent->SetCastShadow(false);
 	UsingAimComponent->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
-	
+	UsingAimComponent->SetVisibility(false);
+
 	UsingAimComponent->SetRelativeLocation(FVector(150.f,  0.f,  100.f));
 	UsingAimComponent->SetRelativeRotation(FRotator(0, 180, 0));
 	UsingAimComponent->SetRelativeScale3D(FVector(0.5f));
+
+	static ConstructorHelpers::FClassFinder<UAim> UsingAimUI(TEXT("'/Game/UIs/HUD/Aim/WBP_Aim.WBP_Aim_C'"));
+	if (UsingAimUI.Succeeded())
+	{
+		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
+	}
 	
 	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("Kart Reset Component"));
 	KartResetComponent->SetNetAddressable();
@@ -157,12 +164,6 @@ AKart::AKart()
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
 	
-	static ConstructorHelpers::FClassFinder<UAim> UsingAimUI(TEXT("'/Game/UIs/HUD/Aim/WBP_Aim.WBP_Aim_C'"));
-	if (UsingAimUI.Succeeded())
-	{
-		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
-	}
-	UsingAimComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned

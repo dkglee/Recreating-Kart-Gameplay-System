@@ -45,7 +45,7 @@ public:
 	GETTER(class UKartNetworkSyncComponent*, NetworkSyncComponent);
 	GETTER(float, MaxSpeed);
 	GETTER_SETTER(bool, bCanMove);
-	GETTER(class USceneComponent*, TargetAimComponent);
+	GETTER(class USceneComponent*, TargetAimSocketComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
 #pragma endregion
 
@@ -105,7 +105,7 @@ private:
 	// Aim Widget Component 추가
 	// 장진혁
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
-	class USceneComponent* TargetAimComponent = nullptr;
+	class USceneComponent* TargetAimSocketComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* UsingAimComponent = nullptr;
 
