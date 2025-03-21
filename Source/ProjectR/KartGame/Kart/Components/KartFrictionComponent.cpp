@@ -128,11 +128,19 @@ void UKartFrictionComponent::DetermineDriftState()
 	if (bDrift)
 	{
 		float AngularVelocity = KartBody->GetPhysicsAngularVelocityInDegrees().Length();
-		
+
+		FVector RightVector = KartBody->GetRightVector();
+		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+
 		// 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
-		constexpr float DriftThreshold = 10.0f;
+		constexpr float AngularDriftThreshold = 5.0f;
+		constexpr float DriftThreshold = 400.0f;
 		
-		bDrift = bFlag && FMath::Abs(AngularVelocity) > DriftThreshold;
+		// bDrift = bFlag && FMath::Abs(AngularVelocity) > AngularDriftThreshold;
+		// bDrift &= bFlag && FMath::Abs(Velocity) > DriftThreshold;
+		bDrift = FMath::Abs(AngularVelocity) > AngularDriftThreshold;
+		bDrift &= FMath::Abs(Velocity) > DriftThreshold;
 		bDrift = bDrift || (bDriftInput && bSteering);
 	}
 	DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, -50), *FString::Printf(TEXT("Steer: %f"), Kart->GetSteeringComponent()->GetSteeringIntensity()), nullptr, FColor::Red, 0.0f);

@@ -63,9 +63,9 @@ private:
 	class UCurveFloat* FrictionCurve = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float NormalAngularDamping = 0.3f;
+	float NormalAngularDamping = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float HardDrfitAngularDamping = 0.01f;
+	float HardDrfitAngularDamping = 0.1f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float DefaultAngularDamping = 3.5f;
 };
