@@ -58,6 +58,17 @@ void ARiderPlayerState::GoNextLap()
 	CurrentLap += 1;
 	CurrentKartCheckPoint = TEXT("0");
 
-	OnGoNextLapNotified.Broadcast(CurrentLap);
+	if (HasAuthority())
+	{
+		if (!GetPawn()->IsLocallyControlled())
+		{
+			return;
+		}
+		OnGoNextLapNotified.Broadcast(CurrentLap);
+	}
 }
 
+void ARiderPlayerState::OnRep_CurrentLap()
+{
+	OnGoNextLapNotified.Broadcast(CurrentLap);
+}

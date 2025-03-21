@@ -5,6 +5,7 @@
 #include "KartNetworkSyncComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Items/ItemBox.h"
+#include "KartGame/Games/Objects/CheckPoint.h"
 #include "Net/UnrealNetwork.h"
 
 UKartCollisionComponent::UKartCollisionComponent()
@@ -64,7 +65,8 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedCom
 		return;
 	}
 
-	if (OtherActor->IsA(AItemBox::StaticClass()))
+	if (OtherActor->IsA(AItemBox::StaticClass()) ||
+		OtherActor->IsA(ACheckPoint::StaticClass()))
 	{
 		return;
 	}

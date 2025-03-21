@@ -14,26 +14,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Content/Kart/Curves/FrictionRollbackCurve.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Games/Race/Tracks/F1_Racing_Track.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Race/Tracks/F1_Racing_Track.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RaceGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RaceGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RaceGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RaceGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartResetComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartResetComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/CountDown/CountDownToStart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/CountDown/CountDownToStart.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/CountDown/CountDownToStart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/CountDown/CountDownToStart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/MainUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/MainUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectR.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectR.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,17 +48,34 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.5/Engine/Source/ThirdParty/NVIDIA/nvapi/nvapi_lite_sli.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Plugins/Animation/RigLogic/Source/RigLogicLib/Public/dna/Reader.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Plugins/Experimental/DynamicMaterial/Source/DynamicMaterialEditor/Private/UI/Widgets/Editor/SDMToolBar.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Editor/Persona/Private/SAnimationScrubPanel.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Containers/ContainerAllocationPolicies.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/PrimitiveComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/ExponentialHeightFog.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/GameInstance.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/GameInstance.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/GameplayStatics.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Public/ReplayTypes.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/ImageWrapper/Private/Formats/IcnsImageWrapper.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/UMG/Public/Animation/WidgetAnimationEvents.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR.Target.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/KartGameInstance.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RaceGameState.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Project/ProjectR/Source/ProjectR/KartGame/Kart/Kart.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Project/ProjectR/Source/ProjectR/KartGame/Kart/Kart.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/Aim/Aim.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/Aim/Aim.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ProjectR/KartGame/UIs/HUD/TrackInfo/TrackInfo.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ProjectR/ProjectR.Build.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -83,10 +89,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "C/C++ Project.ProjectR.executor": "Run",
+    "C/C++ Project.ProjectR.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging feature/item-UI",
+    "git-widget-placeholder": "feature/ui-lap",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -269,6 +275,7 @@
       <workItem from="1742433559183" duration="4494000" />
       <workItem from="1742438298270" duration="14200000" />
       <workItem from="1742521151954" duration="78000" />
+      <workItem from="1742523701328" duration="1114000" />
     </task>
     <servers />
   </component>

@@ -41,9 +41,12 @@ private:
 	UPROPERTY(Replicated)
 	FString CurrentKartCheckPoint = TEXT("0");
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, ReplicatedUsing=OnRep_CurrentLap)
 	uint8 CurrentLap = 0;
 
 	UPROPERTY(Replicated)
 	uint8 Ranking = 0;
+
+	UFUNCTION()
+	void OnRep_CurrentLap();
 };
