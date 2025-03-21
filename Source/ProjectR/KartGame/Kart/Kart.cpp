@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartCollisionComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
@@ -159,6 +160,10 @@ AKart::AKart()
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent->SetNetAddressable();
+	KartCollisionComponent->SetIsReplicated(true);
+	
 }
 
 // Called when the game starts or when spawned
@@ -265,7 +270,7 @@ void AKart::UpdateSpeedUI()
 	}
 }
 
-void AKart::ClearAccelerationInput()
+void AKart::ClearAcceleration()
 {
-	AccelerationComponent->SetAccelerationInput(0.0f);
+	AccelerationComponent->ClearAcceleration();
 }
