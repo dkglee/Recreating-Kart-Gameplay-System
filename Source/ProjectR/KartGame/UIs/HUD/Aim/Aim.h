@@ -13,4 +13,14 @@ UCLASS()
 class PROJECTR_API UAim : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(meta = (BindWidget))
+	class UImage* AimImage;
+
+	UPROPERTY(EditAnywhere)
+	class UTexture2D* GreenAim;
+
+	UPROPERTY(EditAnywhere)
+	class UTexture2D* RedAim;
 };

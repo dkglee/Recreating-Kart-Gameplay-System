@@ -71,14 +71,18 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_SetUsingAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
-	
+
+	void ChangeAimColor(bool bIsLockOn);
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Aim", meta = (AllowPrivateAccess = "true"))
 	class AKart* LockedTarget = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim", meta = (AllowPrivateAccess = "true"))
+	class AKart* FinalTarget = nullptr;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
 
@@ -92,16 +96,14 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere)
 	bool bInventoryIsFull = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
 	float MaxLockOnDist = 7000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
 	float InitialBoxSizeOffset = 7.0f;
 
 	// 에임 UI 변수
 	FVector InitialAimUIPos;
 	FVector InitialAimUIScale;
 
-	UPROPERTY()
-	class AKart* FinalTarget = nullptr;
 };
