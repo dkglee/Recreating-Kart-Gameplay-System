@@ -96,7 +96,6 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 			CurrentType = EInteractionType::None;
 			MissileKnockbackElapsedTime = 0.f;
 			Client_ChangePhysics(true);
-			Kart->GetAccelerationComponent()->ResetAcceleration();
 			return;
 		}
 		NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
@@ -152,6 +151,8 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 			return;
 		}
 		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
+		Kart->GetAccelerationComponent()->ResetAcceleration();
+		
 		//FFastLogger::LogConsole(TEXT("ChangePhysics called.  IsServer: %s, Role: %d, IsPhysicsOn: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), GetOwnerRole(), Kart->GetRootBox()->IsSimulatingPhysics());
 	}
 }
