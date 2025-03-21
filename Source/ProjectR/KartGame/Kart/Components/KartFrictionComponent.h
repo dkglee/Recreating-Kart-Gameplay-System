@@ -37,7 +37,7 @@ public:
 
 #pragma region GetterSetters
 	GETTER(bool, bDrift);
-	GETTER_SETTER(float, CurrentFrictionGrip);
+	GETTER_SETTER(float, InFrictionGripCoeff);
 #pragma endregion
 	
 private:
@@ -59,11 +59,9 @@ private:
 	bool bDriftInput = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
-	
-	float CurrentFrictionGrip;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float BaseFrictionGrip = 10.0f;
+	float FrictionGrip = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* FrictionCurve = nullptr;
@@ -89,10 +87,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float NormalAngularDamping = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float HardDrfitAngularDamping = 0.1f;
+	float HardDriftAngularDamping = 0.1f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float DefaultAngularDamping = 3.5f;
 
 	float InFrictionData = 0.0f;
-	float InFrictionGrip = 0.0f;
+	// 마찰력 계수 Percent Gage
+	float InFrictionGripCoeff = 0.0f;
 };

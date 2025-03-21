@@ -73,7 +73,7 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedCom
 	
 	CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
 	Kart->ClearAcceleration();
-	Kart->GetFrictionComponent()->SetCurrentFrictionGrip(0);
+	Kart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
 	const FVector KartImpulse = Kart->GetNetworkSyncComponent()
 				->GetKartInfo().Velocity;
 	
@@ -85,7 +85,7 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedCom
 		
 		Kart->GetRootBox()->AddImpulse(OtherKartImpulse * -1 * CollisionPower);
 		OtherKart->GetKartCollisionComponent()->CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
-		OtherKart->GetFrictionComponent()->SetCurrentFrictionGrip(0);
+		OtherKart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
 		OtherKart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
 	} else
 	{

@@ -50,8 +50,6 @@ UKartFrictionComponent::UKartFrictionComponent()
 void UKartFrictionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	// 현재 마찰력 값 초기화
-	CurrentFrictionGrip = BaseFrictionGrip;
 	
 	FrictionRollbackCallback.BindDynamic(this, &ThisClass::OnFrictionRollbackCallback);
 	FrictionRollbackFinish.BindDynamic(this, &ThisClass::OnFrictionRollbackFinish);
@@ -94,7 +92,7 @@ void UKartFrictionComponent::SetAngularDampling()
 	if (bDriftInput && bSteering && bDrift)
 	{
 		// 드리프트 버튼이 계속 눌리고 있고 방향키 입력도 강하게 눌리고 있을 경우
-		KartBody->SetAngularDamping(HardDrfitAngularDamping);
+		KartBody->SetAngularDamping(HardDriftAngularDamping);
 		DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Hard Drift"), nullptr, FColor::Red, 0.0f);
 		float Threshold = 0.5f;
 		if (NormalizedSpeed < Threshold)
@@ -213,27 +211,25 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 	if (bDrift)
 	{
 		InFrictionData = TargetFrictionData;
-		InFrictionGrip = TargetInFrictionGrip;
+		InFrictionGripCoeff = TargetInFrictionGrip;
 	}
 	else
 	{
 		InFrictionData = FMath::FInterpTo(InFrictionData, TargetFrictionData, DeltaTime, InterpSpeed);
-		InFrictionGrip = FMath::FInterpTo(InFrictionGrip, TargetInFrictionGrip, DeltaTime, InterpSpeed);
+		InFrictionGripCoeff = FMath::FInterpTo(InFrictionGripCoeff, TargetInFrictionGrip, DeltaTime, InterpSpeed);
 	}
 	
-	FVector FrictionForce = RightVector * Velocity * -1.5f * InFrictionData * InFrictionGrip;
+	FVector FrictionForce = RightVector * Velocity * -1.5f * InFrictionData * InFrictionGripCoeff;
 
 	KartBody->AddForce(FrictionForce, NAME_None, true);
 }
 
 void UKartFrictionComponent::OnFrictionRollbackCallback(const float Value)
 {
-	CurrentFrictionGrip = FMath::Lerp(0, BaseFrictionGrip, Value);
 }
 
 void UKartFrictionComponent::OnFrictionRollbackFinish()
 {
-	CurrentFrictionGrip = BaseFrictionGrip;
 }
 
 void UKartFrictionComponent::RollbackFriction()
