@@ -127,8 +127,11 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 
 void UKartAccelerationComponent::ClearAcceleration()
 {
+	KartBody->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 	AccelerationInput = 0.f;
 	Acceleration = 0;
+	
 }
 
 void UKartAccelerationComponent::ResetAcceleration()
