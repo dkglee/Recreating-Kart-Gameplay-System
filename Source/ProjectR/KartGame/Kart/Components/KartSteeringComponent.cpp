@@ -105,10 +105,10 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 		// debug
 		FString DebugLog = FString::Printf(TEXT("Wheel Rotation: %s"), *NewRotation.ToString());
 		FVector DebugLocation = Sign > 0 ? KartBody->GetComponentLocation() + FVector(0, 0, 200) : KartBody->GetComponentLocation() + FVector(0, 50, -200);
-		DrawDebugString(GetWorld(), DebugLocation, DebugLog, nullptr, FColor::Red, 0.0f);
+		// DrawDebugString(GetWorld(), DebugLocation, DebugLog, nullptr, FColor::Red, 0.0f);
 	}
 	FString Log = FString::Printf(TEXT("SteeringIntensity: %f"), SteeringIntensity);
-	DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, 125), Log, nullptr, FColor::Red, 0.0f);
+	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, 125), Log, nullptr, FColor::Red, 0.0f);
 }
 
 // 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임
