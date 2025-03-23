@@ -8,7 +8,6 @@
 #include "KartAccelerationComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
-#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -52,15 +51,7 @@ void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	
 }
 
-void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
-{
-	if (bBoosterUsing)
-	{
-		Server_AddBoosterForce_Implementation();
-	}
-}
-
-void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
+void UKartBoosterComponent::AddBoosterForce()
 {
 	FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce;
 
@@ -68,5 +59,19 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	{
 		FVector location = AccelerationComponent->GetWheels()[i]->GetComponentLocation();
 		KartBody->AddForceAtLocation(force, location);
+	}
+}
+
+void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
+{
+	AddBoosterForce();
+}
+
+void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
+{
+	if (bBoosterUsing)
+	{
+		FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+		Server_AddBoosterForce_Implementation();
 	}
 }

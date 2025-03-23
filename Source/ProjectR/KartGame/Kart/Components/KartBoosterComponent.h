@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "KartBoosterComponent.generated.h"
 
@@ -25,6 +24,8 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	void AddBoosterForce();
+
 	UFUNCTION(Server, Reliable)
 	void Server_AddBoosterForce();
 

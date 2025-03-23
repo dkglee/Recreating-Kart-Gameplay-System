@@ -30,10 +30,12 @@ public:
 
 	GETTER_SETTER(class AKart*, OwningPlayer);
 	
-public:
+private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class AKart* OwningPlayer;
 	
+	
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	class UBoxComponent* Root;
 

@@ -201,12 +201,22 @@ void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AKart, bUsingBooster);
+
 }
 
 // Called every frame
 void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
+	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
+	DrawDebugString(GetWorld(), GetActorLocation(), *localstr, 0, FColor::Red, 0 , true, 1);
+	FVector temp = GetActorLocation();
+	temp.Z += 100.f;
+	DrawDebugString(GetWorld(), temp, *remotestr, 0, FColor::Red, 0 , true, 1);
+	
 
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
@@ -226,7 +236,6 @@ void AKart::Tick(float DeltaTime)
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 			BoosterComponent->ProcessBooster(bUsingBooster);
-			
 
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
