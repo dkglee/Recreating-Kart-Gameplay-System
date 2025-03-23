@@ -56,7 +56,9 @@ void ALobbyPlayerController::PushWidgetStack(const ELobbyUI& LobbyUIKey)
 	// 이전의 마지막 위젯에 대한 후처리
 	// 위젯 스택이 비어있으면 로비이고, 아니라면 마지막 위젯 스택을 가져오게 처리한다.
 	UUserWidget* LastWidget = WidgetStack.IsEmpty() ? MainLobbyUI : WidgetStack.Last();
-	LastWidget->SetVisibility(ESlateVisibility::Hidden);
+	// 팝업 노출 시에는 뒤에 UI가 없어지면 안된다.
+	LastWidget->SetVisibility(LobbyUIKey == ELobbyUI::Popup
+		? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	if (IWidgetStackInterface* WidgetStackInterface = Cast<IWidgetStackInterface>(LastWidget))
 	{
 		WidgetStackInterface->ClearWidgetInfo();

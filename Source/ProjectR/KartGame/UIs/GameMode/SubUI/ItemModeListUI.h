@@ -11,6 +11,9 @@ class PROJECTR_API UItemModeListUI : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	void UpdateToSearch();
+	
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UScrollBox> SessionList;
