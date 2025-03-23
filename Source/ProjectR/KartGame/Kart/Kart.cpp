@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartBoosterComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
@@ -23,6 +24,7 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AKart::AKart()
@@ -163,7 +165,10 @@ AKart::AKart()
 	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
-	
+
+	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("Kart Booster Component"));
+	BoosterComponent->SetNetAddressable();
+	BoosterComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -195,6 +200,7 @@ void AKart::BeginPlay()
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 }
 
 // Called every frame
@@ -219,6 +225,8 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
+			BoosterComponent->ProcessBooster(bUsingBooster);
+			
 
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);

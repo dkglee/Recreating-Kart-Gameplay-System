@@ -14,15 +14,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc8c464d-c8d0-4780-bb58-8a7e5eb036bb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartBoosterComponent.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartBoosterComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProjectR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Lobby/MainLobby.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Games/Race/Tracks/F1_Racing_Track.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Games/Race/Tracks/F1_Racing_Track.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Kart/Blueprints/BP_Kart.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UIs/HUD/WBP_MainUI.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectR.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectR.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Games/Modes/Race/RiderPlayerState.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartCollisionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Items/DataTable/ItemTable.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/BaseItem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/BaseItem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/BaseItem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/BaseItem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Booster/Booster.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Booster/Booster.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Booster/Booster.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Booster/Booster.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInteractionComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Components/ItemInventoryComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/ItemBox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/ItemBox.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Items/Missile/Missile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ProjectR/KartGame/Kart/Kart.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,22 +94,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C/C++ Project.ProjectR.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/ui-lap",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C/C++ Project.ProjectR.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/item-table&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C/C++ Project.ProjectR">
     <configuration name="ProjectR" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -276,6 +283,12 @@
       <workItem from="1742438298270" duration="14200000" />
       <workItem from="1742521151954" duration="78000" />
       <workItem from="1742523701328" duration="1114000" />
+      <workItem from="1742708960232" duration="11000" />
+      <workItem from="1742709007712" duration="17000" />
+      <workItem from="1742709043074" duration="1770000" />
+      <workItem from="1742710871866" duration="10051000" />
+      <workItem from="1742721048871" duration="715000" />
+      <workItem from="1742721808082" duration="13000" />
     </task>
     <servers />
   </component>

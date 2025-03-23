@@ -195,12 +195,17 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 		}
 	case EItemName::WaterBomb:
 		{
-			GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
+			auto* waterBomb = GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
 			break;
 		}
 	case EItemName::Booster:
 		{
-			GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			auto* booster = GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			if (booster)
+			{
+				booster->SetOwningPlayer(Kart);
+				FFastLogger::LogConsole(TEXT("Set Booster owning actor"));
+			}
 			break;
 		}
 	default:

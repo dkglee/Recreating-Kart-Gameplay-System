@@ -17,10 +17,18 @@ public:
 	ABooster();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
+	FTimerHandle BoosterTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
+	float BoosterTime = 3.0f;
+
+	float ElapsedTime = 0.f;
+
+	
 };
