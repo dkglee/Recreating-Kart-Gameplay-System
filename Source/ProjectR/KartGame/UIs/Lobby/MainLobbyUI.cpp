@@ -1,6 +1,7 @@
 ﻿#include "MainLobbyUI.h"
 
 #include "EnumUtil.h"
+#include "SessionUtil.h"
 #include "Components/Button.h"
 #include "KartGame/Games/KartGameInstance.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"

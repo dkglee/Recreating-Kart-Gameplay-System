@@ -31,10 +31,8 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 private:
-	UPROPERTY()
-	TObjectPtr<UMainLobbyUI> MainLobbyUI;
-
 	// TODO: 모듈화
+	UPROPERTY()
 	TArray<TObjectPtr<UUserWidget>> WidgetStack;
 
 #pragma region Input
@@ -52,8 +50,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|Input", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> IA_ExitWidget;
 #pragma endregion
-
 #pragma region WidgetInfo
+	UPROPERTY()
+	TObjectPtr<UMainLobbyUI> MainLobbyUI;
+	
 	UPROPERTY()
 	TMap<ELobbyUI, TObjectPtr<UUserWidget>> WidgetValue;
 	
