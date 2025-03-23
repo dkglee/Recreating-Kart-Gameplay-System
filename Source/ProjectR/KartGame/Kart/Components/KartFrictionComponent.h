@@ -85,9 +85,9 @@ private:
 #pragma endregion
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float NormalAngularDamping = 0.5f;
+	float NormalAngularDamping = 0.05f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float HardDriftAngularDamping = 0.1f;
+	float HardDriftAngularDamping = 0.01f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float DefaultAngularDamping = 3.5f;
 
