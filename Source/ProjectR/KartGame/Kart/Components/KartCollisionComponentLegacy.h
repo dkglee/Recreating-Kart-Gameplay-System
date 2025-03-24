@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "KartCollisionComponent.generated.h"
+#include "KartCollisionComponentLegacy.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PROJECTR_API UKartCollisionComponent : public UActorComponent
+class PROJECTR_API UKartCollisionComponentLegacy : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UKartCollisionComponent();
+	UKartCollisionComponentLegacy();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
