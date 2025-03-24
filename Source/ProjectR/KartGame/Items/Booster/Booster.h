@@ -20,15 +20,5 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
-	FTimerHandle BoosterTimerHandle;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
-	float BoosterTime = 3.0f;
-
-	float ElapsedTime = 0.f;
-
 	
 };

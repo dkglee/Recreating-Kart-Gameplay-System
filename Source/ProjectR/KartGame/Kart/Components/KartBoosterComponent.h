@@ -48,6 +48,12 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	float BoosterForce = 1750.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
+	float BoosterTime = 3.f;
+	
+	float ElapsedTime = 0.f;
+	
 
 	UPROPERTY()
 	bool bInstantBoostEnabled = false;
