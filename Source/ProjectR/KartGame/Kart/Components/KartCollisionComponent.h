@@ -16,6 +16,8 @@ struct FCollision
 	FKartInfo KartInfo = FKartInfo();
 	UPROPERTY()
 	bool bCollisionWithKart = false;
+	UPROPERTY()
+	FVector CollisionNormal = FVector::ZeroVector;
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
