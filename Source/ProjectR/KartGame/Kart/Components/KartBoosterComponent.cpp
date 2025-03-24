@@ -56,6 +56,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 	{
 		Kart->SetbUsingBooster(false);
+		ElapsedTime = 0.f;
 		return;
 	}
 
@@ -63,6 +64,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (ElapsedTime >= BoosterTime)
 	{
 		Kart->SetbUsingBooster(false);
+		ElapsedTime = 0.f;
 		return;
 	}
 	

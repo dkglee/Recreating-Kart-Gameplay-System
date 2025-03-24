@@ -43,6 +43,11 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		MissileInteraction_Move(DeltaTime);	
 	}
+
+	if (bShieldOn)
+	{
+		Server_CheckShieldUsingTime();
+	}
 }
 
 void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -57,6 +62,14 @@ void UItemInteractionComponent::MissileHitInteraction()
 	if (Kart == nullptr)
 	{
 		FFastLogger::LogConsole(TEXT("InteractionComponent : Kart is nullptr"));
+		return;
+	}
+
+	if (bShieldOn)
+	{
+		FFastLogger::LogConsole(TEXT("InteractionComponent : blocked by shield"));
+		NetMulticast_UpdateShieldOn(false);
+		ShieldElapsedTime = 0.f;
 		return;
 	}
 
@@ -153,4 +166,19 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 		Kart->GetAccelerationComponent()->ResetAcceleration();
 	}
+}
+
+void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
+{
+	ShieldElapsedTime += GetWorld()->GetDeltaSeconds();
+	if (ShieldElapsedTime >= ShieldTime)
+	{
+		NetMulticast_UpdateShieldOn(false);
+		ShieldElapsedTime = 0.f;
+	}
+}
+
+void UItemInteractionComponent::NetMulticast_UpdateShieldOn_Implementation(bool value)
+{
+	bShieldOn = value;
 }
