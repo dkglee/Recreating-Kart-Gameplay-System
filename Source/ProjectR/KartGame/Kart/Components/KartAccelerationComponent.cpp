@@ -64,7 +64,6 @@ void UKartAccelerationComponent::GetLifetimeReplicatedProps(TArray<class FLifeti
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UKartAccelerationComponent, TargetAcceleration);
 }
 
 // Called every frame

@@ -69,7 +69,7 @@ private:
 	float MaxAcceleration = 1500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float TargetAcceleration;
 
 	bool bWasSteering = false;
