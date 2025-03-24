@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartFrictionComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -41,6 +42,9 @@ void UKartBoosterComponent::InitializeComponent()
 	{
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 		AccelerationComponent = Kart->GetAccelerationComponent();
+
+		Kart->GetFrictionComponent()->OnDriftEnded.AddDynamic(this, &UKartBoosterComponent::EnableBoostWindow);
+		Kart->GetAccelerationComponent()->OnAccelerationStarted.AddDynamic(this, &UKartBoosterComponent::ProcessInstantBoost);
 	}
 }
 
@@ -50,6 +54,17 @@ void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 }
+
+void UKartBoosterComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 {
@@ -85,4 +100,38 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		
 		Server_AddBoosterForce_Implementation();
 	}
+}
+
+void UKartBoosterComponent::ProcessInstantBoost()
+{
+	FFastLogger::LogConsole(TEXT("InstantBoost"));
+	if (bInstantBoostEnabled)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
+		FFastLogger::LogConsole(TEXT("ProcessInstantBoost"));
+		// Impulse 방식으로 처리
+		FVector Impulse = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * InstantBoostScale;
+		KartBody->AddImpulse(Impulse);
+		bInstantBoostEnabled = false;
+	}
+}
+
+void UKartBoosterComponent::EnableBoostWindow()
+{
+	bInstantBoostEnabled = true;
+
+	FFastLogger::LogConsole(TEXT("EnableBoostWindow"));
+	GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
+	TWeakObjectPtr<UKartBoosterComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(InstantBoostTimer, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartBoosterComponent* BoosterComp = WeakThis.Get();
+			if (BoosterComp)
+			{
+				BoosterComp->bInstantBoostEnabled = false;
+			}
+		}
+	}), InstantBoostDuration, false);
 }

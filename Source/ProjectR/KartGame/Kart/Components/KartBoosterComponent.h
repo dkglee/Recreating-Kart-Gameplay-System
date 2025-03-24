@@ -23,9 +23,15 @@ protected:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_AddBoosterForce();
+	UFUNCTION()
+	void ProcessInstantBoost();
+	UFUNCTION()
+	void EnableBoostWindow();
 
 public:
 	void ProcessBooster(bool bBoosterUsing);
@@ -48,4 +54,14 @@ private:
 	
 	float ElapsedTime = 0.f;
 	
+
+	UPROPERTY()
+	bool bInstantBoostEnabled = false;
+
+	UPROPERTY()
+	FTimerHandle InstantBoostTimer;
+	UPROPERTY()
+	float InstantBoostDuration = 1.5f;
+	UPROPERTY()
+	float InstantBoostScale = 0.5f;
 };

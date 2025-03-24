@@ -90,25 +90,19 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 
 	TArray<UKartSuspensionComponent*> Wheels = {LF_Wheel, RF_Wheel};
 
-	SteerRate = FMath::Abs(InTargetSteering) ? SteerRate : SteerRate * 2.0f;
+	float TempSteerRate = FMath::Abs(InTargetSteering) ? SteerRate * 5.0f : SteerRate * 3.0f;
 
-	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), SteerRate);
+	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), TempSteerRate);
 
+	DrawDebugString(GetWorld(), Kart->GetActorLocation(), FString::Printf(TEXT("SteeringIntensity : %f"), SteeringIntensity), nullptr, FColor::Red, 0.0f, true);
+	
 	// Rotate the wheels
 	for (UKartSuspensionComponent* Wheel : Wheels)
 	{
-		int Sign = Wheel == LF_Wheel ? 1 : -1;
 		float Alpha = (SteeringIntensity + 1.0f) / 2.0f;
-		FRotator NewRotation = FMath::Lerp(FRotator{0, MaxRotation, 0}, FRotator{0, -MaxRotation, 0}, Alpha);
+		FRotator NewRotation = FMath::Lerp(FRotator{0, -MaxRotation, 0}, FRotator{0, MaxRotation, 0}, Alpha);
 		Wheel->SetRelativeRotation(NewRotation);
-
-		// debug
-		FString DebugLog = FString::Printf(TEXT("Wheel Rotation: %s"), *NewRotation.ToString());
-		FVector DebugLocation = Sign > 0 ? KartBody->GetComponentLocation() + FVector(0, 0, 200) : KartBody->GetComponentLocation() + FVector(0, 50, -200);
-		// DrawDebugString(GetWorld(), DebugLocation, DebugLog, nullptr, FColor::Red, 0.0f);
 	}
-	FString Log = FString::Printf(TEXT("SteeringIntensity: %f"), SteeringIntensity);
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, 125), Log, nullptr, FColor::Red, 0.0f);
 }
 
 // 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임

@@ -4,7 +4,7 @@
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
 #include "KartBoosterComponent.h"
-#include "KartCollisionComponent.h"
+#include "KartCollisionComponentLegacy.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
@@ -162,7 +162,7 @@ AKart::AKart()
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
-	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponentLegacy>(TEXT("Kart Collision Component"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
 
@@ -234,7 +234,6 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
-			BoosterComponent->ProcessBooster(bUsingBooster);
 
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
@@ -244,6 +243,7 @@ void AKart::Tick(float DeltaTime)
 			LeftSkidMark->ProcessSkidMark(false);
 			RightSkidMark->ProcessSkidMark(false);
 		}
+		BoosterComponent->ProcessBooster(bUsingBooster);
 
 		EngineSoundComponent->PlayKartEngineSound();
 		DriftSoundComponent->PlayDriftSound(bDrift && flag);
@@ -268,6 +268,7 @@ void AKart::UpdateSpeedUI()
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
 	FVector ForwardVector = RootBox->GetForwardVector();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	// float KartSpeed = RootBox->GetPhysicsLinearVelocity().Length();
 
 	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
 	if (PC)

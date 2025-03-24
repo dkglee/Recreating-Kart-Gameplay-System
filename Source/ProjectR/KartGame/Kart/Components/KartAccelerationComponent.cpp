@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
+#include "KartFrictionComponent.h"
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
@@ -57,6 +58,7 @@ void UKartAccelerationComponent::InitializeComponent()
 void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &UKartAccelerationComponent::OnMovementInputDetected);
+	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Started, this, &UKartAccelerationComponent::BroadCastAccelerationStarted);
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Completed, this, &UKartAccelerationComponent::OnMovementInputDetected);
 }
 
@@ -76,6 +78,14 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetAcceleration = InputActionValue.Get<float>();
+}
+
+void UKartAccelerationComponent::BroadCastAccelerationStarted(const FInputActionValue& InputActionValue)
+{
+	// if (InputActionValue.Get<float>() > 0.0f)
+	// {
+		OnAccelerationStarted.Broadcast();
+	// }
 }
 
 void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)
@@ -99,7 +109,7 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 	// 상태가 Off -> On 으로 변경될 때만 딱 한 번 줄임
 	if (bSteering)
 	{
-		Acceleration *= 0.55f;
+		Acceleration *= 0.6f;
 	}
 
 	// 마지막에 상태 업데이트

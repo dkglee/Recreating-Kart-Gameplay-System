@@ -33,3 +33,13 @@ float UKartSystemLibrary::CalculateNormalizedSpeedWithKart(class AKart* Kart, fl
 	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
 	return NormalizedSpeed;
 }
+
+float UKartSystemLibrary::CalculateNormalizedRightSpeedWithKart(class UBoxComponent* KartBody, float MaxSpeed)
+{
+	float NormalizedSpeed = 0.0f;
+	FVector RightVector = KartBody->GetRightVector();
+	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+	float KartSpeed = FVector::DotProduct(RightVector, LinearVelocity);
+	NormalizedSpeed = FMath::Abs(KartSpeed) / MaxSpeed;
+	return NormalizedSpeed;
+}

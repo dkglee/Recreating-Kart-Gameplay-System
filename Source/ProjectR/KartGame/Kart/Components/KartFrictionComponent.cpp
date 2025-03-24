@@ -8,6 +8,7 @@
 #include "InputAction.h"
 #include "Kart.h"
 #include "KartSteeringComponent.h"
+#include "KartSuspensionComponent.h"
 #include "KartSystemLibrary.h"
 #include "StringDev.h"
 
@@ -74,6 +75,7 @@ void UKartFrictionComponent::ProcessFriction()
 	// 드리프트 상태에 따라 마찰력을 적용
 	SetAngularDampling();
 	ApplyFrictionToKart_Implementation(bDrift);
+	BroadCastDriftEnd();
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -93,34 +95,29 @@ void UKartFrictionComponent::SetAngularDampling()
 	{
 		// 드리프트 버튼이 계속 눌리고 있고 방향키 입력도 강하게 눌리고 있을 경우
 		KartBody->SetAngularDamping(HardDriftAngularDamping);
-		// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Hard Drift"), nullptr, FColor::Red, 0.0f);
 		float Threshold = 0.5f;
 		if (NormalizedSpeed < Threshold)
 		{
-			KartBody->SetAngularDamping(DefaultAngularDamping * 0.9f);
+			KartBody->SetAngularDamping(DefaultAngularDamping * 0.5f);
 		}
 	}
 	else if (!bDriftInput && bSteering && bDrift)
 	{
 		// 드리프트 버튼이 안눌리고 방향키 입력만으로 드리프트를 유지하고 있는 경우
 		KartBody->SetAngularDamping(NormalAngularDamping);
-		// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Normal Drift"), nullptr, FColor::Red, 0.0f);
 		float Threshold = 0.5f;
 		if (NormalizedSpeed < Threshold)
 		{
-			KartBody->SetAngularDamping(DefaultAngularDamping * 0.9f);
+			KartBody->SetAngularDamping(DefaultAngularDamping * 1.0f);
 		}
 	}
 	else if (!bDriftInput && !bSteering)
 	{
 		// 드리프트 버튼이 안눌리고 방향키 입력도 없는 경우
 		KartBody->SetAngularDamping(DefaultAngularDamping);
-		// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Default Drift : No Drift No Steer"), nullptr, FColor::Red, 0.0f);
 	}
 	else
 	{
-		// 나머지 경우
-		// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), TEXT("Default Drift"), nullptr, FColor::Red, 0.0f);
 		KartBody->SetAngularDamping(DefaultAngularDamping);
 	}
 
@@ -130,11 +127,14 @@ void UKartFrictionComponent::DetermineDriftState()
 {
 	// 속도를 구함
 	float NormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
+	float NormalizedRightSpeed = UKartSystemLibrary::CalculateNormalizedRightSpeedWithKart(KartBody, Kart->GetMaxSpeed());
+	float TotalNormalizedSpeed = NormalizedSpeed + NormalizedRightSpeed;
 	bool bSteering = !FMath::IsNearlyZero(FMath::Abs(Kart->GetSteeringComponent()->GetTargetSteering()));
 
 	// 속도가 일정 이상이다. 이전에 드리프트 상태가 아니었다면 드리프트 상태로 변경
-	constexpr float Threshold = 0.1f; 
-	bool bFlag = NormalizedSpeed > Threshold;
+	constexpr float Threshold = 0.35f; 
+	// bool bFlag = NormalizedSpeed > Threshold;
+	bool bFlag = TotalNormalizedSpeed > Threshold;
 	if (bFlag && !bDrift && bDriftInput && bSteering)
 	{
 		// 드리프트 상태로 변경 후 리턴
@@ -144,31 +144,65 @@ void UKartFrictionComponent::DetermineDriftState()
 
 	if (bDrift)
 	{
-		float AngularVelocity = KartBody->GetPhysicsAngularVelocityInDegrees().Length();
+		// FVector RightVector = KartBody->GetRightVector();
+		// FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+		// float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+		//
+		// // 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
+		// constexpr float DriftThreshold = 1100.0f;
+		//
+		// // slip angle을 구한 다음에 이를 이용하여 드리프트 상태를 결정 -> 사전에 그러면 바퀴가 적절히 돌아가야 함
+		// FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
+		// float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
+		// FVector WheelRightVector = Kart->GetLF_Wheel()->GetRightVector();
+		// float WheelRightVelocity = FVector::DotProduct(WheelRightVector, LinearVelocity);
+		//
+		// FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
+		// float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
+		//
+		// float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
+		//
+		// bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
+		// bDrift |= (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 2.0f && FMath::Abs(Velocity) > DriftThreshold);
+		//
+		// bDrift = bDrift || (bDriftInput && bSteering);
+		// bDrift = bDrift && bFlag;
 
 		FVector RightVector = KartBody->GetRightVector();
 		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+		float TotalVelocity = LinearVelocity.Size();
 
-		// 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
-		constexpr float AngularDriftThreshold = 5.0f;
-		constexpr float DriftThreshold = 400.0f;
-		
-		// bDrift = bFlag && FMath::Abs(AngularVelocity) > AngularDriftThreshold;
-		// bDrift &= bFlag && FMath::Abs(Velocity) > DriftThreshold;
-		bDrift = FMath::Abs(AngularVelocity) > AngularDriftThreshold;
-		bDrift &= FMath::Abs(Velocity) > DriftThreshold;
+		constexpr float SlipAngleThreshold = 25.0f; // degree
+		constexpr float LateralRatioThreshold = 0.75f; // 20% 이상 미끄러지는 경우
+
+		FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
+		float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
+		FVector WheelRightVector = Kart->GetLF_Wheel()->GetRightVector();
+		float WheelRightVelocity = FVector::DotProduct(WheelRightVector, LinearVelocity);
+
+		FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
+		float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
+
+		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
+		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
+
+		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold) 
+				 || (LateralRatio > LateralRatioThreshold);
+
 		bDrift = bDrift || (bDriftInput && bSteering);
+		bDrift = bDrift && bFlag;
 
-		//
-		// FVector ForwardVector = KartBody->GetForwardVector();
-		// float  = FVector::DotProduct(ForwardVector, LinearVelocity);
-		// float 
 	}
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, -50), *FString::Printf(TEXT("Steer: %f"), Kart->GetSteeringComponent()->GetSteeringIntensity()), nullptr, FColor::Red, 0.0f);
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, -25), *FString::Printf(TEXT("Angular: %f"), KartBody->GetPhysicsAngularVelocityInDegrees().Length()), nullptr, FColor::Red, 0.0f);
-	//
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation() + FVector(0, 0, 50), *FString::Printf(TEXT("bDrift : %s"), bDrift ? TEXT("true") : TEXT("false")), nullptr, FColor::Red, 0.0f);
+}
+
+void UKartFrictionComponent::BroadCastDriftEnd()
+{
+	if (bPrevDrift && !bDrift)
+	{
+		OnDriftEnded.Broadcast();
+	}
+	bPrevDrift = bDrift;
 }
 
 void UKartFrictionComponent::InitializeComponent()
@@ -201,7 +235,7 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 
 	// 예시 변수들
 	float TargetFrictionData = bInDrift ? FrictionCurve->GetFloatValue(NormalizedSpeed) : 1.0f;
-	float TargetInFrictionGrip = bInDrift ? 1.0f : FrictionGrip;
+	float TargetInFrictionGrip = bInDrift ? 0.7f : FrictionGrip;
 
 	// 보간 속도 계수 (너무 높으면 여전히 급격하고, 너무 낮으면 느리게 반응)
 	float InterpSpeed = 3.0f; // 적절히 조절

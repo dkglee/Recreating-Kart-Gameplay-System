@@ -1,4 +1,4 @@
-﻿#include "KartCollisionComponent.h"
+﻿#include "KartCollisionComponentLegacy.h"
 
 #include "Kart.h"
 #include "KartFrictionComponent.h"
@@ -8,7 +8,7 @@
 #include "KartGame/Games/Objects/CheckPoint.h"
 #include "Net/UnrealNetwork.h"
 
-UKartCollisionComponent::UKartCollisionComponent()
+UKartCollisionComponentLegacy::UKartCollisionComponentLegacy()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
@@ -16,25 +16,25 @@ UKartCollisionComponent::UKartCollisionComponent()
 
 }
 
-void UKartCollisionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void UKartCollisionComponentLegacy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	DOREPLIFETIME(UKartCollisionComponent, CurrentCollisionCooldownFrame)
+	DOREPLIFETIME(UKartCollisionComponentLegacy, CurrentCollisionCooldownFrame)
 }
 
-void UKartCollisionComponent::InitializeComponent()
+void UKartCollisionComponentLegacy::InitializeComponent()
 {
 	Super::InitializeComponent();
 	Kart = Cast<AKart>(GetOwner());
 }
 
-void UKartCollisionComponent::BeginPlay()
+void UKartCollisionComponentLegacy::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentCollisionCooldownFrame = 0;
 	Kart->GetRootBox()->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnCollisionKart);	
 }
 
-void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UKartCollisionComponentLegacy::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -52,7 +52,7 @@ void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 }
 
 // Collision 처리는 서버에서만 진행하고 클라로 위치 보간을 요청시킨다.
-void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void UKartCollisionComponentLegacy::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!Kart->HasAuthority())

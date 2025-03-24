@@ -8,6 +8,7 @@
 #include "Components/ActorComponent.h"
 #include "KartAccelerationComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAccelerationStarted);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartAccelerationComponent : public UActorComponent
@@ -41,8 +42,11 @@ public:
 	GETTER(TArray<class UKartSuspensionComponent*>, Wheels);
 	GETTER(float, TargetAcceleration);
 #pragma endregion
+
+	FOnAccelerationStarted OnAccelerationStarted;
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
+	void BroadCastAccelerationStarted(const FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)
 	void ApplyForceToKart();

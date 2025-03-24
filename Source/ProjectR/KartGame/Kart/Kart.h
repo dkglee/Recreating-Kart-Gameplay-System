@@ -37,7 +37,7 @@ public:
 	GETTER(float, NormalizedSpeed);
 	GETTER(class UKartAccelerationComponent*, AccelerationComponent);
 	GETTER(class UKartFrictionComponent*, FrictionComponent);
-	GETTER(class UKartCollisionComponent*, KartCollisionComponent);
+	// GETTER(class UKartCollisionComponent*, KartCollisionComponent);
 	GETTER(class UBoxComponent*, RootBox);
 	GETTER(class UKartSuspensionComponent*, LF_Wheel);
 	GETTER(class UKartSuspensionComponent*, RF_Wheel);
@@ -92,8 +92,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	class UKartCollisionComponent* KartCollisionComponent = nullptr;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	// class UKartCollisionComponent* KartCollisionComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartSteeringComponent* SteeringComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
