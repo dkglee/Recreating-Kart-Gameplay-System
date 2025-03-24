@@ -13,9 +13,25 @@ void UGameModeListUI::NativeConstruct()
 
 void UGameModeListUI::ClickToSessionCreate()
 {
-	SessionCreatePopup->SetVisibility(
-		SessionCreatePopup->GetVisibility() == ESlateVisibility::Hidden ?
-		ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetOwningPlayer());
+	
+	// 숨겨져 있는 상태인 경우에 대한 처리
+	if (SessionCreatePopup->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		SessionCreatePopup->SetVisibility(ESlateVisibility::Visible);
+		if (PC)
+		{
+			PC->OnClickInputKey_ESC_Notified.AddDynamic(this, &ThisClass::ClickToSessionCreate);
+		}
+		
+		return;
+	}
+
+	SessionCreatePopup->SetVisibility(ESlateVisibility::Hidden);
+	if (PC)
+	{
+		PC->OnClickInputKey_ESC_Notified.RemoveDynamic(this, &ThisClass::ClickToSessionCreate);
+	}
 }
 
 void UGameModeListUI::SetDefaultWidgetInfo()
@@ -34,6 +50,7 @@ void UGameModeListUI::SetDefaultWidgetInfo()
 void UGameModeListUI::ClearWidgetInfo()
 {
 	IWidgetStackInterface::ClearWidgetInfo();
+	SessionCreatePopup->SetVisibility(ESlateVisibility::Hidden);
 	
 	ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetOwningPlayer());
 	if (!PC)

@@ -19,6 +19,7 @@ void ALobbyPlayerController::BeginPlay()
 	}
 	
 	SetShowMouseCursor(true);
+	
 	MainLobbyUI = CreateWidget<UMainLobbyUI>(this, MainLobbyUIClass);
 	MainLobbyUI->AddToViewport();
 	
@@ -43,8 +44,7 @@ void ALobbyPlayerController::SetupInputComponent()
 	}
 
 	EnhancedInputComponent->BindAction(IA_ExitWidget, ETriggerEvent::Triggered, this,
-		&ThisClass::PopWidgetStack);
-	
+		&ThisClass::OnTrigger_ExitWidget);
 	EnhancedInputComponent->BindAction(IA_C, ETriggerEvent::Triggered, this,
 		&ThisClass::OnTrigger_C);
 	EnhancedInputComponent->BindAction(IA_F5, ETriggerEvent::Triggered, this,
@@ -57,8 +57,7 @@ void ALobbyPlayerController::PushWidgetStack(const ELobbyUI& LobbyUIKey)
 	// 위젯 스택이 비어있으면 로비이고, 아니라면 마지막 위젯 스택을 가져오게 처리한다.
 	UUserWidget* LastWidget = WidgetStack.IsEmpty() ? MainLobbyUI : WidgetStack.Last();
 	// 팝업 노출 시에는 뒤에 UI가 없어지면 안된다.
-	LastWidget->SetVisibility(LobbyUIKey == ELobbyUI::Popup
-		? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	LastWidget->SetVisibility(ESlateVisibility::Hidden);
 	if (IWidgetStackInterface* WidgetStackInterface = Cast<IWidgetStackInterface>(LastWidget))
 	{
 		WidgetStackInterface->ClearWidgetInfo();
@@ -116,4 +115,18 @@ void ALobbyPlayerController::OnTrigger_C()
 void ALobbyPlayerController::OnTrigger_F5()
 {
 	OnClickInputKey_F5_Notified.Broadcast();
+}
+
+void ALobbyPlayerController::OnTrigger_ExitWidget()
+{
+	// Delegate에 바인딩 된 것이 있다면 그것만 처리
+	// Pop widget을 하고싶으면 UI 에서 Delegate Binding을 처리할 것
+	if (OnClickInputKey_ESC_Notified.IsBound())
+	{
+		OnClickInputKey_ESC_Notified.Broadcast();
+		return;
+	}
+
+	// 기본 동작은 Widget Stack을 Pop 하는 것이다.
+	PopWidgetStack();
 }
