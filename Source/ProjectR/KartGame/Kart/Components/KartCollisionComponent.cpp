@@ -80,7 +80,6 @@ void UKartCollisionComponent::InitializeComponent()
 	}
 }
 
-
 // Called every frame
 void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
@@ -88,12 +87,6 @@ void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
-
-// 애초에 이 함수는 서버에서만 실행된다.
-// void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-// 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-// {
-// }
 
 void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollision CollisionInfo)
 {

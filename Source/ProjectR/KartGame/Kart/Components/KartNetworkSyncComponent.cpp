@@ -83,14 +83,14 @@ void UKartNetworkSyncComponent::OnRep_KartInfo()
 	if (!Kart->IsLocallyControlled())
 	{
 		// 서버로부터 받은 위치와 회전값을 적용한다.
-		KartBody->SetWorldTransform(KartInfo.KartTransform);
+		KartBody->SetWorldTransform(KartInfo.KartTransform, true);
 	}
 }
 
 void UKartNetworkSyncComponent::Server_SendKartInfo_Implementation(FKartInfo NewKartInfo)
 {
 	// OnRep_KartInfo();
-	KartBody->SetWorldTransform(NewKartInfo.KartTransform);
+	KartBody->SetWorldTransform(NewKartInfo.KartTransform, true);
 
 	KartInfo = NewKartInfo;
 }
