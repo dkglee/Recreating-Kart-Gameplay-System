@@ -5,6 +5,7 @@
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "SessionCreatePopupWidget.generated.h"
 
+class ALobbyPlayerController;
 class UCheckBox;
 class UButton;
 class USpinBox;
@@ -14,6 +15,13 @@ UCLASS()
 class PROJECTR_API USessionCreatePopupWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void OpenSessionCreate();
+	
+	UFUNCTION()
+	void RemoveSessionCreate();
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -37,5 +45,10 @@ private:
 
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
 	void OnSessionCreated(FName SessionName, bool IsCreateSuccess);
-#pragma endregion 
+#pragma endregion
+
+#pragma region PrivateReference
+	UPROPERTY()
+	ALobbyPlayerController* PC;
+#pragma endregion
 };
