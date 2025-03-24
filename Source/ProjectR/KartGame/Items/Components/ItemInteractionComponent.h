@@ -45,6 +45,12 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_ChangePhysics(bool bEnable);
 
+	UFUNCTION(Server, Reliable)
+	void Server_CheckShieldUsingTime();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_UpdateShieldOn(bool value);
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
@@ -57,12 +63,19 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool bIsInteraction = false;
 
+	// 쉴드 변수
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
+	bool bShieldOn = false;
+
+	float ShieldElapsedTime = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float ShieldTime = 2.5f;
+	
 	// 미사일 변수
 	FVector InitialPos;
 	FQuat InitialQuat;
 
 	float MissileKnockbackElapsedTime = 0.f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MissileKnockbackTime = 1.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")

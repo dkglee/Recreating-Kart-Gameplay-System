@@ -3,6 +3,10 @@
 
 #include "Shield.h"
 
+#include "FastLogger.h"
+#include "Kart.h"
+#include "KartGame/Items/Components/ItemInteractionComponent.h"
+
 
 // Sets default values
 AShield::AShield()
@@ -22,5 +26,14 @@ void AShield::BeginPlay()
 void AShield::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (HasAuthority() == false) return;
+
+	auto* Kart = GetOwningPlayer();
+	if (Kart)
+	{
+		Kart->GetItemInteractionComponent()->bShieldOn = true;
+		FFastLogger::LogConsole(TEXT("shield on"));
+		this->Destroy();
+	}
 }
 
