@@ -159,11 +159,11 @@ void UKartFrictionComponent::DetermineDriftState()
 		
 		FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
 		float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
-	
+		
 		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
 		
 		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
-		bDrift |= FMath::Abs(Velocity) > DriftThreshold;
+		bDrift |= (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 2.0f && FMath::Abs(Velocity) > DriftThreshold);
 		
 		bDrift = bDrift || (bDriftInput && bSteering);
 		bDrift = bDrift && bFlag;

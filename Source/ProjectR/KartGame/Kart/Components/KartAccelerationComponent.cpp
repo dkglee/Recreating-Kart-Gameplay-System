@@ -82,7 +82,10 @@ void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue
 
 void UKartAccelerationComponent::BroadCastAccelerationStarted(const FInputActionValue& InputActionValue)
 {
-	OnAccelerationStarted.Broadcast();
+	if (InputActionValue.Get<float>() > 0.0f)
+	{
+		OnAccelerationStarted.Broadcast();
+	}
 }
 
 void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)
