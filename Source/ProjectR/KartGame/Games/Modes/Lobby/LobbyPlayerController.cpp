@@ -126,7 +126,6 @@ void ALobbyPlayerController::OnTrigger_ExitWidget()
 		OnClickInputKey_ESC_Notified.Broadcast();
 		return;
 	}
-
 	// 기본 동작은 Widget Stack을 Pop 하는 것이다.
 	PopWidgetStack();
 }

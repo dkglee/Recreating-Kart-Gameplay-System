@@ -8,29 +8,32 @@ void UGameModeListUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	SessionCreatePopup->SetVisibility(ESlateVisibility::Hidden);
-	SessionCreateButton->OnClicked.AddDynamic(this, &ThisClass::ClickToSessionCreate);
+	SessionCreateButton->OnClicked.AddDynamic(this, &ThisClass::OpenSessionCreate);
 }
 
-void UGameModeListUI::ClickToSessionCreate()
+void UGameModeListUI::OpenSessionCreate()
 {
 	ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetOwningPlayer());
-	
 	// 숨겨져 있는 상태인 경우에 대한 처리
-	if (SessionCreatePopup->GetVisibility() == ESlateVisibility::Hidden)
+	if (SessionCreatePopup->GetVisibility() == ESlateVisibility::Visible)
 	{
-		SessionCreatePopup->SetVisibility(ESlateVisibility::Visible);
-		if (PC)
-		{
-			PC->OnClickInputKey_ESC_Notified.AddDynamic(this, &ThisClass::ClickToSessionCreate);
-		}
-		
 		return;
 	}
+	
+	SessionCreatePopup->SetVisibility(ESlateVisibility::Visible);
+	if (PC)
+	{
+		PC->OnClickInputKey_ESC_Notified.AddDynamic(this, &ThisClass::RemoveSessionCreate);
+	}
+}
 
+void UGameModeListUI::RemoveSessionCreate()
+{
+	ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetOwningPlayer());
 	SessionCreatePopup->SetVisibility(ESlateVisibility::Hidden);
 	if (PC)
 	{
-		PC->OnClickInputKey_ESC_Notified.RemoveDynamic(this, &ThisClass::ClickToSessionCreate);
+		PC->OnClickInputKey_ESC_Notified.RemoveDynamic(this, &ThisClass::RemoveSessionCreate);
 	}
 }
 
@@ -44,7 +47,7 @@ void UGameModeListUI::SetDefaultWidgetInfo()
 		return;
 	}
 
-	PC->OnClickInputKey_C_Notified.AddDynamic(this, &ThisClass::ClickToSessionCreate);
+	PC->OnClickInputKey_C_Notified.AddDynamic(this, &ThisClass::OpenSessionCreate);
 }
 
 void UGameModeListUI::ClearWidgetInfo()
@@ -58,5 +61,5 @@ void UGameModeListUI::ClearWidgetInfo()
 		return;
 	}
 	
-	PC->OnClickInputKey_C_Notified.RemoveDynamic(this, &ThisClass::ClickToSessionCreate);
+	PC->OnClickInputKey_C_Notified.RemoveDynamic(this, &ThisClass::OpenSessionCreate);
 }

@@ -36,5 +36,8 @@ private:
 	TObjectPtr<USessionCreatePopupWidget> SessionCreatePopup;
 
 	UFUNCTION()
-	void ClickToSessionCreate();
+	void OpenSessionCreate();
+	
+	UFUNCTION()
+	void RemoveSessionCreate();
 };
