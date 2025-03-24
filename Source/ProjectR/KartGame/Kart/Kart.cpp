@@ -175,7 +175,7 @@ AKart::AKart()
 void AKart::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// Kart Input Binding
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
@@ -201,7 +201,7 @@ void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-
+	DOREPLIFETIME(AKart, bUsingBooster);
 }
 
 // Called every frame

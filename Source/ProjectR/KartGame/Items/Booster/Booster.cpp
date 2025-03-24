@@ -28,12 +28,15 @@ void ABooster::BeginPlay()
 void ABooster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	// 서버에서 처리하도록 처리
+	if (HasAuthority() == false) return;
+
+	// Kart는 해당 부스터를 소유하던 카트의 포인터이다.
 	auto* Kart = GetOwningPlayer();
 	if (Kart)
 	{
-		//FFastLogger::LogConsole(TEXT("BoosterActor) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
-
+		FFastLogger::LogConsole(TEXT("BoosterActor) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 		if (Kart->GetbUsingBooster() == false)
 		{
 			Kart->SetbUsingBooster(true);
