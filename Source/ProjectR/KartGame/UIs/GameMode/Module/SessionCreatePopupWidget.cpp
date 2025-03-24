@@ -8,9 +8,9 @@
 #include "Components/SpinBox.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 
-void USessionCreatePopupWidget::NativeConstruct()
+void USessionCreatePopupWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 	OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 			this, &ThisClass::OnSessionCreated);
 	CreateRoomButton->OnClicked.AddDynamic(this, &ThisClass::OnClickCreateRoomButton);
