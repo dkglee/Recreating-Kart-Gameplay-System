@@ -203,7 +203,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			auto* booster = GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
 			if (booster)
 			{
-				FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 				booster->SetOwningPlayer(Kart);
 			}
 			break;

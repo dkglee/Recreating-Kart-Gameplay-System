@@ -51,27 +51,22 @@ void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	
 }
 
-void UKartBoosterComponent::AddBoosterForce()
-{
-	FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce;
-
-	for (int32 i = 0; i < AccelerationComponent->GetWheels().Num(); i++)
-	{
-		FVector location = AccelerationComponent->GetWheels()[i]->GetComponentLocation();
-		KartBody->AddForceAtLocation(force, location);
-	}
-}
-
 void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 {
-	AddBoosterForce();
+	FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce;
+    
+    for (int32 i = 0; i < AccelerationComponent->GetWheels().Num(); i++)
+    {
+    	FVector location = AccelerationComponent->GetWheels()[i]->GetComponentLocation();
+    	KartBody->AddForceAtLocation(force, location);
+    }
 }
 
 void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 {
 	if (bBoosterUsing)
 	{
-		FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+		//FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 		Server_AddBoosterForce_Implementation();
 	}
 }

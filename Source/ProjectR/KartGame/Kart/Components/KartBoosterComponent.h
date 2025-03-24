@@ -24,8 +24,6 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void AddBoosterForce();
-
 	UFUNCTION(Server, Reliable)
 	void Server_AddBoosterForce();
 
@@ -43,6 +41,6 @@ private:
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
-	float BoosterForce = 1500.f;
+	float BoosterForce = 1750.f;
 	
 };

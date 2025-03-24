@@ -28,15 +28,12 @@ void ABooster::BeginPlay()
 void ABooster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (HasAuthority() == false)
-	{
-		return;
-	}
 	
 	auto* Kart = GetOwningPlayer();
 	if (Kart)
 	{
+		//FFastLogger::LogConsole(TEXT("BoosterActor) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+
 		if (Kart->GetbUsingBooster() == false)
 		{
 			Kart->SetbUsingBooster(true);
