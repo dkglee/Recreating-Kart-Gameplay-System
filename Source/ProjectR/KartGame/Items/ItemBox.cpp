@@ -93,7 +93,7 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)
 {
-	FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
+	//FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
 	
 	if (HasAuthority())
 	{
@@ -102,11 +102,20 @@ void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryCo
 
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
-	
-	GetWorldTimerManager().SetTimer(ItemBoxRespawnTimerHandle,  [this]()
+
+	if (GetWorldTimerManager().TimerExists(ItemBoxRespawnTimerHandle))
 	{
-		SetActorHiddenInGame(false);
-		SetActorEnableCollision(true);
+		GetWorldTimerManager().ClearTimer(ItemBoxRespawnTimerHandle);
+	}
+
+	TWeakObjectPtr<AItemBox> weakThis = this;
+	GetWorldTimerManager().SetTimer(ItemBoxRespawnTimerHandle,  [weakThis]()
+	{
+		if (weakThis.IsValid())
+		{
+			weakThis->SetActorHiddenInGame(false);
+			weakThis->SetActorEnableCollision(true);
+		}
 	}, 5.f, false);
 }
 

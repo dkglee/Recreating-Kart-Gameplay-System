@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUtil.h"
 #include "GameFramework/Actor.h"
 #include "KartGame/Items/BaseItem.h"
 #include "Missile.generated.h"

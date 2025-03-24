@@ -48,6 +48,8 @@ public:
 	GETTER_SETTER(bool, bCanMove);
 	GETTER(class USceneComponent*, TargetAimSocketComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
+	GETTER(class UKartBoosterComponent*, BoosterComponent);
+	GETTER_SETTER(bool, bUsingBooster);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -62,6 +64,8 @@ private:
 #pragma region ForeignVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	bool bCanMove = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	bool bUsingBooster = false;
 #pragma endregion
 
 #pragma region CoreSkills
@@ -102,6 +106,8 @@ private:
 	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartResetComponent* KartResetComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartBoosterComponent* BoosterComponent = nullptr;
 
 	// Aim Widget Component 추가
 	// 장진혁

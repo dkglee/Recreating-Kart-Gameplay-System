@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/Actor.h"
 #include "BaseItem.generated.h"
 
 UCLASS()
+
 class PROJECTR_API ABaseItem : public AActor
 {
 	GENERATED_BODY()
@@ -19,18 +21,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void Tick(float DeltaTime) override;
 	
 public:
 	void InitComponents();
 
-	class AKart* GetOwningPlayer();
+	GETTER_SETTER(class AKart*, OwningPlayer);
 	
-	void SetOwningPlayer(class AKart* player);
-
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class AKart* OwningPlayer;
+	
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
