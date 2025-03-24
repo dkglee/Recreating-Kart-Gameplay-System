@@ -195,12 +195,17 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 		}
 	case EItemName::WaterBomb:
 		{
-			GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
+			auto* waterBomb = GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
 			break;
 		}
 	case EItemName::Booster:
 		{
-			GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			auto* booster = GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			if (booster)
+			{
+				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+				booster->SetOwningPlayer(Kart);
+			}
 			break;
 		}
 	default:

@@ -4,6 +4,7 @@
 #include "BaseItem.h"
 
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -23,6 +24,13 @@ void ABaseItem::BeginPlay()
 	
 }
 
+void ABaseItem::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseItem, OwningPlayer);
+}
+
 // Called every frame
 void ABaseItem::Tick(float DeltaTime)
 {
@@ -37,15 +45,5 @@ void ABaseItem::InitComponents()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
-}
-
-void ABaseItem::SetOwningPlayer(class AKart* player)
-{
-	OwningPlayer = player;
-}
-
-class AKart* ABaseItem::GetOwningPlayer()
-{
-	return OwningPlayer;
 }
 

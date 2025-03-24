@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartBoosterComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
@@ -23,6 +24,7 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AKart::AKart()
@@ -163,14 +165,17 @@ AKart::AKart()
 	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
-	
+
+	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("Kart Booster Component"));
+	BoosterComponent->SetNetAddressable();
+	BoosterComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
 void AKart::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// Kart Input Binding
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
@@ -195,12 +200,22 @@ void AKart::BeginPlay()
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AKart, bUsingBooster);
 }
 
 // Called every frame
 void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
+	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
+	DrawDebugString(GetWorld(), GetActorLocation(), *localstr, 0, FColor::Red, 0 , true, 1);
+	FVector temp = GetActorLocation();
+	temp.Z += 100.f;
+	DrawDebugString(GetWorld(), temp, *remotestr, 0, FColor::Red, 0 , true, 1);
+	
 
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
@@ -219,6 +234,7 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
+			BoosterComponent->ProcessBooster(bUsingBooster);
 
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
