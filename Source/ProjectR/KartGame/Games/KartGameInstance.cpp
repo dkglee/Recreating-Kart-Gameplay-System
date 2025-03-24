@@ -3,6 +3,7 @@
 #include "FastLogger.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "SessionUtil.h"
 #include "Interfaces/OnlineFriendsInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Online/OnlineSessionNames.h"
@@ -25,6 +26,8 @@ void UKartGameInstance::Init()
 	}
 
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
+
+	FSessionUtil::Init();
 }
 
 void UKartGameInstance::CreateNewGameSession()
@@ -93,8 +96,6 @@ void UKartGameInstance::SearchGameSession()
 	// Lan 검색이 아닌 온라인 검색으로 처리
 	SessionSearch->bIsLanQuery = false;
 	// 검색에 필요한 쿼리 세팅
-
-	
 	SessionSearch->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 	
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
