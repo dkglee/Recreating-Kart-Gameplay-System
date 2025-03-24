@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
+#include "KartFrictionComponent.h"
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
@@ -57,6 +58,7 @@ void UKartAccelerationComponent::InitializeComponent()
 void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &UKartAccelerationComponent::OnMovementInputDetected);
+	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Started, this, &UKartAccelerationComponent::BroadCastAccelerationStarted);
 	PlayerInputComponent->BindAction(IA_Movement, ETriggerEvent::Completed, this, &UKartAccelerationComponent::OnMovementInputDetected);
 }
 
@@ -75,6 +77,11 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetAcceleration = InputActionValue.Get<float>();
+}
+
+void UKartAccelerationComponent::BroadCastAccelerationStarted(const FInputActionValue& InputActionValue)
+{
+	OnAccelerationStarted.Broadcast();
 }
 
 void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)

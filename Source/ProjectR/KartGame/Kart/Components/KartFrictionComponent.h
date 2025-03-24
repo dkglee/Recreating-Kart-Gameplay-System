@@ -9,6 +9,7 @@
 #include "Components/TimelineComponent.h"
 #include "KartFrictionComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDriftEnded);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartFrictionComponent : public UActorComponent
@@ -40,12 +41,15 @@ public:
 	GETTER_SETTER(float, InFrictionGripCoeff);
 #pragma endregion
 	
+	UPROPERTY()
+	FOnDriftEnded OnDriftEnded;
 private:
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);
 	UFUNCTION(Server, Reliable)
 	void ApplyFrictionToKart(bool bInDrift);
 	void SetAngularDampling();
 	void DetermineDriftState();
+	void BroadCastDriftEnd();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -59,6 +63,8 @@ private:
 	bool bDriftInput = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	bool bDrift = false;
+	UPROPERTY()
+	bool bPrevDrift = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	float FrictionGrip = 10.0f;

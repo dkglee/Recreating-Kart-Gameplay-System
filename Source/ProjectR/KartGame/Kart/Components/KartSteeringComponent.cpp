@@ -94,6 +94,8 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 
 	SteeringIntensity = FMath::FInterpTo(SteeringIntensity, InTargetSteering, GetWorld()->GetDeltaSeconds(), TempSteerRate);
 
+	DrawDebugString(GetWorld(), Kart->GetActorLocation(), FString::Printf(TEXT("SteeringIntensity : %f"), SteeringIntensity), nullptr, FColor::Red, 0.0f, true);
+	
 	// Rotate the wheels
 	for (UKartSuspensionComponent* Wheel : Wheels)
 	{

@@ -234,7 +234,6 @@ void AKart::Tick(float DeltaTime)
 			SteeringComponent->ProcessSteeringAndTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
-			BoosterComponent->ProcessBooster(bUsingBooster);
 
 			LeftSkidMark->ProcessSkidMark(bDrift);
 			RightSkidMark->ProcessSkidMark(bDrift);
@@ -244,6 +243,7 @@ void AKart::Tick(float DeltaTime)
 			LeftSkidMark->ProcessSkidMark(false);
 			RightSkidMark->ProcessSkidMark(false);
 		}
+		BoosterComponent->ProcessBooster(bUsingBooster);
 
 		EngineSoundComponent->PlayKartEngineSound();
 		DriftSoundComponent->PlayDriftSound(bDrift && flag);

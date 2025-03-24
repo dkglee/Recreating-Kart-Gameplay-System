@@ -75,6 +75,7 @@ void UKartFrictionComponent::ProcessFriction()
 	// 드리프트 상태에 따라 마찰력을 적용
 	SetAngularDampling();
 	ApplyFrictionToKart_Implementation(bDrift);
+	BroadCastDriftEnd();
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -131,7 +132,7 @@ void UKartFrictionComponent::DetermineDriftState()
 	bool bSteering = !FMath::IsNearlyZero(FMath::Abs(Kart->GetSteeringComponent()->GetTargetSteering()));
 
 	// 속도가 일정 이상이다. 이전에 드리프트 상태가 아니었다면 드리프트 상태로 변경
-	constexpr float Threshold = 0.2f; 
+	constexpr float Threshold = 0.35f; 
 	// bool bFlag = NormalizedSpeed > Threshold;
 	bool bFlag = TotalNormalizedSpeed > Threshold;
 	if (bFlag && !bDrift && bDriftInput && bSteering)
@@ -161,12 +162,21 @@ void UKartFrictionComponent::DetermineDriftState()
 	
 		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
 		
-		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 24.0f;
+		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
 		bDrift |= FMath::Abs(Velocity) > DriftThreshold;
 		
 		bDrift = bDrift || (bDriftInput && bSteering);
 		bDrift = bDrift && bFlag;
 	}
+}
+
+void UKartFrictionComponent::BroadCastDriftEnd()
+{
+	if (bPrevDrift && !bDrift)
+	{
+		OnDriftEnded.Broadcast();
+	}
+	bPrevDrift = bDrift;
 }
 
 void UKartFrictionComponent::InitializeComponent()
