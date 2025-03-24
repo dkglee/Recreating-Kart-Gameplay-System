@@ -121,9 +121,9 @@ void ALobbyPlayerController::OnTrigger_ExitWidget()
 {
 	// Delegate에 바인딩 된 것이 있다면 그것만 처리
 	// Pop widget을 하고싶으면 UI 에서 Delegate Binding을 처리할 것
-	if (OnClickInputKey_ESC_Notified.IsBound())
+	if (OnClickInputKey_Esc_Notified.IsBound())
 	{
-		OnClickInputKey_ESC_Notified.Broadcast();
+		OnClickInputKey_Esc_Notified.Broadcast();
 		return;
 	}
 	// 기본 동작은 Widget Stack을 Pop 하는 것이다.

@@ -23,7 +23,7 @@ void UGameModeListUI::OpenSessionCreate()
 	SessionCreatePopup->SetVisibility(ESlateVisibility::Visible);
 	if (PC)
 	{
-		PC->OnClickInputKey_ESC_Notified.AddDynamic(this, &ThisClass::RemoveSessionCreate);
+		PC->OnClickInputKey_Esc_Notified.AddDynamic(this, &ThisClass::RemoveSessionCreate);
 	}
 }
 
@@ -33,7 +33,7 @@ void UGameModeListUI::RemoveSessionCreate()
 	SessionCreatePopup->SetVisibility(ESlateVisibility::Hidden);
 	if (PC)
 	{
-		PC->OnClickInputKey_ESC_Notified.RemoveDynamic(this, &ThisClass::RemoveSessionCreate);
+		PC->OnClickInputKey_Esc_Notified.RemoveDynamic(this, &ThisClass::RemoveSessionCreate);
 	}
 }
 

@@ -21,7 +21,7 @@ class PROJECTR_API ALobbyPlayerController : public APlayerController
 public:
 	FOnClickInputKey_Notified OnClickInputKey_C_Notified;
 	FOnClickInputKey_Notified OnClickInputKey_F5_Notified;
-	FOnClickInputKey_Notified OnClickInputKey_ESC_Notified;
+	FOnClickInputKey_Notified OnClickInputKey_Esc_Notified;
 
 	void PushWidgetStack(const ELobbyUI& LobbyUIKey);
 	void PopWidgetStack();
