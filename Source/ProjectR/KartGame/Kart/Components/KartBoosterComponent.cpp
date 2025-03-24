@@ -53,6 +53,19 @@ void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 {
+	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
+	{
+		Kart->SetbUsingBooster(false);
+		return;
+	}
+
+	ElapsedTime += GetWorld()->GetDeltaSeconds();
+	if (ElapsedTime >= BoosterTime)
+	{
+		Kart->SetbUsingBooster(false);
+		return;
+	}
+	
 	FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce;
     
     for (int32 i = 0; i < AccelerationComponent->GetWheels().Num(); i++)
@@ -67,6 +80,7 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 	if (bBoosterUsing)
 	{
 		//FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+		
 		Server_AddBoosterForce_Implementation();
 	}
 }

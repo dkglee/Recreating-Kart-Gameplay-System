@@ -63,6 +63,8 @@ void UKartAccelerationComponent::SetupInputBinding(class UEnhancedInputComponent
 void UKartAccelerationComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UKartAccelerationComponent, TargetAcceleration);
 }
 
 // Called every frame

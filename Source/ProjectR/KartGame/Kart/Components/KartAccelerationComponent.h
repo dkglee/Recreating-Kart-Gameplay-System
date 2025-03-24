@@ -39,6 +39,7 @@ public:
 #pragma region GetterSetters
 	GETTER_SETTER(float, AccelerationInput);
 	GETTER(TArray<class UKartSuspensionComponent*>, Wheels);
+	GETTER(float, TargetAcceleration);
 #pragma endregion
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
@@ -68,7 +69,7 @@ private:
 	float MaxAcceleration = 1500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float Acceleration = 0.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float TargetAcceleration;
 
 	bool bWasSteering = false;
