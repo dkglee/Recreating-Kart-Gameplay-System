@@ -252,6 +252,7 @@ void AKart::UpdateSpeedUI()
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
 	FVector ForwardVector = RootBox->GetForwardVector();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	// float KartSpeed = RootBox->GetPhysicsLinearVelocity().Length();
 
 	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
 	if (PC)

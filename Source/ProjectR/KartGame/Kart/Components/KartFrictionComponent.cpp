@@ -97,7 +97,7 @@ void UKartFrictionComponent::SetAngularDampling()
 		float Threshold = 0.5f;
 		if (NormalizedSpeed < Threshold)
 		{
-			KartBody->SetAngularDamping(DefaultAngularDamping * 0.6f);
+			KartBody->SetAngularDamping(DefaultAngularDamping * 0.5f);
 		}
 	}
 	else if (!bDriftInput && bSteering && bDrift)
@@ -107,7 +107,7 @@ void UKartFrictionComponent::SetAngularDampling()
 		float Threshold = 0.5f;
 		if (NormalizedSpeed < Threshold)
 		{
-			KartBody->SetAngularDamping(DefaultAngularDamping * 0.6f);
+			KartBody->SetAngularDamping(DefaultAngularDamping * 1.0f);
 		}
 	}
 	else if (!bDriftInput && !bSteering)
@@ -126,11 +126,14 @@ void UKartFrictionComponent::DetermineDriftState()
 {
 	// 속도를 구함
 	float NormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
+	float NormalizedRightSpeed = UKartSystemLibrary::CalculateNormalizedRightSpeedWithKart(KartBody, Kart->GetMaxSpeed());
+	float TotalNormalizedSpeed = NormalizedSpeed + NormalizedRightSpeed;
 	bool bSteering = !FMath::IsNearlyZero(FMath::Abs(Kart->GetSteeringComponent()->GetTargetSteering()));
 
 	// 속도가 일정 이상이다. 이전에 드리프트 상태가 아니었다면 드리프트 상태로 변경
-	constexpr float Threshold = 0.1f; 
-	bool bFlag = NormalizedSpeed > Threshold;
+	constexpr float Threshold = 0.2f; 
+	// bool bFlag = NormalizedSpeed > Threshold;
+	bool bFlag = TotalNormalizedSpeed > Threshold;
 	if (bFlag && !bDrift && bDriftInput && bSteering)
 	{
 		// 드리프트 상태로 변경 후 리턴
@@ -158,10 +161,11 @@ void UKartFrictionComponent::DetermineDriftState()
 	
 		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
 		
-		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 20.0f;
+		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 24.0f;
 		bDrift |= FMath::Abs(Velocity) > DriftThreshold;
 		
 		bDrift = bDrift || (bDriftInput && bSteering);
+		bDrift = bDrift && bFlag;
 	}
 }
 
@@ -195,7 +199,7 @@ void UKartFrictionComponent::ApplyFrictionToKart_Implementation(bool bInDrift)
 
 	// 예시 변수들
 	float TargetFrictionData = bInDrift ? FrictionCurve->GetFloatValue(NormalizedSpeed) : 1.0f;
-	float TargetInFrictionGrip = bInDrift ? 1.0f : FrictionGrip;
+	float TargetInFrictionGrip = bInDrift ? 0.7f : FrictionGrip;
 
 	// 보간 속도 계수 (너무 높으면 여전히 급격하고, 너무 낮으면 느리게 반응)
 	float InterpSpeed = 3.0f; // 적절히 조절

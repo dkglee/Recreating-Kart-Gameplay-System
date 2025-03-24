@@ -69,5 +69,5 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* SteeringCurve = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	float TurnScaling = 400.0f;
+	float TurnScaling = 350.0f;
 };

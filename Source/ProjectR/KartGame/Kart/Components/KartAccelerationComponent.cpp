@@ -98,7 +98,7 @@ void UKartAccelerationComponent::ApplyForceToKart_Implementation()
 	// 상태가 Off -> On 으로 변경될 때만 딱 한 번 줄임
 	if (bSteering)
 	{
-		Acceleration *= 0.55f;
+		Acceleration *= 0.6f;
 	}
 
 	// 마지막에 상태 업데이트
