@@ -144,29 +144,55 @@ void UKartFrictionComponent::DetermineDriftState()
 
 	if (bDrift)
 	{
+		// FVector RightVector = KartBody->GetRightVector();
+		// FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+		// float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+		//
+		// // 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
+		// constexpr float DriftThreshold = 1100.0f;
+		//
+		// // slip angle을 구한 다음에 이를 이용하여 드리프트 상태를 결정 -> 사전에 그러면 바퀴가 적절히 돌아가야 함
+		// FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
+		// float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
+		// FVector WheelRightVector = Kart->GetLF_Wheel()->GetRightVector();
+		// float WheelRightVelocity = FVector::DotProduct(WheelRightVector, LinearVelocity);
+		//
+		// FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
+		// float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
+		//
+		// float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
+		//
+		// bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
+		// bDrift |= (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 2.0f && FMath::Abs(Velocity) > DriftThreshold);
+		//
+		// bDrift = bDrift || (bDriftInput && bSteering);
+		// bDrift = bDrift && bFlag;
+
 		FVector RightVector = KartBody->GetRightVector();
 		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
+		float TotalVelocity = LinearVelocity.Size();
 
-		// 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
-		constexpr float DriftThreshold = 1100.0f;
-	
-		// slip angle을 구한 다음에 이를 이용하여 드리프트 상태를 결정 -> 사전에 그러면 바퀴가 적절히 돌아가야 함
+		constexpr float SlipAngleThreshold = 25.0f; // degree
+		constexpr float LateralRatioThreshold = 0.75f; // 20% 이상 미끄러지는 경우
+
 		FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
 		float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
 		FVector WheelRightVector = Kart->GetLF_Wheel()->GetRightVector();
 		float WheelRightVelocity = FVector::DotProduct(WheelRightVector, LinearVelocity);
-		
+
 		FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
 		float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
-		
+
 		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
-		
-		bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
-		bDrift |= (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 2.0f && FMath::Abs(Velocity) > DriftThreshold);
-		
+		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
+
+		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold) 
+				 || (LateralRatio > LateralRatioThreshold);
+
 		bDrift = bDrift || (bDriftInput && bSteering);
 		bDrift = bDrift && bFlag;
+
 	}
 }
 
