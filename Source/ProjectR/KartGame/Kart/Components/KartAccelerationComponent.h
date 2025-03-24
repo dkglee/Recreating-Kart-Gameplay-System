@@ -39,6 +39,7 @@ public:
 #pragma region GetterSetters
 	GETTER_SETTER(float, AccelerationInput);
 	GETTER(TArray<class UKartSuspensionComponent*>, Wheels);
+	GETTER(float, TargetAcceleration);
 #pragma endregion
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);

@@ -115,6 +115,11 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
+	if (Kart->GetbUsingBooster() == true && Inventory[0].ItemName == EItemName::Booster)
+	{
+		return;
+	}
+
 	Server_UseItem();
 }
 
