@@ -18,6 +18,8 @@ UKartCollisionComponentLegacy::UKartCollisionComponentLegacy()
 
 void UKartCollisionComponentLegacy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
 	DOREPLIFETIME(UKartCollisionComponentLegacy, CurrentCollisionCooldownFrame)
 }
 
@@ -55,40 +57,40 @@ void UKartCollisionComponentLegacy::TickComponent(float DeltaTime, ELevelTick Ti
 void UKartCollisionComponentLegacy::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!Kart->HasAuthority())
-	{
-		return;
-	}
-
-	if (CurrentCollisionCooldownFrame > 0)
-	{
-		return;
-	}
-
-	if (OtherActor->IsA(AItemBox::StaticClass()) ||
-		OtherActor->IsA(ACheckPoint::StaticClass()))
-	{
-		return;
-	}
-	
-	CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
-	Kart->ClearAcceleration();
-	Kart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
-	const FVector KartImpulse = Kart->GetNetworkSyncComponent()
-				->GetKartInfo().Velocity;
-	
-	// 카트인 경우는 서로와의 충돌 처리
-	if (AKart* OtherKart = Cast<AKart>(OtherActor))
-	{
-		const FVector OtherKartImpulse = OtherKart->GetNetworkSyncComponent()
-			->GetKartInfo().Velocity;
-		
-		Kart->GetRootBox()->AddImpulse(OtherKartImpulse * -1 * CollisionPower);
-		OtherKart->GetKartCollisionComponent()->CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
-		OtherKart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
-		OtherKart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
-	} else
-	{
-		Kart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
-	}
+	// if (!Kart->HasAuthority())
+	// {
+	// 	return;
+	// }
+	//
+	// if (CurrentCollisionCooldownFrame > 0)
+	// {
+	// 	return;
+	// }
+	//
+	// if (OtherActor->IsA(AItemBox::StaticClass()) ||
+	// 	OtherActor->IsA(ACheckPoint::StaticClass()))
+	// {
+	// 	return;
+	// }
+	//
+	// CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
+	// Kart->ClearAcceleration();
+	// Kart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
+	// const FVector KartImpulse = Kart->GetNetworkSyncComponent()
+	// 			->GetKartInfo().Velocity;
+	//
+	// // 카트인 경우는 서로와의 충돌 처리
+	// if (AKart* OtherKart = Cast<AKart>(OtherActor))
+	// {
+	// 	const FVector OtherKartImpulse = OtherKart->GetNetworkSyncComponent()
+	// 		->GetKartInfo().Velocity;
+	// 	
+	// 	Kart->GetRootBox()->AddImpulse(OtherKartImpulse * -1 * CollisionPower);
+	// 	OtherKart->GetKartCollisionComponent()->CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
+	// 	OtherKart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
+	// 	OtherKart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
+	// } else
+	// {
+	// 	Kart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
+	// }
 }

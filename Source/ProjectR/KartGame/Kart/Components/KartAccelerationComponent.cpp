@@ -140,7 +140,6 @@ void UKartAccelerationComponent::ClearAcceleration()
 {
 	AccelerationInput = 0.f;
 	Acceleration = 0;
-	
 }
 
 void UKartAccelerationComponent::ResetAcceleration()

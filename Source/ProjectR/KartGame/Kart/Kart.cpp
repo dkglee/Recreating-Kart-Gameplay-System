@@ -4,6 +4,7 @@
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
 #include "KartBoosterComponent.h"
+#include "KartCollisionComponent.h"
 #include "KartCollisionComponentLegacy.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
@@ -162,7 +163,7 @@ AKart::AKart()
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
-	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponentLegacy>(TEXT("Kart Collision Component"));
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
 
