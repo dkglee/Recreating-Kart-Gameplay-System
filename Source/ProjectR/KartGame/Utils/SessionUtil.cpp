@@ -33,7 +33,7 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 	if (ExistSession)
 	{
 		UE_LOG(LogTemp, Error, TEXT("이미 만들어진 세션이 존재합니다. 보통 내부 로직 이슈입니다."));
-		OnlineSessionInterface->DestroySession(NAME_GameSession);
+		OnlineSessionInterface->DestroySession(FName(*SessionCreateData.RoomName));
 		UE_LOG(LogTemp, Error, TEXT("하지만, 못난 프로그래머를 위해 세션을 제거해드립니다."));
 	}
 	
@@ -42,7 +42,7 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 
 	const TSharedPtr<FOnlineSessionSettings> SessionSettings =
 		MakeShareable(new FOnlineSessionSettings());
-
+	
 	SessionSettings->bIsLANMatch = false;
 	SessionSettings->bAllowJoinInProgress = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
@@ -50,10 +50,12 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 	
 	SessionSettings->NumPublicConnections = SessionCreateData.MaxPlayer;
 	SessionSettings->bShouldAdvertise = SessionCreateData.IsPublic;
+	
 	SessionSettings->Set(FName("MatchType"), FCommonUtil::GetClassEnumKeyAsString(
 		SessionCreateData.MatchType), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-
-	OnlineSessionInterface->CreateSession(0, NAME_GameSession, *SessionSettings);
+	
+	OnlineSessionInterface->CreateSession(0,
+		FName(*SessionCreateData.RoomName), *SessionSettings);
 }
 
 void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)

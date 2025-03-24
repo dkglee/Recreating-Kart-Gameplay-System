@@ -56,6 +56,7 @@ void USessionCreatePopupWidget::OnClickCreateRoomButton()
 
 void USessionCreatePopupWidget::OnSessionCreated(FName SessionName, bool IsCreateSuccess)
 {
-	UE_LOG(LogTemp, Display, TEXT("하이 : %s"), *SessionName.ToString());
+	UE_LOG(LogTemp, Display, TEXT("하이 : %s -> %d")
+		, *SessionName.ToString(), IsCreateSuccess);
 	RemoveSessionCreate();
 }
