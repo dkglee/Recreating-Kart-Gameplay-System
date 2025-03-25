@@ -51,6 +51,8 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* HitComponent,
 		CollisionInfo.bCollisionWithKart = true;
 	}
 
+	CollisionInfo.CollisionNormal = Hit.ImpactNormal;
+
 	if (Kart->IsLocallyControlled())
 	{
 		ClientRPC_OnCollisionKart_Implementation(CollisionInfo);
@@ -78,7 +80,6 @@ void UKartCollisionComponent::InitializeComponent()
 	}
 }
 
-
 // Called every frame
 void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
@@ -87,31 +88,19 @@ void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 }
 
-// 애초에 이 함수는 서버에서만 실행된다.
-// void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-// 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-// {
-// }
-
 void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollision CollisionInfo)
 {
-	// 클라이언트에서는 해당 정보를 바탕으로 충돌 로직을 실행한다.
-	// if (CollisionInfo.bCollisionWithKart)
-	// {
-	// 	// 충돌한 카트의 정보를 받아와서 충돌 처리를 진행한다.
-	// 	FKartInfo OtherKartInfo = CollisionInfo.KartInfo;
-	// }
+	FVector ImpactNormal = CollisionInfo.CollisionNormal.GetSafeNormal();
+	float SlopeAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(ImpactNormal, FVector::UpVector)));
 
-	// 전방 속도만 남기고 나머지는 0으로 초기화
-	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
-	FVector ForwardVector = KartBody->GetForwardVector();
-	LinearVelocity = FVector::DotProduct(LinearVelocity, ForwardVector) * ForwardVector;
-
-	KartBody->SetPhysicsLinearVelocity(LinearVelocity);
+	if (SlopeAngle < 50.f)
+	{
+		// 평지나 언덕 -> 충돌 무시
+		return;
+	}
+	
 	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 
 	Kart->GetAccelerationComponent()->ClearAcceleration();
-
-	FFastLogger::LogConsole(TEXT("Kart Collision Detected!"));
 }
 

@@ -138,43 +138,30 @@ void UKartFrictionComponent::DetermineDriftState()
 	if (bFlag && !bDrift && bDriftInput && bSteering)
 	{
 		// 드리프트 상태로 변경 후 리턴
+		GetWorld()->GetTimerManager().ClearTimer(FrictionDelayTimer);
+		TWeakObjectPtr<UKartFrictionComponent> WeakThis = this;
+		auto TimerDelegate = FTimerDelegate::CreateLambda([WeakThis]() {
+			if (WeakThis.IsValid())
+			{
+				UKartFrictionComponent* StrongThis = WeakThis.Get();
+				StrongThis->bForceDrfit = false;
+			}
+		});
+		GetWorld()->GetTimerManager().SetTimer(FrictionDelayTimer, TimerDelegate, MinimumFrictionDelay, false);
 		bDrift = true;
+		bForceDrfit = true;
 		return ;
 	}
 
 	if (bDrift)
 	{
-		// FVector RightVector = KartBody->GetRightVector();
-		// FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
-		// float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
-		//
-		// // 오른쪽으로 가는 속도가 있다면 드리프트 상태로 유지
-		// constexpr float DriftThreshold = 1100.0f;
-		//
-		// // slip angle을 구한 다음에 이를 이용하여 드리프트 상태를 결정 -> 사전에 그러면 바퀴가 적절히 돌아가야 함
-		// FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
-		// float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
-		// FVector WheelRightVector = Kart->GetLF_Wheel()->GetRightVector();
-		// float WheelRightVelocity = FVector::DotProduct(WheelRightVector, LinearVelocity);
-		//
-		// FRotator WheelRot = Kart->GetLF_Wheel()->GetRelativeRotation();
-		// float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
-		//
-		// float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
-		//
-		// bDrift = FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 25.0f;
-		// bDrift |= (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > 2.0f && FMath::Abs(Velocity) > DriftThreshold);
-		//
-		// bDrift = bDrift || (bDriftInput && bSteering);
-		// bDrift = bDrift && bFlag;
-
 		FVector RightVector = KartBody->GetRightVector();
 		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
 		float TotalVelocity = LinearVelocity.Size();
 
-		constexpr float SlipAngleThreshold = 25.0f; // degree
-		constexpr float LateralRatioThreshold = 0.75f; // 20% 이상 미끄러지는 경우
+		constexpr float SlipAngleThreshold = 35.0f; // degree
+		constexpr float LateralRatioThreshold = 0.55f; // 20% 이상 미끄러지는 경우
 
 		FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
 		float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
@@ -188,11 +175,9 @@ void UKartFrictionComponent::DetermineDriftState()
 		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
 
 		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold) 
-				 || (LateralRatio > LateralRatioThreshold);
-
-		bDrift = bDrift || (bDriftInput && bSteering);
+				|| (LateralRatio > LateralRatioThreshold) ||(bDriftInput && bSteering)
+				|| bForceDrfit;
 		bDrift = bDrift && bFlag;
-
 	}
 }
 
@@ -215,6 +200,16 @@ void UKartFrictionComponent::InitializeComponent()
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartFrictionComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 	}
+}
+
+void UKartFrictionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Type::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FrictionDelayTimer);
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void UKartFrictionComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)

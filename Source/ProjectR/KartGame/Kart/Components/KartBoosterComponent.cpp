@@ -104,11 +104,9 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 
 void UKartBoosterComponent::ProcessInstantBoost()
 {
-	FFastLogger::LogConsole(TEXT("InstantBoost"));
 	if (bInstantBoostEnabled)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
-		FFastLogger::LogConsole(TEXT("ProcessInstantBoost"));
 		// Impulse 방식으로 처리
 		FVector Impulse = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * InstantBoostScale;
 		KartBody->AddImpulse(Impulse);
@@ -120,7 +118,6 @@ void UKartBoosterComponent::EnableBoostWindow()
 {
 	bInstantBoostEnabled = true;
 
-	FFastLogger::LogConsole(TEXT("EnableBoostWindow"));
 	GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
 	TWeakObjectPtr<UKartBoosterComponent> WeakThis = this;
 	GetWorld()->GetTimerManager().SetTimer(InstantBoostTimer, FTimerDelegate::CreateLambda([WeakThis]()

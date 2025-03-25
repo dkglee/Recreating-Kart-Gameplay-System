@@ -16,6 +16,8 @@ struct FCollision
 	FKartInfo KartInfo = FKartInfo();
 	UPROPERTY()
 	bool bCollisionWithKart = false;
+	UPROPERTY()
+	FVector CollisionNormal = FVector::ZeroVector;
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -30,15 +32,13 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	UFUNCTION()
-	void OnCollisionKart(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	virtual void InitializeComponent() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	// UFUNCTION()
-	// void OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnCollisionKart(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION(Client, Reliable)
 	void ClientRPC_OnCollisionKart(FCollision CollisionInfo);
 	
