@@ -11,9 +11,6 @@ void ARacePlayerController::BeginPlay()
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,
 		this, &ThisClass::SetHUDToStart, 5.0f);
-
-	// AKart* Kart = Cast<AKart>(GetPawn());
-	// Kart->SetbCanMove(true);
 }
 
 void ARacePlayerController::SetHUDToStart()
