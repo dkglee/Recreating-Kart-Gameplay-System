@@ -1,11 +1,13 @@
 #include "SessionGameState.h"
 
 #include "FastLogger.h"
+#include "SessionPlayerController.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
-void ASessionGameState::BeginPlay()
+ASessionGameState::ASessionGameState()
 {
-	Super::BeginPlay();
-	
 	PlayerInfo.Init(TEXT(""), MaxPlayerCount);
 	for (int i = 0; i < MaxPlayerCount; i++)
 	{
@@ -13,29 +15,73 @@ void ASessionGameState::BeginPlay()
 	}
 }
 
-void ASessionGameState::JoinPlayer(const FString& PlayerId)
+void ASessionGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	ReadyMap.Add(PlayerId, false);
+	 DOREPLIFETIME(ASessionGameState, PlayerInfo);
+}
 
-	FFastLogger::LogScreen(FColor::Red, TEXT("Join Player: %s"), *PlayerId);
+
+void ASessionGameState::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ASessionGameState::JoinPlayer(const FString& PlayerName)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
+	ReadyMap.Add(PlayerName, false);
+
+	FFastLogger::LogScreen(FColor::Red, TEXT("Join Player: %s"), *PlayerName);
 	for (int i = 0; i < MaxPlayerCount; i++)
 	{
 		if (PlayerInfo[i] == TEXT(""))
 		{
-			PlayerInfo[i] = PlayerId;
-			PlayerInfoMap[i] = PlayerId;
+			PlayerInfo[i] = PlayerName;
+			PlayerInfoMap[i] = PlayerName;
 			return;
 		}
 	}
+
+	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	{
+		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+	}
 }
 
-void ASessionGameState::LeavePlayer(const FString& PlayerId)
+void ASessionGameState::LeavePlayer(const FString& PlayerName)
 {
-	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerId);
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
+	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
 	PlayerInfoMap.Remove(PlayerIndex);
 	PlayerInfo[PlayerIndex] = TEXT("");
 	
-	ReadyMap.Remove(PlayerId);
+	ReadyMap.Remove(PlayerName);
+
+	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	{
+		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+	}
+}
+
+void ASessionGameState::OnRep_PlayerInfo()
+{
+	ASessionPlayerController* PC = Cast<ASessionPlayerController>(
+		UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (!PC)
+	{
+		return;
+	}
+
+	PC->UpdateSessionList();
 }
 
 bool ASessionGameState::IsPlayerReadyAll()

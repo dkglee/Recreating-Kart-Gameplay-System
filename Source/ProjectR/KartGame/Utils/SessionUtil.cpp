@@ -145,6 +145,5 @@ FString FSessionUtil::GetSteamIdByController(const APlayerController* PlayerCont
 		return TEXT("");
 	}
 
-	return SteamSubSystem->GetUserInterface()
-			->GetUserInfo(0, *SteamUniqueId)->GetDisplayName();
+	return SteamSubSystem->GetIdentityInterface()->GetPlayerNickname(*SteamUniqueId);
 }

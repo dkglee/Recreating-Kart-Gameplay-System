@@ -34,3 +34,8 @@ void ASessionPlayerController::CheckAndStartGame()
 {
 	GetWorld()->GetAuthGameMode<ASessionGameMode>()->StartGameToPlay();
 }
+
+void ASessionPlayerController::UpdateSessionList()
+{
+	ReadySession->UpdatePlayers();
+}

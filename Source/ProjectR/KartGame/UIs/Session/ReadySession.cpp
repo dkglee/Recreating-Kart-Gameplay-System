@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "GameFramework/GameStateBase.h"
+#include "KartGame/Games/Modes/Session/SessionGameState.h"
 #include "Module/ReadySessionPlayerWidget.h"
 
 void UReadySession::NativePreConstruct()
@@ -52,14 +53,8 @@ void UReadySession::InitializeWidget()
 
 void UReadySession::UpdatePlayers()
 {
-	TArray<TObjectPtr<APlayerState>> PSArray = GetWorld()->GetGameState()->PlayerArray;
-	
-	if (PSArray.Num() == 0)
-	{
-		return;
-	}
-	
-	for (int i = 0; i < PSArray.Num(); i++)
+	ASessionGameState* GS = Cast<ASessionGameState>(GetWorld()->GetGameState());
+	for (int i = 0; i < GS->GetPlayerInfo().Num(); i++)
 	{
 		UReadySessionPlayerWidget* ChildWidget = Cast<UReadySessionPlayerWidget>(
 			PlayerInfoGrid->GetChildAt(i));
@@ -67,6 +62,6 @@ void UReadySession::UpdatePlayers()
 		{
 			return;
 		}
-		ChildWidget->InitializeData(PSArray[i]);
+		ChildWidget->InitializeData(GS->GetPlayerInfo()[i]);
 	}
 }
