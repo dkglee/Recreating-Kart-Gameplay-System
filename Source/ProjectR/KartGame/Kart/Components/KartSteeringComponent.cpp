@@ -70,9 +70,13 @@ void UKartSteeringComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UKartSteeringComponent::ProcessSteeringAndTorque()
+void UKartSteeringComponent::ProcessSteering()
 {
 	ApplySteeringToKart_Implementation(TargetSteering);
+}
+
+void UKartSteeringComponent::ProcessTorque()
+{
 	ApplyTorqueToKartV2_Implementation(SteeringIntensity);
 }
 

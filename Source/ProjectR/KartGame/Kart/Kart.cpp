@@ -18,6 +18,7 @@
 #include "KartFrictionComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartResetComponent.h"
+#include "KartSkeletalMeshComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
 #include "Components/WidgetComponent.h"
@@ -170,6 +171,18 @@ AKart::AKart()
 	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("Kart Booster Component"));
 	BoosterComponent->SetNetAddressable();
 	BoosterComponent->SetIsReplicated(true);
+
+	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("Kart Skeletal Mesh Component"));
+	KartSkeletalMeshComponent->SetupAttachment(RootBox);
+	KartSkeletalMeshComponent->SetNetAddressable();
+	KartSkeletalMeshComponent->SetIsReplicated(true);
+
+	// Linetrace Location 초기화
+	LineTraceLocations.Reserve(4);  
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
 }
 
 // Called when the game starts or when spawned
@@ -214,7 +227,6 @@ void AKart::Tick(float DeltaTime)
 	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
 	FVector temp = GetActorLocation();
 	temp.Z += 100.f;
-	
 
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
@@ -222,15 +234,16 @@ void AKart::Tick(float DeltaTime)
 	{
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
-		flag &= LR_Wheel->ProcessSuspension();
-		flag &= RR_Wheel->ProcessSuspension();
-		flag &= LF_Wheel->ProcessSuspension();
-		flag &= RF_Wheel->ProcessSuspension();
+		flag &= LR_Wheel->ProcessSuspension(LineTraceLocations[0]);
+		flag &= RR_Wheel->ProcessSuspension(LineTraceLocations[1]);
+		flag &= LF_Wheel->ProcessSuspension(LineTraceLocations[2]);
+		flag &= RF_Wheel->ProcessSuspension(LineTraceLocations[3]);
 		
+		SteeringComponent->ProcessSteering();
 		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
-			SteeringComponent->ProcessSteeringAndTorque();
+			SteeringComponent->ProcessTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
@@ -246,6 +259,11 @@ void AKart::Tick(float DeltaTime)
 
 		EngineSoundComponent->PlayKartEngineSound();
 		DriftSoundComponent->PlayDriftSound(bDrift && flag);
+	}
+	else
+	{
+		LeftSkidMark->ProcessSkidMark(false);
+		RightSkidMark->ProcessSkidMark(false);
 	}
 	UpdateSpeedUI();
 }

@@ -108,7 +108,9 @@ private:
 	class UKartResetComponent* KartResetComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartBoosterComponent* BoosterComponent = nullptr;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartSkeletalMeshComponent* KartSkeletalMeshComponent = nullptr;
+	
 	// Aim Widget Component 추가
 	// 장진혁
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
@@ -141,5 +143,9 @@ private:
 	class UKartEngineSoundComponent* EngineSoundComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
+#pragma endregion
+
+#pragma region Etc
+	TArray<FVector> LineTraceLocations;
 #pragma endregion
 };
