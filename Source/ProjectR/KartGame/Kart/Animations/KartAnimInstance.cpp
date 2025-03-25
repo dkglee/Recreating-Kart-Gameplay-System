@@ -21,11 +21,9 @@ void UKartAnimInstance::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
 
-	FFastLogger::LogConsole(TEXT("KartAnimInstance::NativeBeginPlay"));
 	Kart = Cast<AKart>(TryGetPawnOwner());
 	if (Kart)
 	{
-		FFastLogger::LogConsole(TEXT("KartAnimInstance::Hello"));
 		KartBody = Kart->GetRootBox();
 	}
 }

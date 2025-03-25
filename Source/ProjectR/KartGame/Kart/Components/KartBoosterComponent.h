@@ -31,6 +31,8 @@ private:
 	void ProcessInstantBoost();
 	UFUNCTION()
 	void EnableBoostWindow();
+	UFUNCTION()
+	void ApplyInstantBoost();
 
 public:
 	void ProcessBooster(bool bBoosterUsing);
@@ -69,5 +71,12 @@ private:
 	UPROPERTY()
 	float InstantBoostScale = 0.5f;
 	UPROPERTY()
-	bool bOnBooster;
+	bool bOnBooster = false;
+
+	UPROPERTY()
+	FTimerHandle InstantBoostActiveTimer;
+	UPROPERTY()
+	bool bInstantBoostActive = false;
+	UPROPERTY()
+	float InstantBoostActiveDuration = 0.3f;
 };
