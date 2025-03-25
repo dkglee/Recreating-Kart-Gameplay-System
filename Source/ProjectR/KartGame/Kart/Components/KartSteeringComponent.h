@@ -28,7 +28,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-	void ProcessSteeringAndTorque();
+	void ProcessSteering();
+	void ProcessTorque();
 
 #pragma region GetterSetters
 	GETTER(float, SteeringIntensity);
