@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "KartBoosterComponent.generated.h"
 
@@ -36,6 +37,7 @@ private:
 public:
 	void ProcessBooster(bool bBoosterUsing);
 
+	GETTER(bool, bOnBooster);
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -64,4 +66,6 @@ private:
 	float InstantBoostDuration = 1.5f;
 	UPROPERTY()
 	float InstantBoostScale = 0.5f;
+	UPROPERTY()
+	bool bOnBooster;
 };

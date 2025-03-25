@@ -97,8 +97,12 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 	if (bBoosterUsing)
 	{
 		//FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
-		
+		bOnBooster = true;
 		Server_AddBoosterForce_Implementation();
+	}
+	else
+	{
+		bOnBooster = false;
 	}
 }
 

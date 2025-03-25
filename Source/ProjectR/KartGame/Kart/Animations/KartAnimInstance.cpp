@@ -6,11 +6,14 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartBoosterComponent.h"
 #include "KartSystemLibrary.h"
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 UKartAnimInstance::UKartAnimInstance()
 {
+	
 }
 
 void UKartAnimInstance::NativeBeginPlay()
@@ -31,7 +34,21 @@ void UKartAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	if (!Kart) return ;
-	
+
+	ProcessRotateWheel();
+	ProcessBoosterState();
+}
+
+void UKartAnimInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UKartAnimInstance, Rotation);
+	DOREPLIFETIME(UKartAnimInstance, bBoosterUsing);
+}
+
+void UKartAnimInstance::ProcessRotateWheel()
+{
 	Accel = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
 
 	FVector Velocity = KartBody->GetPhysicsLinearVelocity();
@@ -39,4 +56,9 @@ void UKartAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	float Speed = FVector::DotProduct(Velocity, ForwardVector);
 	float Sign = FMath::Sign(Speed);
 	Rotation += 40.0f * Sign * Accel;
+}
+
+void UKartAnimInstance::ProcessBoosterState()
+{
+	bBoosterUsing = Kart->GetBoosterComponent()->GetbOnBooster();
 }
