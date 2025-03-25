@@ -22,8 +22,13 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* KartBody = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
+	float Accel = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
+	float Rotation = 0.0f;
 };
