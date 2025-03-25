@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "SessionUtil.h"
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "ItemModeListUI.generated.h"
@@ -36,8 +37,7 @@ private:
 	const uint8 Horizon = 2;
 	const uint8 MaxCount = 30;
 #pragma endregion
-
-	TSharedPtr<FOnlineSessionSearch> ItemModeSessionSearch;
+	FSessionSearchData SessionSearchData;
 
 	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
 

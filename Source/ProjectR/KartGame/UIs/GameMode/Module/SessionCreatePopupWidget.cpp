@@ -51,7 +51,7 @@ void USessionCreatePopupWidget::OnClickCreateRoomButton()
 	CreateData.RoomName = RoomTitle->GetText().ToString();
 	CreateData.OnCreateSessionCompleteDelegate = OnCreateSessionCompleteDelegate;
 	
-	FSessionUtil::CreateSession(CreateData);
+	USessionUtil::CreateSession(CreateData);
 }
 
 void USessionCreatePopupWidget::OnSessionCreated(FName SessionName, bool IsCreateSuccess)

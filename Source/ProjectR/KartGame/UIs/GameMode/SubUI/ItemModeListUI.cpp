@@ -9,7 +9,6 @@
 #include "Components/UniformGridPanel.h"
 #include "KartGame/UIs/GameMode/Module/SessionRoomWidget.h"
 
-
 void UItemModeListUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -18,11 +17,11 @@ void UItemModeListUI::NativeOnInitialized()
 
 void UItemModeListUI::InitializeSearchType()
 {
-	ItemModeSessionSearch = MakeShareable(new FOnlineSessionSearch());
+	SessionSearchData.SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	const FString MatchType = FCommonUtil::GetClassEnumKeyAsString(EMatchType::Item);
-	ItemModeSessionSearch->QuerySettings.Set<FString>(FName("MatchType")
+	/*ItemModeSessionSearch->QuerySettings.Set<FString>(FName("MatchType")
 		, MatchType
-		, EOnlineComparisonOp::Equals);
+		, EOnlineComparisonOp::Equals);*/
 	OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCompleteSearch);
 }
@@ -30,11 +29,8 @@ void UItemModeListUI::InitializeSearchType()
 void UItemModeListUI::UpdateToSearch()
 {
 	SessionGridPanel->ClearChildren();
-	
-	FSessionSearchData SessionSearchData;
-	SessionSearchData.SessionSearch = ItemModeSessionSearch;
 	SessionSearchData.OnFindSessionsCompleteDelegate = OnFindSessionsCompleteDelegate;
-	FSessionUtil::SearchSession(SessionSearchData);
+	USessionUtil::SearchSession(SessionSearchData);
 }
 
 void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
@@ -44,19 +40,19 @@ void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
 		UE_LOG(LogTemp, Error, TEXT("방을 검색하는 것에 실패하였습니다."));
 		return;
 	}
-	FFastLogger::LogScreen(FColor::Red, TEXT("방 검색 성공: %d"), ItemModeSessionSearch->SearchResults.Num());
+	FFastLogger::LogScreen(FColor::Red, TEXT("방 검색 성공: %d"), SessionSearchData.SessionSearch->SearchResults.Num());
 
-	for (int i = 0; i < ItemModeSessionSearch->SearchResults.Num(); i++)
+	for (int i = 0; i < SessionSearchData.SessionSearch->SearchResults.Num(); i++)
 	{
 		USessionRoomWidget* NewSessionRoomWidget = CreateWidget<USessionRoomWidget>(
 			this, SessionRoomWidgetClass);
-		NewSessionRoomWidget->InitializeData(ItemModeSessionSearch->SearchResults[i]);
+		NewSessionRoomWidget->InitializeData(SessionSearchData.SessionSearch->SearchResults[i]);
 		SessionGridPanel->AddChildToUniformGrid(NewSessionRoomWidget,
 			i / Horizon, i % Horizon);
 	}
 
 	// 남은 빈 칸의 수를 여기서 채워줘야 한다.
-	for (int i = 0; i < MaxCount - ItemModeSessionSearch->SearchResults.Num(); i++)
+	for (int i = 0; i < MaxCount - SessionSearchData.SessionSearch->SearchResults.Num(); i++)
 	{
 		USessionRoomWidget* NewSessionRoomWidget = CreateWidget<USessionRoomWidget>(
 			this, SessionRoomWidgetClass);

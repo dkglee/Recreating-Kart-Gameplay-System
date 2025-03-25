@@ -4,6 +4,8 @@
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
+#include "SessionUtil.generated.h"
+
 class FOnlineSessionSearch;
 enum class EMatchType : uint8;
 
@@ -22,7 +24,8 @@ struct FSessionSearchData
 	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
 };
 
-class FSessionUtil
+UCLASS()
+class PROJECTR_API USessionUtil : public UObject
 {
 public:
 	static IOnlineSessionPtr OnlineSessionInterface;

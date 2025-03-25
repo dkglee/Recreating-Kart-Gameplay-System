@@ -26,7 +26,7 @@ void USessionRoomWidget::InitializeData(const FOnlineSessionSearchResult& Search
 
 void USessionRoomWidget::JoinSession()
 {
-	FSessionUtil::JoinSession(GetWorld(), SessionSearchResult,
+	USessionUtil::JoinSession(GetWorld(), SessionSearchResult,
 		OnJoinSessionCompleteDelegate);	
 }
 

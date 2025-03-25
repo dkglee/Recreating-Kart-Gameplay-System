@@ -1,18 +1,19 @@
 ﻿#include "SessionUtil.h"
 
 #include "CommonUtil.h"
+#include "EnumUtil.h"
 #include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
-IOnlineSessionPtr FSessionUtil::OnlineSessionInterface;
+IOnlineSessionPtr USessionUtil::OnlineSessionInterface;
 
-FDelegateHandle FSessionUtil::OnCreateSessionCompleteDelegateHandle;
-FDelegateHandle FSessionUtil::OnFindSessionsCompleteDelegateHandle;
-FDelegateHandle FSessionUtil::OnJoinSessionCompleteDelegateHandle;
+FDelegateHandle USessionUtil::OnCreateSessionCompleteDelegateHandle;
+FDelegateHandle USessionUtil::OnFindSessionsCompleteDelegateHandle;
+FDelegateHandle USessionUtil::OnJoinSessionCompleteDelegateHandle;
 
-void FSessionUtil::Init()
+void USessionUtil::Init()
 {
 	const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 
@@ -24,7 +25,7 @@ void FSessionUtil::Init()
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
 }
 
-void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
+void USessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 {
 	if (!OnlineSessionInterface.IsValid())
 	{
@@ -65,7 +66,7 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 		FName(*SessionCreateData.RoomName), *SessionSettings);
 }
 
-void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
+void USessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 {
 	if (!OnlineSessionInterface.IsValid())
 	{
@@ -88,12 +89,17 @@ void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 	// 검색에 필요한 쿼리 세팅
 	SessionSearchData.SessionSearch->QuerySettings.Set(
 		SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
+	// SessionSearchData.SessionSearch->QuerySettings.Set(
+ //        FName("MatchType"), FCommonUtil::GetClassEnumKeyAsString(
+ //            EMatchType::Item), EOnlineComparisonOp::Equals);
+	SessionSearchData.SessionSearch->QuerySettings.Set(
+		FName(TEXT("TEAM")), FString(TEXT("Wanted")), EOnlineComparisonOp::Equals);
 	
 	OnlineSessionInterface->FindSessions(0,
 		SessionSearchData.SessionSearch.ToSharedRef());
 }
 
-void FSessionUtil::JoinSession(const UWorld* World
+void USessionUtil::JoinSession(const UWorld* World
 	, FOnlineSessionSearchResult& Result
 	, const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate)
 {

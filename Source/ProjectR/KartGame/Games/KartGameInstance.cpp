@@ -5,5 +5,5 @@ void UKartGameInstance::Init()
 {
 	Super::Init();
 
-	FSessionUtil::Init();
+	USessionUtil::Init();
 }
