@@ -7,6 +7,7 @@
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "KartBoosterComponent.h"
+#include "KartNetworkSyncComponent.h"
 #include "KartSystemLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -49,7 +50,9 @@ void UKartAnimInstance::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 
 void UKartAnimInstance::ProcessRotateWheel()
 {
-	Accel = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
+	// Accel = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
+	AccelVector = Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity;
+	Accel = UKartSystemLibrary::CalculateNormalizedSpeedWithVector(AccelVector, KartBody->GetForwardVector(), Kart->GetMaxSpeed());
 
 	FVector Velocity = KartBody->GetPhysicsLinearVelocity();
 	FVector ForwardVector = KartBody->GetForwardVector();

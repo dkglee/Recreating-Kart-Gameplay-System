@@ -34,7 +34,9 @@ private:
 	class UBoxComponent* KartBody = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
-	float Accel = 0.0f;
+	FVector AccelVector = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
+	float Accel;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart AnimInstance", meta = (AllowPrivateAccess = "true"))
 	float Rotation = 0.0f;
 

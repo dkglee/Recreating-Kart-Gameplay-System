@@ -19,11 +19,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void InitializeComponent() override;
-
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
@@ -39,6 +37,11 @@ public:
 
 	GETTER(bool, bOnBooster);
 private:
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SetbOnBooster(bool bInOnBooster);
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SetbOnBooster(bool bInOnBooster);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 
@@ -55,7 +58,6 @@ private:
 	float BoosterTime = 3.f;
 	
 	float ElapsedTime = 0.f;
-	
 
 	UPROPERTY()
 	bool bInstantBoostEnabled = false;
