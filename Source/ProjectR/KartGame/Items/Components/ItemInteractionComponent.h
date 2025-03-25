@@ -36,9 +36,6 @@ public:
 	
 	void MissileInteraction_Move(float DeltaTime);
 
-	UFUNCTION(Server, Reliable)
-	void Server_MissileInteraction_Move(float DeltaTime);
-
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_MissileInteraction_Move(FQuat resultQuat, FVector resultPos);
 
@@ -47,10 +44,6 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void Server_CheckShieldUsingTime();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_UpdateShieldOn(bool value);
-
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
@@ -64,14 +57,16 @@ public:
 	bool bIsInteraction = false;
 
 	// 쉴드 변수
+#pragma region ShieldVariance
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool bShieldOn = false;
 
 	float ShieldElapsedTime = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float ShieldTime = 2.5f;
-	
+	float ShieldTime = 30.f;
+#pragma endregion
 	// 미사일 변수
+#pragma region MissileVariance
 	FVector InitialPos;
 	FQuat InitialQuat;
 
@@ -82,4 +77,5 @@ public:
 	float MissileKnockbackRotationNumber = 2.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MissileKnockbackHeight = 500.f;
+#pragma endregion 
 };

@@ -11,6 +11,7 @@
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
+#include "KartGame/Items/Shield/Shield.h"
 #include "KartGame/Items/WaterBomb/WaterBomb.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
@@ -190,6 +191,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 				itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
 				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
 				missile->SetLockOnPlayer(LockedTarget);
+				missile->SetOwningPlayer(Kart);
 				LockedTarget = nullptr;
 			}
 			else if (LockedTarget == nullptr)
@@ -201,6 +203,10 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	case EItemName::WaterBomb:
 		{
 			auto* waterBomb = GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
+			if (waterBomb)
+			{
+				waterBomb->SetOwningPlayer(Kart);
+			}
 			break;
 		}
 	case EItemName::Booster:
@@ -212,6 +218,14 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 				booster->SetOwningPlayer(Kart);
 			}
 			break;
+		}
+	case EItemName::Shield:
+		{
+			auto* shield = GetWorld()->SpawnActor<AShield>(itemData.ItemClass, itemTransform);
+			if (shield)
+			{
+				shield->SetOwningPlayer(Kart);
+			}
 		}
 	default:
 		break;

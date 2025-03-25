@@ -73,6 +73,7 @@ public:
 	void NetMulticast_SetUsingAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
 
 	void ChangeAimColor(bool bIsLockOn);
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
