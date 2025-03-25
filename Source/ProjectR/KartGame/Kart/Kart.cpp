@@ -220,7 +220,7 @@ void AKart::Tick(float DeltaTime)
 
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
-	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
+	if(ItemInteractionComponent->GetbIsInteraction() == false && IsLocallyControlled())
 	{
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		

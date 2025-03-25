@@ -98,7 +98,7 @@ public:
 	bool bInventoryIsFull = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
-	float MaxLockOnDist = 7000.f;
+	float MaxLockOnDist = 10000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
 	float InitialBoxSizeOffset = 7.0f;

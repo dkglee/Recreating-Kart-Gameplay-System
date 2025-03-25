@@ -170,7 +170,7 @@ void UItemInventoryComponent::LockPlayer()
 	FVector start = Kart->GetRootComponent()->GetComponentLocation();
 	FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * MaxLockOnDist;
 
-	FVector BoxHalfSize(FVector(100.f,100.f,50.f));
+	FVector BoxHalfSize(FVector(100.f,100.f,100.f));
 	FindTargetAndTakeAim(start, end, BoxHalfSize);
 }
 
@@ -330,7 +330,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{

@@ -24,7 +24,7 @@ void AMissile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Root->OnComponentBeginOverlap.AddDynamic(this,&AMissile::OnMissileBeginOverlap);
+	Root->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnMissileBeginOverlap);
 }
 
 // Called every frame
@@ -52,7 +52,7 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		if (kart == LockOnPlayer)
 		{
-			kart->GetItemInteractionComponent()->MissileHitInteraction();
+			kart->GetItemInteractionComponent()->Interaction(EInteractionType::Explosion);
 			Destroy();
 		}
 	}

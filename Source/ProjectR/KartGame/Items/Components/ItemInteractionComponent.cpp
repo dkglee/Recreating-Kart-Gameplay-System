@@ -41,7 +41,22 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	if (bIsInteraction)
 	{
-		MissileInteraction_Move(DeltaTime);	
+		switch (CurrentType)
+		{
+		case EInteractionType::Explosion:
+			{
+				MissileInteraction_Move(DeltaTime);
+				break;
+			}
+		case EInteractionType::Water:
+			{
+				break;
+			}
+		default:
+			{
+				break;	
+			}
+		}
 	}
 
 	if (bShieldOn)
@@ -57,7 +72,7 @@ void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 	DOREPLIFETIME(UItemInteractionComponent, bIsInteraction);
 }
 
-void UItemInteractionComponent::MissileHitInteraction()
+void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 {
 	if (Kart == nullptr)
 	{
@@ -77,7 +92,30 @@ void UItemInteractionComponent::MissileHitInteraction()
 	}
 
 	bIsInteraction = true;
-	CurrentType = EInteractionType::Explosion;
+	CurrentType = interactionType;
+
+	switch (CurrentType)
+	{
+	case EInteractionType::Explosion:
+		{
+			MissileHitInteraction();
+			break;
+		}
+	case EInteractionType::Water:
+		{
+			WaterBombHitInteraction();
+			break;
+		}
+	default:
+		{
+			break;	
+		}
+	}
+	
+}
+
+void UItemInteractionComponent::MissileHitInteraction()
+{
 	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 	Client_ChangePhysics(false);
@@ -113,6 +151,11 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 		return;
 	}
 	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
+}
+
+void UItemInteractionComponent::WaterBombHitInteraction()
+{
+	Client_ChangePhysics(false);
 }
 
 void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
