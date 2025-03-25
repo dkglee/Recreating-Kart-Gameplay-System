@@ -24,6 +24,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	UFUNCTION()
 	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
 
@@ -100,4 +101,10 @@ private:
 	float InFrictionData = 0.0f;
 	// 마찰력 계수 Percent Gage
 	float InFrictionGripCoeff = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	float MinimumFrictionDelay = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
+	FTimerHandle FrictionDelayTimer;
+	float bForceDrfit = false; 
 };

@@ -212,10 +212,8 @@ void AKart::Tick(float DeltaTime)
 
 	FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
 	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
-	DrawDebugString(GetWorld(), GetActorLocation(), *localstr, 0, FColor::Red, 0 , true, 1);
 	FVector temp = GetActorLocation();
 	temp.Z += 100.f;
-	DrawDebugString(GetWorld(), temp, *remotestr, 0, FColor::Red, 0 , true, 1);
 	
 
 	bool flag = true;
