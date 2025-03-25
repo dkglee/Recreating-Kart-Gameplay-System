@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 
 IOnlineSessionPtr FSessionUtil::OnlineSessionInterface;
+FDelegateHandle FSessionUtil::OnFindSessionCompleteDelegateHandle;
 
 void FSessionUtil::Init()
 {
@@ -66,7 +67,10 @@ void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 		return;
 	}
 	
-	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
+	OnlineSessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(
+		OnFindSessionCompleteDelegateHandle);
+	
+	OnFindSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
 		SessionSearchData.OnFindSessionsCompleteDelegate);
 	
 	// 단순 C++ 객체를 Unreal GC로 이전시켜 관리한다.

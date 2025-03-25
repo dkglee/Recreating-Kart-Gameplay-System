@@ -25,12 +25,14 @@ struct FSessionSearchData
 class FSessionUtil
 {
 public:
+	static IOnlineSessionPtr OnlineSessionInterface;
+	
 	static void Init();
 	static void CreateSession(const FSessionCreateData& SessionCreateData);
 	static void SearchSession(FSessionSearchData& SessionSearchData);
 	static void JoinSession(const UWorld* World, FOnlineSessionSearchResult& Result,
 		const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate);
-
+	
 private:
-	static IOnlineSessionPtr OnlineSessionInterface;
+	static FDelegateHandle OnFindSessionCompleteDelegateHandle;
 };

@@ -2,6 +2,7 @@
 
 #include "CommonUtil.h"
 #include "EnumUtil.h"
+#include "FastLogger.h"
 #include "OnlineSessionSettings.h"
 #include "SessionUtil.h"
 #include "Components/ScrollBox.h"
@@ -12,9 +13,7 @@
 void UItemModeListUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-
 	InitializeSearchType();
-	UpdateToSearch();
 }
 
 void UItemModeListUI::InitializeSearchType()
@@ -43,7 +42,7 @@ void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
 		UE_LOG(LogTemp, Error, TEXT("방을 검색하는 것에 실패하였습니다."));
 		return;
 	}
-	UE_LOG(LogTemp, Display, TEXT("방 검색 성공: %d"), ItemModeSessionSearch->SearchResults.Num());
+	FFastLogger::LogScreen(FColor::Red, TEXT("방 검색 성공: %d"), ItemModeSessionSearch->SearchResults.Num());
 	SessionGridPanel->ClearChildren();
 
 	for (int i = 0; i < ItemModeSessionSearch->SearchResults.Num(); i++)
