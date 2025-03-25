@@ -34,10 +34,4 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<USessionCreatePopupWidget> SessionCreatePopup;
-
-	UFUNCTION()
-	void OpenSessionCreate();
-	
-	UFUNCTION()
-	void RemoveSessionCreate();
 };

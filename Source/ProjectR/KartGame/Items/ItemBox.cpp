@@ -38,6 +38,7 @@ void AItemBox::InitComponents()
 	Root = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 	Root->SetGenerateOverlapEvents(true);
+	Root->SetBoxExtent(FVector(75.f));
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
