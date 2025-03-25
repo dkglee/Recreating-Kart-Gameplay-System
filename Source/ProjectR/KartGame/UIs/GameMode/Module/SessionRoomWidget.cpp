@@ -18,10 +18,19 @@ void USessionRoomWidget::InitializeData(const FOnlineSessionSearchResult& Search
 {
 	SessionSearchResult = SearchResult;
 	
-	RoomId->SetText(FText::FromString(SearchResult.GetSessionIdStr()));
-	RoomTitle->SetText(FText::FromString(TEXT("테스트를 위한 테스트")));
-	RoomId->SetText(FText::FromString(SearchResult.GetSessionIdStr()));
-	RoomId->SetText(FText::FromString(FString::FromInt(SearchResult.Session.NumOpenPublicConnections)));
+	FString RoomName;
+	SearchResult.Session.SessionSettings.Get(TEXT("RoomName"), RoomName);
+
+	
+	RoomId->SetText(FText::FromString(SearchResult.GetSessionIdStr().Left(7)));
+	RoomTitle->SetText(FText::FromString(RoomName));
+
+	const uint8 MaxPlayerCount = SearchResult.Session.SessionSettings.NumPublicConnections;
+	const uint8 CurrentPlayerCount = SearchResult.Session.NumOpenPublicConnections;
+	
+	CurrentPlayer->SetText(FText::FromString(FString::FromInt(
+		MaxPlayerCount - CurrentPlayerCount)));
+	MaxPlayer->SetText(FText::FromString(FString::FromInt(MaxPlayerCount)));
 }
 
 void USessionRoomWidget::JoinSession()

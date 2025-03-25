@@ -7,7 +7,6 @@
 #include "SessionUtil.h"
 #include "Components/ScrollBox.h"
 #include "Components/UniformGridPanel.h"
-#include "KartGame/Games/KartGameInstance.h"
 #include "KartGame/UIs/GameMode/Module/SessionRoomWidget.h"
 
 void UItemModeListUI::NativeOnInitialized()
@@ -20,19 +19,16 @@ void UItemModeListUI::InitializeSearchType()
 {
 	SessionSearchData.SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	const FString MatchType = FCommonUtil::GetClassEnumKeyAsString(EMatchType::Item);
-	/*ItemModeSessionSearch->QuerySettings.Set<FString>(FName("MatchType")
-		, MatchType
-		, EOnlineComparisonOp::Equals);*/
-	OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
+	SessionSearchData.SessionSearch->QuerySettings.Set<FString>(FName("MatchType")
+		, MatchType, EOnlineComparisonOp::Equals);
+	SessionSearchData.OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCompleteSearch);
 }
 
 void UItemModeListUI::UpdateToSearch()
 {
-	GetGameInstance<UKartGameInstance>()->SearchGameSession();
-	// SessionGridPanel->ClearChildren();
-	// SessionSearchData.OnFindSessionsCompleteDelegate = OnFindSessionsCompleteDelegate;
-	// FSessionUtil::SearchSession(SessionSearchData);
+	SessionGridPanel->ClearChildren();
+	FSessionUtil::SearchSession(SessionSearchData);
 }
 
 void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
@@ -54,7 +50,7 @@ void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
 	}
 
 	// 남은 빈 칸의 수를 여기서 채워줘야 한다.
-	for (int i = 0; i < MaxCount - SessionSearchData.SessionSearch->SearchResults.Num(); i++)
+	for (int i = SessionSearchData.SessionSearch->SearchResults.Num(); i < MaxCount; i++)
 	{
 		USessionRoomWidget* NewSessionRoomWidget = CreateWidget<USessionRoomWidget>(
 			this, SessionRoomWidgetClass);

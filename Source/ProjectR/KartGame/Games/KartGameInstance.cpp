@@ -98,7 +98,6 @@ void UKartGameInstance::SearchGameSession()
 	// 검색에 필요한 쿼리 세팅
 	SessionSearch->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 	
-	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	OnlineSessionInterface->FindSessions(0,
 		SessionSearch.ToSharedRef());
 }

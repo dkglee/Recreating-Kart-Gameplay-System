@@ -39,8 +39,6 @@ private:
 #pragma endregion
 	FSessionSearchData SessionSearchData;
 
-	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
-
 	UFUNCTION()
 	void OnCompleteSearch(bool IsSuccess);
 };
