@@ -5,7 +5,8 @@
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Components/EditableText.h"
-#include "Components/SpinBox.h"
+#include "Components/Slider.h"
+#include "Components/TextBlock.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 
 void USessionCreatePopupWidget::NativeOnInitialized()
@@ -14,6 +15,9 @@ void USessionCreatePopupWidget::NativeOnInitialized()
 	OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 			this, &ThisClass::OnSessionCreated);
 	CreateRoomButton->OnClicked.AddDynamic(this, &ThisClass::OnClickCreateRoomButton);
+	RoomPlayerCountSlider->OnValueChanged.AddDynamic(this, &ThisClass::OnChangePlayerCount);
+	RoomPlayerCount->SetText(FText::FromString(FString::FromInt(
+		FMath::Floor(RoomPlayerCountSlider->GetValue()))));
 
 	PC = Cast<ALobbyPlayerController>(GetOwningPlayer());
 }
@@ -47,7 +51,7 @@ void USessionCreatePopupWidget::OnClickCreateRoomButton()
 	FSessionCreateData CreateData;
 	CreateData.IsPublic = GamePublicCheckBox->GetCheckedState() == ECheckBoxState::Checked;
 	CreateData.MatchType = EMatchType::Item;
-	CreateData.MaxPlayer = static_cast<uint8>(RoomPlayerCounter->GetDelta());
+	CreateData.MaxPlayer = FMath::Floor(RoomPlayerCountSlider->GetValue());
 	CreateData.RoomName = RoomTitle->GetText().ToString();
 	CreateData.OnCreateSessionCompleteDelegate = OnCreateSessionCompleteDelegate;
 	
@@ -61,4 +65,9 @@ void USessionCreatePopupWidget::OnSessionCreated(FName SessionName, bool IsCreat
 		RemoveSessionCreate();
 		GetWorld()->ServerTravel(FString("/Game/Games/Session/SessionMap?listen"));
 	}
+}
+
+void USessionCreatePopupWidget::OnChangePlayerCount(float Value)
+{
+	RoomPlayerCount->SetText(FText::FromString(FString::FromInt(FMath::Floor(Value))));
 }

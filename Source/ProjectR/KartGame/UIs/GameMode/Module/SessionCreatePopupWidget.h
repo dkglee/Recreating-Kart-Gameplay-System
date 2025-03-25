@@ -5,6 +5,8 @@
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "SessionCreatePopupWidget.generated.h"
 
+class UTextBlock;
+class USlider;
 class ALobbyPlayerController;
 class UCheckBox;
 class UButton;
@@ -31,7 +33,13 @@ private:
 	TObjectPtr<UEditableText> RoomTitle;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USpinBox> RoomPlayerCounter;
+	TObjectPtr<USlider> RoomPlayerCountSlider;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RoomPlayerCount;
+
+	UFUNCTION()
+	void OnChangePlayerCount(float Value);
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCheckBox> GamePublicCheckBox;
