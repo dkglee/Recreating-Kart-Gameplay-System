@@ -68,7 +68,10 @@ void UItemInteractionComponent::MissileHitInteraction()
 	if (bShieldOn)
 	{
 		FFastLogger::LogConsole(TEXT("InteractionComponent : blocked by shield"));
-		NetMulticast_UpdateShieldOn(false);
+		if (Kart->HasAuthority())
+		{
+			bShieldOn = false;
+		}
 		ShieldElapsedTime = 0.f;
 		return;
 	}
@@ -84,39 +87,6 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 {
 	if (Kart->HasAuthority() == false) return;
 
-	if (Kart->HasAuthority())
-	{
-		MissileKnockbackElapsedTime += DeltaTime;
-		float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
-
-		// 회전계산
-		// ease-out 곡선 적용 (처음엔 빠르게 점점 천천히)
-		float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
-		float rotationAngle = 360.f * MissileKnockbackRotationNumber * easedAlpha;
-			
-		// 시작 회전에서 현재까지의 회전 계산
-		FQuat rotationQuat = FQuat(FRotator(rotationAngle, 0, 0));
-		FQuat resultQuat = rotationQuat * InitialQuat;
-
-		// 위치계산
-		float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + MissileKnockbackHeight, easedAlpha);
-			
-		FVector resultPos = FVector(InitialPos.X, InitialPos.Y, newZ);
-		
-		if (MissileKnockbackElapsedTime >= MissileKnockbackTime)
-		{
-			bIsInteraction = false;
-			CurrentType = EInteractionType::None;
-			MissileKnockbackElapsedTime = 0.f;
-			Client_ChangePhysics(true);
-			return;
-		}
-		NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
-	}
-}
-
-void UItemInteractionComponent::Server_MissileInteraction_Move_Implementation(float DeltaTime)
-{
 	MissileKnockbackElapsedTime += DeltaTime;
 	float alpha = (MissileKnockbackElapsedTime / MissileKnockbackTime);
 
@@ -139,13 +109,9 @@ void UItemInteractionComponent::Server_MissileInteraction_Move_Implementation(fl
 		bIsInteraction = false;
 		CurrentType = EInteractionType::None;
 		MissileKnockbackElapsedTime = 0.f;
-		if (Kart->GetLocalRole() == ROLE_AutonomousProxy)
-		{
-			Kart->GetRootBox()->SetSimulatePhysics(true);
-		}
+		Client_ChangePhysics(true);
 		return;
 	}
-	
 	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
 }
 
@@ -173,12 +139,7 @@ void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 	ShieldElapsedTime += GetWorld()->GetDeltaSeconds();
 	if (ShieldElapsedTime >= ShieldTime)
 	{
-		NetMulticast_UpdateShieldOn(false);
+		bShieldOn = false;
 		ShieldElapsedTime = 0.f;
 	}
-}
-
-void UItemInteractionComponent::NetMulticast_UpdateShieldOn_Implementation(bool value)
-{
-	bShieldOn = value;
 }
