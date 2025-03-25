@@ -30,9 +30,6 @@ protected:
 private:
 	void MovetoTarget();
 
-	UFUNCTION(Server, Reliable)
-	void Server_MovetoTarget();
-
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_MovetoTarget(FVector newPos, FRotator newRot);
 	

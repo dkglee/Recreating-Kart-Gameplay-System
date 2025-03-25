@@ -202,6 +202,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 		}
 	case EItemName::WaterBomb:
 		{
+			itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorUpVector() * 100.f);
 			auto* waterBomb = GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
 			if (waterBomb)
 			{

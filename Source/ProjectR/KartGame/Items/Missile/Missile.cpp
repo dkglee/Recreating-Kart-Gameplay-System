@@ -71,16 +71,10 @@ void AMissile::MovetoTarget()
 		return;
 	}
 
-	if (HasAuthority())
-	{
-		Server_MovetoTarget();
-	}
-}
+	if (HasAuthority() == false) return;
 
-void AMissile::Server_MovetoTarget_Implementation()
-{
 	DistanceToTarget = FVector::Dist(GetActorLocation(), LockOnPlayer->GetActorLocation());
-	
+
 	FVector p0 = GetActorLocation();
 	FVector dir = (LockOnPlayer->GetActorLocation() - p0).GetSafeNormal();
 	float speedFactor = FMath::Clamp(DistanceToTarget / 100.0f, 0.5f, 2.0f);
@@ -98,7 +92,7 @@ void AMissile::Server_MovetoTarget_Implementation()
 	FRotator rot = GetActorRotation();
 	FRotator targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),LockOnPlayer->GetActorLocation());
 	FRotator newRot = UKismetMathLibrary::RInterpTo(rot,targetRot,GetWorld()->DeltaTimeSeconds,1.0f);
-	
+
 	NetMulticast_MovetoTarget(newPos, newRot);
 }
 
