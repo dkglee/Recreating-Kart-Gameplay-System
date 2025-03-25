@@ -36,9 +36,14 @@ void USessionRoomWidget::InitializeData(const FOnlineSessionSearchResult& Search
 void USessionRoomWidget::JoinSession()
 {
 	FSessionUtil::JoinSession(GetWorld(), SessionSearchResult,
-		OnJoinSessionCompleteDelegate);	
+		OnJoinSessionCompleteDelegate);
 }
 
 void USessionRoomWidget::OnJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Type)
 {
+	FString Address;
+	if (FSessionUtil::OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
+	{
+		GetOwningPlayer()->ClientTravel(Address, TRAVEL_Absolute);
+	}
 }
