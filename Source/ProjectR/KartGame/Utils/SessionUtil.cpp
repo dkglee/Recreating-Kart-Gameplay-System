@@ -1,19 +1,18 @@
 ﻿#include "SessionUtil.h"
 
 #include "CommonUtil.h"
-#include "EnumUtil.h"
 #include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
-IOnlineSessionPtr USessionUtil::OnlineSessionInterface;
+IOnlineSessionPtr FSessionUtil::OnlineSessionInterface;
 
-FDelegateHandle USessionUtil::OnCreateSessionCompleteDelegateHandle;
-FDelegateHandle USessionUtil::OnFindSessionsCompleteDelegateHandle;
-FDelegateHandle USessionUtil::OnJoinSessionCompleteDelegateHandle;
+FDelegateHandle FSessionUtil::OnCreateSessionCompleteDelegateHandle;
+FDelegateHandle FSessionUtil::OnFindSessionsCompleteDelegateHandle;
+FDelegateHandle FSessionUtil::OnJoinSessionCompleteDelegateHandle;
 
-void USessionUtil::Init()
+void FSessionUtil::Init()
 {
 	const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 
@@ -25,7 +24,7 @@ void USessionUtil::Init()
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
 }
 
-void USessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
+void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 {
 	if (!OnlineSessionInterface.IsValid())
 	{
@@ -66,7 +65,7 @@ void USessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 		FName(*SessionCreateData.RoomName), *SessionSettings);
 }
 
-void USessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
+void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 {
 	if (!OnlineSessionInterface.IsValid())
 	{
@@ -99,7 +98,7 @@ void USessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 		SessionSearchData.SessionSearch.ToSharedRef());
 }
 
-void USessionUtil::JoinSession(const UWorld* World
+void FSessionUtil::JoinSession(const UWorld* World
 	, FOnlineSessionSearchResult& Result
 	, const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate)
 {

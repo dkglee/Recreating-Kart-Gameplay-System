@@ -7,6 +7,7 @@
 #include "SessionUtil.h"
 #include "Components/ScrollBox.h"
 #include "Components/UniformGridPanel.h"
+#include "KartGame/Games/KartGameInstance.h"
 #include "KartGame/UIs/GameMode/Module/SessionRoomWidget.h"
 
 void UItemModeListUI::NativeOnInitialized()
@@ -28,9 +29,10 @@ void UItemModeListUI::InitializeSearchType()
 
 void UItemModeListUI::UpdateToSearch()
 {
-	SessionGridPanel->ClearChildren();
-	SessionSearchData.OnFindSessionsCompleteDelegate = OnFindSessionsCompleteDelegate;
-	USessionUtil::SearchSession(SessionSearchData);
+	GetGameInstance<UKartGameInstance>()->SearchGameSession();
+	// SessionGridPanel->ClearChildren();
+	// SessionSearchData.OnFindSessionsCompleteDelegate = OnFindSessionsCompleteDelegate;
+	// FSessionUtil::SearchSession(SessionSearchData);
 }
 
 void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
