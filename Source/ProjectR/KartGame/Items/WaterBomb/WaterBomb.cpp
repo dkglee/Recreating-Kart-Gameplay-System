@@ -57,3 +57,7 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	}
 }
 
+void AWaterBomb::MoveToEstimatedLocation()
+{
+}
+

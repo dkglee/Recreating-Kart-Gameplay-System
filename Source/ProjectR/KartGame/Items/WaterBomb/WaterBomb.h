@@ -24,7 +24,7 @@ protected:
 	                             const FHitResult& SweepResult);
 
 public:
-	
+	void MoveToEstimatedLocation();
 
 private:
 	float ElapsedTime = 0.f;
