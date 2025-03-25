@@ -34,5 +34,7 @@ public:
 		const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate);
 	
 private:
-	static FDelegateHandle OnFindSessionCompleteDelegateHandle;
+	static FDelegateHandle OnFindSessionsCompleteDelegateHandle;
+	static FDelegateHandle OnCreateSessionCompleteDelegateHandle;
+	static FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 };

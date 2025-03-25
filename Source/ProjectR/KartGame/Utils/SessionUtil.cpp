@@ -7,7 +7,10 @@
 #include "Interfaces/OnlineSessionInterface.h"
 
 IOnlineSessionPtr FSessionUtil::OnlineSessionInterface;
-FDelegateHandle FSessionUtil::OnFindSessionCompleteDelegateHandle;
+
+FDelegateHandle FSessionUtil::OnCreateSessionCompleteDelegateHandle;
+FDelegateHandle FSessionUtil::OnFindSessionsCompleteDelegateHandle;
+FDelegateHandle FSessionUtil::OnJoinSessionCompleteDelegateHandle;
 
 void FSessionUtil::Init()
 {
@@ -38,7 +41,10 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 		UE_LOG(LogTemp, Error, TEXT("하지만, 못난 프로그래머를 위해 세션을 제거해드립니다."));
 	}
 	
-	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
+	OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(
+		OnCreateSessionCompleteDelegateHandle);
+	
+	OnCreateSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
 		SessionCreateData.OnCreateSessionCompleteDelegate);
 
 	const TSharedPtr<FOnlineSessionSettings> SessionSettings =
@@ -68,9 +74,9 @@ void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
 	}
 	
 	OnlineSessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(
-		OnFindSessionCompleteDelegateHandle);
+		OnFindSessionsCompleteDelegateHandle);
 	
-	OnFindSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
+	OnFindSessionsCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
 		SessionSearchData.OnFindSessionsCompleteDelegate);
 	
 	// 단순 C++ 객체를 Unreal GC로 이전시켜 관리한다.
@@ -95,7 +101,8 @@ void FSessionUtil::JoinSession(const UWorld* World
 
 	Result.Session.SessionSettings.bUsesPresence = true;
 	Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
-	
-	OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+
+	OnlineSessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+	OnJoinSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 	OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
 }

@@ -29,6 +29,8 @@ void UItemModeListUI::InitializeSearchType()
 
 void UItemModeListUI::UpdateToSearch()
 {
+	SessionGridPanel->ClearChildren();
+	
 	FSessionSearchData SessionSearchData;
 	SessionSearchData.SessionSearch = ItemModeSessionSearch;
 	SessionSearchData.OnFindSessionsCompleteDelegate = OnFindSessionsCompleteDelegate;
@@ -43,7 +45,6 @@ void UItemModeListUI::OnCompleteSearch(bool IsSuccess)
 		return;
 	}
 	FFastLogger::LogScreen(FColor::Red, TEXT("방 검색 성공: %d"), ItemModeSessionSearch->SearchResults.Num());
-	SessionGridPanel->ClearChildren();
 
 	for (int i = 0; i < ItemModeSessionSearch->SearchResults.Num(); i++)
 	{
