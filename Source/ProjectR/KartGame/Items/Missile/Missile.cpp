@@ -50,6 +50,11 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	auto* kart = Cast<AKart>(OtherActor);
 	if (kart)
 	{
+		if (kart == GetOwningPlayer())
+		{
+			return;
+		}
+
 		if (kart == LockOnPlayer)
 		{
 			kart->GetItemInteractionComponent()->Interaction(EInteractionType::Explosion);
@@ -79,7 +84,7 @@ void AMissile::Server_MovetoTarget_Implementation()
 	FVector p0 = GetActorLocation();
 	FVector dir = (LockOnPlayer->GetActorLocation() - p0).GetSafeNormal();
 	float speedFactor = FMath::Clamp(DistanceToTarget / 100.0f, 0.5f, 2.0f);
-	FVector vt = dir * speed * speedFactor * GetWorld()->DeltaTimeSeconds;
+	FVector vt = dir * Speed * speedFactor * GetWorld()->DeltaTimeSeconds;
 
 	ElapsedTime += GetWorld()->DeltaTimeSeconds;
 	float DistanceFactor = FMath::Clamp(DistanceToTarget / 1000.0f, 0.1f, 1.0f);

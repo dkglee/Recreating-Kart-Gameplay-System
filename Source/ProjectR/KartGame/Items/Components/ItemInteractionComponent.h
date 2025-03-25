@@ -56,6 +56,11 @@ private:
 
 #pragma region WaterFunction
 	void WaterBombHitInteraction();
+
+	void WaterBombInteraction_Move(float DeltaTime);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_WaterBombInteraction_Move(FVector resultPos, FRotator resultRot);
 #pragma endregion 
 
 #pragma region ShieldFunction
@@ -72,20 +77,39 @@ private:
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	bool bIsInteraction = false;
+	
 public:
-	// 미사일 변수
-#pragma region MissileVariance
 	FVector InitialPos;
 	FQuat InitialQuat;
-
-	float MissileKnockbackElapsedTime = 0.f;
+	FRotator InitialRot;
+	// 미사일 변수
+#pragma region MissileVariance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MissileKnockbackTime = 1.5f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	
+	float MissileKnockbackElapsedTime = 0.f;
+	
 	float MissileKnockbackRotationNumber = 2.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	
 	float MissileKnockbackHeight = 500.f;
-#pragma endregion 
+#pragma endregion
+	
+	// 물풍선 변수
+#pragma region WaterBombVariance
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float WaterBombInteractionTime = 5.f;
+	
+	float WaterBombInteractionElapsedTime = 0.f;
+	
+	float WaterBombInteractionHeight = 350.f;
+	
+	float MaxRoll = 10.f;
+	
+	float MaxPitch = 10.f;
+	
+	float RotateSpeed = 3.f;
+#pragma endregion
+	
 	// 쉴드 변수
 #pragma region ShieldVariance
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")

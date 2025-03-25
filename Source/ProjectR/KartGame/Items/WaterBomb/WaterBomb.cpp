@@ -36,23 +36,24 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (HasAuthority() == false) return;
+	
 	auto* Kart = Cast<AKart>(OtherActor);
 	if (Kart == GetOwningPlayer())
 	{
 		FFastLogger::LogConsole(TEXT("Hit Kart is itemOwner"));
 		return;
 	}
+	
 	if (Kart)
 	{
 		// 이미 물풍선에 맞았으면 return;
 		if (Kart->GetItemInteractionComponent()->GetbIsInteraction() == true &&
 			Kart->GetItemInteractionComponent()->GetCurrentType() == EInteractionType::Water)
 		{
-			FFastLogger::LogConsole(TEXT("is already interacting"));
+			FFastLogger::LogConsole(TEXT("This actor is already interact"));
 			return;
 		}
 		Kart->GetItemInteractionComponent()->Interaction(EInteractionType::Water);
 	}
-	
 }
 

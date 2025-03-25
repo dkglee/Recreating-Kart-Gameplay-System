@@ -26,9 +26,8 @@ protected:
 	UFUNCTION()
 	void OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-public:
-	SETTER(class AKart*, LockOnPlayer);
 
+private:
 	void MovetoTarget();
 
 	UFUNCTION(Server, Reliable)
@@ -37,13 +36,21 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_MovetoTarget(FVector newPos, FRotator newRot);
 	
+public:
+	SETTER(class AKart*, LockOnPlayer);
+	
 private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class AKart* LockOnPlayer = nullptr;
 
+	float ElapsedTime = 0;
+
+	UPROPERTY(Replicated)
+	float DistanceToTarget = 0;
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float speed = 3000.0f;
+	float Speed = 3000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float Amplitude = 30.0f; //파동의 높이
@@ -51,9 +58,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float Frequency = 40.0f; // 파동의 주기
 	
-	float ElapsedTime = 0;
-
-	UPROPERTY(Replicated)
-	float DistanceToTarget = 0;
 	
 };

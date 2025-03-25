@@ -50,6 +50,7 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			}
 		case EInteractionType::Water:
 			{
+				WaterBombInteraction_Move(DeltaTime);
 				break;
 			}
 		default:
@@ -155,7 +156,53 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 
 void UItemInteractionComponent::WaterBombHitInteraction()
 {
+	InitialPos = Kart->GetActorLocation();
+	InitialQuat = Kart->GetActorQuat();
+	InitialRot = Kart->GetActorRotation();
 	Client_ChangePhysics(false);
+}
+
+void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
+{
+	if (Kart->HasAuthority() == false) return;
+
+	WaterBombInteractionElapsedTime += DeltaTime;
+
+	// 1초안에 공중으로 뜬다
+	// Ease-out 곡선을 통해 처음엔 빠르게 이후엔 천천히 올라감 (1초라 티가 안남)
+	float alpha = WaterBombInteractionElapsedTime / 1.0f;
+	float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
+	float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + WaterBombInteractionHeight, easedAlpha);
+	FVector resultPos;
+	if (WaterBombInteractionElapsedTime < 1.0f)
+	{
+		resultPos = FVector(InitialPos.X, InitialPos.Y, newZ);
+	}
+	else
+	{
+		resultPos = Kart->GetActorLocation();
+	}
+
+	float RollOffset = FMath::Sin(WaterBombInteractionElapsedTime * RotateSpeed) * MaxRoll;
+	float PitchOffset = FMath::Sin(WaterBombInteractionElapsedTime * RotateSpeed * 1.2f) * MaxPitch;
+	FRotator resultRot = InitialRot + FRotator(PitchOffset, 0.f, RollOffset);
+
+	if (WaterBombInteractionElapsedTime >= WaterBombInteractionTime)
+	{
+		bIsInteraction = false;
+		CurrentType = EInteractionType::None;
+		WaterBombInteractionElapsedTime = 0.f;
+		resultRot = InitialRot;	
+		Client_ChangePhysics(true);
+	}
+	
+	NetMulticast_WaterBombInteraction_Move(resultPos, resultRot);
+}
+
+void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implementation(FVector resultPos, FRotator resultRot)
+{
+	Kart->SetActorLocation(resultPos);
+	Kart->SetActorRotation(resultRot);
 }
 
 void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
