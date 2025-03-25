@@ -6,7 +6,6 @@
 #include "Components/CheckBox.h"
 #include "Components/EditableText.h"
 #include "Components/SpinBox.h"
-#include "KartGame/Games/KartGameInstance.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 
 void USessionCreatePopupWidget::NativeOnInitialized()
@@ -45,20 +44,21 @@ void USessionCreatePopupWidget::RemoveSessionCreate()
 
 void USessionCreatePopupWidget::OnClickCreateRoomButton()
 {
-	// FSessionCreateData CreateData;
-	// CreateData.IsPublic = GamePublicCheckBox->GetCheckedState() == ECheckBoxState::Checked;
-	// CreateData.MatchType = EMatchType::Item;
-	// CreateData.MaxPlayer = static_cast<uint8>(RoomPlayerCounter->GetDelta());
-	// CreateData.RoomName = RoomTitle->GetText().ToString();
-	// CreateData.OnCreateSessionCompleteDelegate = OnCreateSessionCompleteDelegate;
-	//
-	// FSessionUtil::CreateSession(CreateData);
-	GetGameInstance<UKartGameInstance>()->CreateNewGameSession();
+	FSessionCreateData CreateData;
+	CreateData.IsPublic = GamePublicCheckBox->GetCheckedState() == ECheckBoxState::Checked;
+	CreateData.MatchType = EMatchType::Item;
+	CreateData.MaxPlayer = static_cast<uint8>(RoomPlayerCounter->GetDelta());
+	CreateData.RoomName = RoomTitle->GetText().ToString();
+	CreateData.OnCreateSessionCompleteDelegate = OnCreateSessionCompleteDelegate;
+	
+	FSessionUtil::CreateSession(CreateData);
 }
 
 void USessionCreatePopupWidget::OnSessionCreated(FName SessionName, bool IsCreateSuccess)
 {
-	UE_LOG(LogTemp, Display, TEXT("하이 : %s -> %d")
-		, *SessionName.ToString(), IsCreateSuccess);
-	RemoveSessionCreate();
+	if (IsCreateSuccess)
+	{
+		RemoveSessionCreate();
+		GetWorld()->ServerTravel(FString("/Game/Games/Session/SessionMap?listen"));
+	}
 }
