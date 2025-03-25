@@ -9,6 +9,7 @@
 #include "KartFrictionComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -55,6 +56,11 @@ void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	
 }
 
+void UKartBoosterComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 void UKartBoosterComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (EndPlayReason == EEndPlayReason::Destroyed)
@@ -96,10 +102,24 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 {
 	if (bBoosterUsing)
 	{
-		//FFastLogger::LogConsole(TEXT("BoosterComp_Process) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
-		
 		Server_AddBoosterForce_Implementation();
 	}
+
+	if (bOnBooster != bBoosterUsing)
+	{
+		bOnBooster = bBoosterUsing;
+
+		if (Kart->HasAuthority())
+		{
+			ServerRPC_SetbOnBooster_Implementation(bOnBooster);
+		}
+		else
+		{
+			ServerRPC_SetbOnBooster(bOnBooster);
+		}
+	}
+
+	DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
 }
 
 void UKartBoosterComponent::ProcessInstantBoost()
@@ -131,4 +151,22 @@ void UKartBoosterComponent::EnableBoostWindow()
 			}
 		}
 	}), InstantBoostDuration, false);
+}
+
+void UKartBoosterComponent::ServerRPC_SetbOnBooster_Implementation(bool bInOnBooster)
+{
+	if (!Kart->IsLocallyControlled())
+	{
+		bOnBooster = bInOnBooster;
+	}
+
+	MulticastRPC_SetbOnBooster(bInOnBooster);
+}
+
+void UKartBoosterComponent::MulticastRPC_SetbOnBooster_Implementation(bool bInOnBooster)
+{
+	if (!Kart->IsLocallyControlled())
+	{
+		bOnBooster = bInOnBooster;
+	}
 }
