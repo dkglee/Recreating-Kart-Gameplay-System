@@ -1,5 +1,8 @@
 ﻿#include "ReadySession.h"
 
+#include "OnlineSessionSettings.h"
+#include "SessionUtil.h"
+#include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "GameFramework/GameStateBase.h"
 #include "Module/ReadySessionPlayerWidget.h"
@@ -14,6 +17,18 @@ void UReadySession::NativePreConstruct()
 void UReadySession::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+
+	const FNamedOnlineSession* NamedOnlineSession = FSessionUtil::GetCurrentSession();
+	if (!NamedOnlineSession)
+	{
+		return;
+	}
+
+	FString RoomTitleData;
+	NamedOnlineSession->SessionSettings.Get(TEXT("RoomName"), RoomTitleData);
+	
+	RoomId->SetText(FText::FromString(NamedOnlineSession->GetSessionIdStr().Left(7)));
+	RoomTitle->SetText(FText::FromString(RoomTitleData));
 }
 
 void UReadySession::InitializeWidget()

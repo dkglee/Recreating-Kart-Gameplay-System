@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ReadySession.generated.h"
 
+class UTextBlock;
 class UCommonButton;
 class UReadySessionPlayerWidget;
 class UUniformGridPanel;
@@ -36,6 +37,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButton> GameStartButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RoomId;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RoomTitle;
 
 	void InitializeWidget();
 };

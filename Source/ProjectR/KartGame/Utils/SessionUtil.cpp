@@ -4,6 +4,8 @@
 #include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Interfaces/OnlineUserInterface.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
 IOnlineSessionPtr FSessionUtil::OnlineSessionInterface;
@@ -33,11 +35,11 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 	}
 	
 	const FNamedOnlineSession* ExistSession =
-		OnlineSessionInterface->GetNamedSession(FName(*SessionCreateData.RoomName));
+		OnlineSessionInterface->GetNamedSession(NAME_GameSession);
 	if (ExistSession)
 	{
 		UE_LOG(LogTemp, Error, TEXT("이미 만들어진 세션이 존재합니다. 보통 내부 로직 이슈입니다."));
-		OnlineSessionInterface->DestroySession(FName(*SessionCreateData.RoomName));
+		OnlineSessionInterface->DestroySession(NAME_GameSession);
 		UE_LOG(LogTemp, Error, TEXT("하지만, 못난 프로그래머를 위해 세션을 제거해드립니다."));
 	}
 	
@@ -109,4 +111,40 @@ void FSessionUtil::JoinSession(const UWorld* World
 	OnlineSessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
 	OnJoinSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
 	OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
+}
+
+FNamedOnlineSession* FSessionUtil::GetCurrentSession()
+{
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return nullptr;
+	}
+
+	return OnlineSessionInterface->GetNamedSession(NAME_GameSession);
+}
+
+FString FSessionUtil::GetSteamIdByController(const APlayerController* PlayerController)
+{
+	const IOnlineSubsystem* SteamSubSystem = IOnlineSubsystem::Get(FName("Steam"));
+	if (!SteamSubSystem)
+	{
+		return TEXT("");
+	}
+	
+	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		return TEXT("");
+	}
+
+	const FUniqueNetIdPtr SteamUniqueId = SteamSubSystem->GetIdentityInterface()
+			->GetUniquePlayerId(LocalPlayer->GetControllerId());
+
+	if (!SteamUniqueId.IsValid())
+	{
+		return TEXT("");
+	}
+
+	return SteamSubSystem->GetUserInterface()
+			->GetUserInfo(0, *SteamUniqueId)->GetDisplayName();
 }
