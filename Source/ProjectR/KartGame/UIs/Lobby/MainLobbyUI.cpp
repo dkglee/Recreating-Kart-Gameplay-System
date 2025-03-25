@@ -16,12 +16,10 @@ void UMainLobbyUI::NativeConstruct()
 
 void UMainLobbyUI::CreateGameSessions()
 {
-	GetGameInstance<UKartGameInstance>()->CreateNewGameSession();
 }
 
 void UMainLobbyUI::SearchGameAndJoinSessions()
 {
-	GetGameInstance<UKartGameInstance>()->SearchGameSession();
 }
 
 void UMainLobbyUI::SetDefaultWidgetInfo()
