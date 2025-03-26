@@ -11,4 +11,9 @@ class PROJECTR_API ASessionGameMode : public AGameModeBase
 
 public:
 	void StartGameToPlay();
+
+protected:
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	
+	virtual void Logout(AController* Exiting) override;
 };
