@@ -16,8 +16,11 @@ void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 	
 	StartToPlayerCount += 1;
-
-	if (StartToPlayerCount == FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections)
+	
+	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
+	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
+	
+	if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
 	{
 		/**
 		 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
