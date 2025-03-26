@@ -5,7 +5,6 @@
 #include "KartAccelerationComponent.h"
 #include "KartBoosterComponent.h"
 #include "KartCollisionComponent.h"
-#include "KartCollisionComponentLegacy.h"
 #include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
