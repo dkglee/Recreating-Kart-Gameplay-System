@@ -79,18 +79,27 @@ private:
 	bool bIsInteraction = false;
 	
 public:
-	FVector InitialPos;
-	FQuat InitialQuat;
+	UPROPERTY()
 	FRotator InitialRot;
+	
+	UPROPERTY()
+	FVector InitialPos;
+	
+	UPROPERTY()
+	FQuat InitialQuat;
+	
 	// 미사일 변수
 #pragma region MissileVariance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float MissileKnockbackTime = 1.5f;
 	
+	UPROPERTY()
 	float MissileKnockbackElapsedTime = 0.f;
 	
+	UPROPERTY()
 	float MissileKnockbackRotationNumber = 2.f;
 	
+	UPROPERTY()
 	float MissileKnockbackHeight = 500.f;
 #pragma endregion
 	
@@ -99,14 +108,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float WaterBombInteractionTime = 5.f;
 	
+	UPROPERTY()
 	float WaterBombInteractionElapsedTime = 0.f;
 	
+	UPROPERTY()
 	float WaterBombInteractionHeight = 350.f;
 	
+	UPROPERTY()
 	float MaxRoll = 10.f;
 	
+	UPROPERTY()
 	float MaxPitch = 10.f;
 	
+	UPROPERTY()
 	float RotateSpeed = 3.f;
 #pragma endregion
 	
@@ -114,10 +128,12 @@ public:
 #pragma region ShieldVariance
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
 	bool bShieldOn = false;
-
+	
+	UPROPERTY()
 	float ShieldElapsedTime = 0.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float ShieldTime = 30.f;
+	float ShieldTime = 3.f;
 #pragma endregion
 	
 };

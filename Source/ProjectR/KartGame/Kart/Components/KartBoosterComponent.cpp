@@ -117,7 +117,7 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		}
 	}
 
-	DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
+	//DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
 }
 
 void UKartBoosterComponent::Server_ChangebUsingBooster_Implementation(bool value)

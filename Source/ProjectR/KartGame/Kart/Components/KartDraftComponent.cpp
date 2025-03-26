@@ -135,7 +135,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		CheckTraceTime();
 	}
 
-	DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	//DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::CheckTraceTime()
@@ -144,7 +144,7 @@ void UKartDraftComponent::CheckTraceTime()
 
 	if (Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity.Size() < 100.f)
 	{
-		FFastLogger::LogConsole(TEXT("카트 속도가 너무 낮아요"));
+		//FFastLogger::LogConsole(TEXT("카트 속도가 너무 낮아요"));
 		return;
 	}
 	
@@ -153,7 +153,9 @@ void UKartDraftComponent::CheckTraceTime()
 
 	if (ElapsedTime >= DraftStartTime && bDraftStart == false)
 	{
-		FFastLogger::LogConsole(TEXT("DRAFT!"));
+		DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("DRAFT!"), 0, FColor::Green, 1, true, 2);
+
+		//FFastLogger::LogConsole(TEXT("DRAFT!"));
 		bDraftStart = true;
 		ElapsedTime = 0.f;
 		GetWorld()->GetTimerManager().ClearTimer(DraftTimerHandle);
