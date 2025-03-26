@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "RacePlayerController.generated.h"
 
+class UTrackLoadingUI;
 class UMainUI;
 /**
  * 
@@ -24,12 +25,20 @@ protected:
 	
 private:
 	FTimerHandle TimerHandle;
-	
+
+#pragma region UIFactory
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainUI> MainHUDClass;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
+	TSubclassOf<UTrackLoadingUI> TrackLoadingUIClass;
+#pragma endregion
+	
 	UPROPERTY()
 	TObjectPtr<UMainUI> MainHUD;
+	
+	UPROPERTY()
+	TObjectPtr<UTrackLoadingUI> TrackLoadingUI;
 
 	void SetHUDToStart();
 

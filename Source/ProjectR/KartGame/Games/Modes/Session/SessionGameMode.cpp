@@ -19,4 +19,9 @@ void ASessionGameMode::PostLogin(APlayerController* NewPlayer)
 void ASessionGameMode::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
+	
+	if (APlayerController* PC = Cast<APlayerController>(Exiting))
+	{
+		GetGameState<ASessionGameState>()->LeavePlayer(PC);
+	}
 }

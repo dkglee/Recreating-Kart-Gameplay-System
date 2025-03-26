@@ -1,32 +1,24 @@
 ﻿#include "RaceGameMode.h"
 
-#include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
+#include "SessionUtil.h"
+#include "OnlineSessionSettings.h"
 
 void ARaceGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-AActor* ARaceGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
+void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	uint8 PlayerId = 0;
-	if (Player && Player->PlayerState)
-	{
-		PlayerId = Player->PlayerState->GetPlayerId();
-	}
+	Super::PostLogin(NewPlayer);
 	
-	const FString TagToFind = FString::Printf(TEXT("Player-Start-%d"),
-		PlayerId + 1);
-	
-	TArray<AActor*> ResultList; 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),
-		FName(*TagToFind), ResultList);
+	StartToPlayerCount += 1;
 
-	if (ResultList.Num() > 0)
+	if (StartToPlayerCount == FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections)
 	{
-		return ResultList[0];
+		/**
+		 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
+		 * 게임 시작을 위한 트리거 설정을 진행한다.
+		 */
 	}
-
-	return Super::FindPlayerStart_Implementation(Player, IncomingName);
 }

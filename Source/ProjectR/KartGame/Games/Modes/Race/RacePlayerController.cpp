@@ -4,13 +4,17 @@
 #include "Blueprint/UserWidget.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
+#include "KartGame/UIs/Session/TrackLoadingUI.h"
 
 void ARacePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,
-		this, &ThisClass::SetHUDToStart, 5.0f);
+	if (IsLocalController())
+	{
+		TrackLoadingUI = CreateWidget<UTrackLoadingUI>(this, TrackLoadingUIClass);
+		TrackLoadingUI->AddToViewport();
+	}
 }
 
 void ARacePlayerController::SetHUDToStart()
@@ -29,4 +33,3 @@ void ARacePlayerController::KartSetToMove()
 	AKart* Kart = Cast<AKart>(GetPawn());
 	Kart->SetbCanMove(true);
 }
-
