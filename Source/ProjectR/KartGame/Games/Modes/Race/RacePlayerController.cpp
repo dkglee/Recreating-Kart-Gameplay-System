@@ -14,6 +14,9 @@ void ARacePlayerController::BeginPlay()
 	{
 		TrackLoadingUI = CreateWidget<UTrackLoadingUI>(this, TrackLoadingUIClass);
 		TrackLoadingUI->AddToViewport();
+		
+		AKart* Kart = Cast<AKart>(GetPawn());
+		Kart->SetbCanMove(true);
 	}
 }
 
@@ -21,11 +24,18 @@ void ARacePlayerController::SetHUDToStart()
 {
 	if (IsLocalController())
     {
+		TrackLoadingUI->RemoveFromParent();
+		
     	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
     	MainHUD->AddToViewport();
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
     }
+}
+
+void ARacePlayerController::Client_SetHUDToStart_Implementation()
+{
+	SetHUDToStart();
 }
 
 void ARacePlayerController::KartSetToMove()

@@ -7,9 +7,7 @@
 
 class UTrackLoadingUI;
 class UMainUI;
-/**
- * 
- */
+
 UCLASS()
 class PROJECTR_API ARacePlayerController : public APlayerController
 {
@@ -19,6 +17,10 @@ public:
 #pragma region GetterSetter
 	GETTER(TObjectPtr<UMainUI>, MainHUD);
 #pragma endregion
+	void SetHUDToStart();
+
+	UFUNCTION(Client, Reliable)
+	void Client_SetHUDToStart();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -39,8 +41,6 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UTrackLoadingUI> TrackLoadingUI;
-
-	void SetHUDToStart();
 
 	UFUNCTION()
 	void KartSetToMove();
