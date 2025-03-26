@@ -49,6 +49,7 @@ public:
 	GETTER(class USceneComponent*, TargetAimSocketComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
 	GETTER(class UKartBoosterComponent*, BoosterComponent);
+	GETTER(class UKartDraftComponent*, DraftComponent);
 	GETTER_SETTER(bool, bUsingBooster);
 #pragma endregion
 
@@ -108,6 +109,8 @@ private:
 	class UKartResetComponent* KartResetComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartBoosterComponent* BoosterComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartDraftComponent* DraftComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartSkeletalMeshComponent* KartSkeletalMeshComponent = nullptr;
 	
