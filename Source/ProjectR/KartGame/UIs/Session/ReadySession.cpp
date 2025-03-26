@@ -53,6 +53,7 @@ void UReadySession::InitializeWidget()
 
 void UReadySession::UpdatePlayers()
 {
+	UE_LOG(LogTemp, Display, TEXT("나 강림"))
 	ASessionGameState* GS = Cast<ASessionGameState>(GetWorld()->GetGameState());
 	for (int i = 0; i < GS->GetPlayerInfo().Num(); i++)
 	{

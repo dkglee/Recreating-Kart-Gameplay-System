@@ -28,14 +28,8 @@ void ASessionGameState::BeginPlay()
 
 void ASessionGameState::JoinPlayer(const FString& PlayerName)
 {
-	if (!HasAuthority())
-	{
-		return;
-	}
-	
 	ReadyMap.Add(PlayerName, false);
 
-	FFastLogger::LogScreen(FColor::Red, TEXT("Join Player: %s"), *PlayerName);
 	for (int i = 0; i < MaxPlayerCount; i++)
 	{
 		if (PlayerInfo[i] == TEXT(""))
@@ -48,17 +42,14 @@ void ASessionGameState::JoinPlayer(const FString& PlayerName)
 
 	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
 	{
-		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+		ASessionPlayerController* PC =
+			Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+		PC->UpdateSessionList();
 	}
 }
 
 void ASessionGameState::LeavePlayer(const FString& PlayerName)
 {
-	if (!HasAuthority())
-	{
-		return;
-	}
-	
 	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
 	PlayerInfoMap.Remove(PlayerIndex);
 	PlayerInfo[PlayerIndex] = TEXT("");
@@ -68,6 +59,7 @@ void ASessionGameState::LeavePlayer(const FString& PlayerName)
 	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
 	{
 		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+		PC->UpdateSessionList();
 	}
 }
 

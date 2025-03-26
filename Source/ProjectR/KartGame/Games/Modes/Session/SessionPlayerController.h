@@ -10,6 +10,7 @@ UCLASS()
 class PROJECTR_API ASessionPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+	
 public:
 	void UpdateSessionList();
 	
