@@ -1,7 +1,7 @@
 #include "SessionGameState.h"
 
-#include "SessionUtil.h"
 #include "SessionPlayerController.h"
+#include "SessionPlayerState.h"
 
 ASessionGameState::ASessionGameState()
 {
@@ -19,7 +19,9 @@ void ASessionGameState::BeginPlay()
 
 void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 {
-	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
+	const FString PlayerName =
+		PlayerController->GetPlayerState<ASessionPlayerState>()->GetPlayerDisplayName();
+	
 	ReadyMap.Add(PlayerName, false);
 
 	for (int i = 0; i < MaxPlayerCount; i++)
@@ -37,7 +39,9 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 
 void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
 {
-	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
+	const FString PlayerName =
+		PlayerController->GetPlayerState<ASessionPlayerState>()->GetPlayerDisplayName();
+	
 	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
 	PlayerInfoMap.Remove(PlayerIndex);
 	PlayerInfo[PlayerIndex] = TEXT("");
@@ -57,7 +61,7 @@ void ASessionGameState::UpdateSessionInfo()
 			PC->UpdateSessionList(PlayerInfo);
 		} else
 		{
-			PC->Client_UpdatePlayerInfo(PlayerInfo);
+			PC->Multicast_UpdatePlayerInfo(PlayerInfo);
 		}
 	}
 }

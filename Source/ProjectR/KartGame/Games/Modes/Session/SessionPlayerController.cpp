@@ -60,7 +60,7 @@ void ASessionPlayerController::UpdateSessionList(const TArray<FString>& PlayerLi
 	ReadySession->UpdatePlayers(PlayerList);
 }
 
-void ASessionPlayerController::Client_UpdatePlayerInfo_Implementation(
+void ASessionPlayerController::Multicast_UpdatePlayerInfo_Implementation(
 	const TArray<FString>& PlayerNameList)
 {
 	UpdateSessionList(PlayerNameList);
