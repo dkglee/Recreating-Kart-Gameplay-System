@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "CommonUtil.h"
-#include "KartBoosterVFXComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Kart.generated.h"
 
@@ -134,7 +133,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartSkidMarkComponent* RightSkidMark = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
-	class UKartBoosterVFXComponent* BoosterVfxComponent;
+	class UKartBasicBoosterVFXComponent* LeftInstantBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* RightInstantBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* LeftBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* RightBoost;
+	
 #pragma endregion
 	
 #pragma region UI

@@ -7,8 +7,11 @@
 #include "Components/ActorComponent.h"
 #include "KartBoosterComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBoosterActivated, float, BoosterTime, bool, bPowerBoost);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBoosterActivated, float, BoosterTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoosterDeactivated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstantBoosterActivated, float, BoosterTime);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInstantBoosterDeactivated);
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartBoosterComponent : public UActorComponent
@@ -45,6 +48,9 @@ public:
 	
 	FOnBoosterActivated OnBoosterActivated;
 	FOnBoosterDeactivated OnBoosterDeactivated;
+	FOnInstantBoosterActivated OnInstantBoosterActivated;
+	FOnInstantBoosterDeactivated OnInstantBoosterDeactivated;
+	
 private:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SetbOnBooster(bool bInOnBooster);

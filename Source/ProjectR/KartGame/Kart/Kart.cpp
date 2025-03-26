@@ -3,8 +3,9 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
 #include "KartBoosterComponent.h"
-#include "KartBoosterVFXComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartCollisionComponentLegacy.h"
 #include "KartDriftSoundComponent.h"
@@ -17,6 +18,7 @@
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "KartFrictionComponent.h"
+#include "KartInstantBoostVFXComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartResetComponent.h"
 #include "KartSkeletalMeshComponent.h"
@@ -28,6 +30,8 @@
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
+#include "KartInstantBoostVFXComponent.h"
+#include "KartPowerBoosterVFXComponent.h"
 
 // Sets default values
 AKart::AKart()
@@ -169,37 +173,50 @@ AKart::AKart()
 		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
 	}
 	
-	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("Kart Reset Component"));
+	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("KartResetComponent"));
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
-	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("KartCollisionComponent"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
 
-	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("Kart Booster Component"));
+	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("KartBoosterComponent"));
 	BoosterComponent->SetNetAddressable();
 	BoosterComponent->SetIsReplicated(true);
 
-	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("Kart Skeletal Mesh Component"));
+	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("KartSkeletalMeshComponent"));
 	KartSkeletalMeshComponent->SetupAttachment(RootBox);
 	KartSkeletalMeshComponent->SetNetAddressable();
 	KartSkeletalMeshComponent->SetIsReplicated(true);
 
 	// Linetrace Location 초기화
-	LineTraceLocations.Reserve(4);  
+	LineTraceLocations.Reserve(4);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 
 	// Booster Niagara
-	BoosterVfxComponent = CreateDefaultSubobject<UKartBoosterVFXComponent>(TEXT("Booster VFX Component"));
-	// BoosterVfxComponent->SetupAttachment(RootBox);
-	BoosterVfxComponent->SetNetAddressable();
-	BoosterVfxComponent->SetIsReplicated(true);
-	BoosterVfxComponent->SetRelativeLocation({-90, 0, 15});
-	BoosterVfxComponent->SetRelativeRotation({0, 180, 0});
+	LeftInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostLeft"));
+	LeftInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostLeft"));
+	LeftInstantBoost->SetNetAddressable();
+	LeftInstantBoost->SetIsReplicated(true);
+
+	RightInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostRight"));
+	RightInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostRight"));
+	RightInstantBoost->SetNetAddressable();
+	RightInstantBoost->SetIsReplicated(true);
+
+	LeftBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostLeft"));
+	LeftBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostLeft"));
+	LeftBoost->SetNetAddressable();
+	LeftBoost->SetIsReplicated(true);
+	
+	RightBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostRight"));
+	RightBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostRight"));
+	RightBoost->SetNetAddressable();
+	RightBoost->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned

@@ -125,7 +125,7 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 
 		if (bOnBooster)
 		{
-			OnBoosterActivated.Broadcast(BoosterTime, true);
+			OnBoosterActivated.Broadcast(BoosterTime);
 		}
 	}
 
@@ -155,7 +155,7 @@ void UKartBoosterComponent::ProcessInstantBoost()
 		});
 		GetWorld()->GetTimerManager().SetTimer(InstantBoostActiveTimer, TimerDelegate, InstantBoostActiveDuration, false);
 
-		OnBoosterActivated.Broadcast(InstantBoostActiveDuration, false);
+		OnInstantBoosterActivated.Broadcast(InstantBoostActiveDuration);
 	}
 }
 
@@ -185,7 +185,7 @@ void UKartBoosterComponent::ApplyInstantBoost()
 		if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 		{
 			bInstantBoostActive = false;
-			OnBoosterDeactivated.Broadcast();
+			OnInstantBoosterDeactivated.Broadcast();
 			GetWorld()->GetTimerManager().ClearTimer(InstantBoostActiveTimer);
 			return;
 		}

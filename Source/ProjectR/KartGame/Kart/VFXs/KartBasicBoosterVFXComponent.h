@@ -4,42 +4,39 @@
 
 #include "CoreMinimal.h"
 #include "NiagaraComponent.h"
-#include "KartBoosterVFXComponent.generated.h"
+#include "KartBasicBoosterVFXComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PROJECTR_API UKartBoosterVFXComponent : public UNiagaraComponent
+class PROJECTR_API UKartBasicBoosterVFXComponent : public UNiagaraComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UKartBoosterVFXComponent();
+	UKartBasicBoosterVFXComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
 
-private:
+protected:
 	UPROPERTY()
 	class AKart* Kart = nullptr;
 	
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_ActivateBoosterVFX(float BoosterTime, bool bPowerBoost);
+	virtual void ServerRPC_ActivateBoosterVFX(float BoosterTime);
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_ActivateBoosterVFX(float BoosterTime, bool bPowerBoost);
+	virtual void MulticastRPC_ActivateBoosterVFX(float BoosterTime);
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_DeactivateBoosterVFX();
+	virtual void ServerRPC_DeactivateBoosterVFX();
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_DeactivateBoosterVFX();
+	virtual void MulticastRPC_DeactivateBoosterVFX();
 
 	UFUNCTION()
-	void OnBoosterActivated(float BoosterTime, bool bPowerBoost);
+	virtual void OnBoosterActivated(float BoosterTime);
 	UFUNCTION()
-	void OnBoosterDeactivated();
-
-	FVector InstantBoostLength{100, 0, 0};
-	FVector PowerBoostLength{150, 0, 0};
+	virtual void OnBoosterDeactivated();
 };
