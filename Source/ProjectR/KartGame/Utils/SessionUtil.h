@@ -35,7 +35,6 @@ public:
 		const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate);
 	
 	static FNamedOnlineSession* GetCurrentSession();
-	static FString GetSteamIdByController(const APlayerController* PlayerController);
 	static FString EncodeData(const FString& Str);
 	static FString DecodeData(const FString& Str);
 	
