@@ -10,7 +10,13 @@ UCLASS()
 class PROJECTR_API ASessionPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
+	
+public:
+	void UpdateSessionList(const TArray<FString>& PlayerList);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_UpdatePlayerInfo(const TArray<FString>& PlayerNameList);
+	
 protected:
 	virtual void AcknowledgePossession(APawn* InPawn) override;
 

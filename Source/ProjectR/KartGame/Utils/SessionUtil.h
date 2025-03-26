@@ -34,6 +34,11 @@ public:
 	static void JoinSession(const UWorld* World, FOnlineSessionSearchResult& Result,
 		const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate);
 	
+	static FNamedOnlineSession* GetCurrentSession();
+	static FString GetSteamIdByController(const APlayerController* PlayerController);
+	static FString EncodeData(const FString& Str);
+	static FString DecodeData(const FString& Str);
+	
 private:
 	static FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 	static FDelegateHandle OnCreateSessionCompleteDelegateHandle;

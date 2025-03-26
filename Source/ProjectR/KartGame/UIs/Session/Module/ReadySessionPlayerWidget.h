@@ -12,7 +12,7 @@ class PROJECTR_API UReadySessionPlayerWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void InitializeData(const APlayerState* PS);
+	void InitializeData(const FString& PlayerNickName);
 	
 private:
 	UPROPERTY(meta = (BindWidget))

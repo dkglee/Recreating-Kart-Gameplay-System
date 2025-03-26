@@ -20,17 +20,48 @@ void ASessionPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocalPlayerController())
+	if (!IsLocalPlayerController())
 	{
-		SetShowMouseCursor(true);
-		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
-		ReadySession->GetGameStartButton()->GetRoot()->
-			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
-		ReadySession->AddToViewport();
+		return;
 	}
+	
+	SetShowMouseCursor(true);
+	if (!ReadySession)
+    {
+    	ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+    	ReadySession->GetGameStartButton()->GetRoot()->
+    		OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+    	ReadySession->InitializeData();
+    	ReadySession->AddToViewport();
+    }
 }
 
 void ASessionPlayerController::CheckAndStartGame()
 {
 	GetWorld()->GetAuthGameMode<ASessionGameMode>()->StartGameToPlay();
+}
+
+void ASessionPlayerController::UpdateSessionList(const TArray<FString>& PlayerList)
+{
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+
+	if (!ReadySession)
+	{
+		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+		ReadySession->GetGameStartButton()->GetRoot()->
+			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+		ReadySession->InitializeData();
+		ReadySession->AddToViewport();
+	}
+	
+	ReadySession->UpdatePlayers(PlayerList);
+}
+
+void ASessionPlayerController::Multicast_UpdatePlayerInfo_Implementation(
+	const TArray<FString>& PlayerNameList)
+{
+	UpdateSessionList(PlayerNameList);
 }
