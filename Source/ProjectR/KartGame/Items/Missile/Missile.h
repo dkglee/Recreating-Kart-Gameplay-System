@@ -40,20 +40,18 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class AKart* LockOnPlayer = nullptr;
 
+	UPROPERTY()
 	float ElapsedTime = 0;
 
 	UPROPERTY(Replicated)
 	float DistanceToTarget = 0;
-	
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float Speed = 3000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float Amplitude = 30.0f; //파동의 높이
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float Frequency = 40.0f; // 파동의 주기
-	
-	
 };

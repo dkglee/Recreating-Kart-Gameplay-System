@@ -33,17 +33,17 @@ private:
 	void ProcessInstantBoost();
 	UFUNCTION()
 	void EnableBoostWindow();
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SetbOnBooster(bool bInOnBooster);
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SetbOnBooster(bool bInOnBooster);
 
 public:
 	void ProcessBooster(bool bBoosterUsing);
 
 	GETTER(bool, bOnBooster);
-private:
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SetbOnBooster(bool bInOnBooster);
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_SetbOnBooster(bool bInOnBooster);
 	
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 
@@ -53,14 +53,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	class UKartAccelerationComponent* AccelerationComponent = nullptr;
 
+#pragma region BoosterVariance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	float BoosterForce = 1750.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
 	float BoosterTime = 3.f;
-	
-	float ElapsedTime = 0.f;
 
+	UPROPERTY()
+	float ElapsedTime = 0.f;
+#pragma endregion 
+
+#pragma region InstanceBoosterVariance
 	UPROPERTY()
 	bool bInstantBoostEnabled = false;
 
@@ -70,6 +74,8 @@ private:
 	float InstantBoostDuration = 1.5f;
 	UPROPERTY()
 	float InstantBoostScale = 0.5f;
+#pragma endregion
+	
 	UPROPERTY()
 	bool bOnBooster;
 };

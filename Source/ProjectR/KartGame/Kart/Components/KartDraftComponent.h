@@ -43,7 +43,8 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	class AKart* FinalTarget = nullptr;
-	
+
+	UPROPERTY()
 	float ElapsedTime = 0.f;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
@@ -64,6 +65,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	float DraftForce = 150.f;
 
+	UPROPERTY()
 	FTimerHandle DraftTimerHandle;
 	
 };
