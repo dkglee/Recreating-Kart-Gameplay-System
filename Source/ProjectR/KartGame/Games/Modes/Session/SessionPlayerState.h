@@ -19,9 +19,6 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
-	UPROPERTY(Replicated, ReplicatedUsing = OnRep_PlayerDisplayName)
+	UPROPERTY(Replicated)
 	FString PlayerDisplayName;
-
-	UFUNCTION()
-	void OnRep_PlayerDisplayName();
 };
