@@ -331,7 +331,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{

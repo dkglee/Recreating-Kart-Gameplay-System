@@ -36,6 +36,9 @@ private:
 	void CheckTraceTime();
 
 	void AddDraftForce();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_DraftEffect();
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
@@ -63,7 +66,7 @@ private:
 	FVector TraceBoxHalfSize = FVector(100.f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
-	float DraftForce = 150.f;
+	float DraftForce = 300.f;
 
 	UPROPERTY()
 	FTimerHandle DraftTimerHandle;
