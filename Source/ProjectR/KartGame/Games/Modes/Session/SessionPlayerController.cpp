@@ -23,10 +23,6 @@ void ASessionPlayerController::BeginPlay()
 	if (IsLocalPlayerController())
 	{
 		SetShowMouseCursor(true);
-		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
-		ReadySession->GetGameStartButton()->GetRoot()->
-			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
-		ReadySession->AddToViewport();
 	}
 }
 
@@ -37,5 +33,18 @@ void ASessionPlayerController::CheckAndStartGame()
 
 void ASessionPlayerController::UpdateSessionList()
 {
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+	
+	if (!ReadySession)
+	{
+		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+		ReadySession->GetGameStartButton()->GetRoot()->
+			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+		ReadySession->AddToViewport();
+	}
+	
 	ReadySession->UpdatePlayers();
 }

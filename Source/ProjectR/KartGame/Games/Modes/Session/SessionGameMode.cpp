@@ -1,8 +1,6 @@
 ﻿#include "SessionGameMode.h"
 
-#include "FastLogger.h"
 #include "SessionGameState.h"
-#include "SessionUtil.h"
         
 void ASessionGameMode::StartGameToPlay()
 {
@@ -15,19 +13,18 @@ void ASessionGameMode::StartGameToPlay()
 void ASessionGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-	FFastLogger::LogScreen(FColor::Red, TEXT("Join Player"));
-	GetGameState<ASessionGameState>()->JoinPlayer(FSessionUtil::GetSteamIdByController(NewPlayer));
+	GetGameState<ASessionGameState>()->JoinPlayer(NewPlayer);
 }
 
 void ASessionGameMode::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
 	
-	const APlayerController* PC = Cast<APlayerController>(Exiting);
+	APlayerController* PC = Cast<APlayerController>(Exiting);
 	if (!PC)
 	{
 		return;
 	}
 	
-	GetGameState<ASessionGameState>()->JoinPlayer(FSessionUtil::GetSteamIdByController(PC));
+	GetGameState<ASessionGameState>()->LeavePlayer(PC);
 }

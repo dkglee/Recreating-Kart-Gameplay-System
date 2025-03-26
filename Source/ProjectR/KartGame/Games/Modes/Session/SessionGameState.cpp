@@ -1,6 +1,6 @@
 #include "SessionGameState.h"
 
-#include "FastLogger.h"
+#include "SessionUtil.h"
 #include "SessionPlayerController.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -26,8 +26,9 @@ void ASessionGameState::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ASessionGameState::JoinPlayer(const FString& PlayerName)
+void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 {
+	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
 	ReadyMap.Add(PlayerName, false);
 
 	for (int i = 0; i < MaxPlayerCount; i++)
@@ -36,20 +37,20 @@ void ASessionGameState::JoinPlayer(const FString& PlayerName)
 		{
 			PlayerInfo[i] = PlayerName;
 			PlayerInfoMap[i] = PlayerName;
-			return;
+			break;
 		}
 	}
 
 	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
 	{
-		ASessionPlayerController* PC =
-			Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
+		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
 		PC->UpdateSessionList();
 	}
 }
 
-void ASessionGameState::LeavePlayer(const FString& PlayerName)
+void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
 {
+	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
 	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
 	PlayerInfoMap.Remove(PlayerIndex);
 	PlayerInfo[PlayerIndex] = TEXT("");

@@ -13,8 +13,8 @@ class PROJECTR_API ASessionGameState : public AGameStateBase
 public:
 	ASessionGameState();
 	
-	void JoinPlayer(const FString& PlayerName);
-	void LeavePlayer(const FString& PlayerName);
+	void JoinPlayer(APlayerController* PlayerController);
+	void LeavePlayer(APlayerController* PlayerController);
 
 	bool IsPlayerReadyAll();
 
