@@ -29,5 +29,8 @@ private:
 	class UBoxComponent* KartBody = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
-	FVector Offset = {0, 0, 40};	
+	FVector Offset = {0, 0, 40};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UKartAnimInstance> KartAnimInstanceClass = nullptr;
 };

@@ -4,10 +4,11 @@
 #include "KartSkeletalMeshComponent.h"
 
 #include "Kart.h"
+#include "KartAnimInstance.h"
 
 UKartSkeletalMeshComponent::UKartSkeletalMeshComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	Super::SetComponentTickEnabled(false);
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
@@ -18,6 +19,16 @@ UKartSkeletalMeshComponent::UKartSkeletalMeshComponent()
 	{
 		Super::SetSkeletalMesh(SKM_Kart.Object);
 	}
+	
+	static ConstructorHelpers::FClassFinder<UAnimInstance> ABP_KartAnimClass
+	(TEXT("/Game/Kart/Animations/ABP_KartAnimInstance.ABP_KartAnimInstance_C"));
+	if (ABP_KartAnimClass.Succeeded())
+	{
+		KartAnimInstanceClass = ABP_KartAnimClass.Class;
+
+		Super::SetAnimInstanceClass(KartAnimInstanceClass);
+	}
+	
 	SetRelativeLocation({0, 0, 20});
 	SetRelativeRotation(FRotator(0, -90, 0));
 	SetRelativeScale3D(FVector(90.0f));
