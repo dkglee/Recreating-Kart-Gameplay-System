@@ -135,7 +135,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		CheckTraceTime();
 	}
 
-	//DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::CheckTraceTime()
@@ -144,18 +144,15 @@ void UKartDraftComponent::CheckTraceTime()
 
 	if (Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity.Size() < 100.f)
 	{
-		//FFastLogger::LogConsole(TEXT("카트 속도가 너무 낮아요"));
 		return;
 	}
-	
 
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
 
 	if (ElapsedTime >= DraftStartTime && bDraftStart == false)
 	{
-		DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("DRAFT!"), 0, FColor::Green, 1, true, 2);
-
-		//FFastLogger::LogConsole(TEXT("DRAFT!"));
+		NetMulticast_DraftEffect();
+		FFastLogger::LogConsole(TEXT("DRAFT!"));
 		bDraftStart = true;
 		ElapsedTime = 0.f;
 		GetWorld()->GetTimerManager().ClearTimer(DraftTimerHandle);
@@ -182,4 +179,9 @@ void UKartDraftComponent::AddDraftForce()
 		FVector location = AccelerationComponent->GetWheels()[i]->GetComponentLocation();
 		KartBody->AddForceAtLocation(force, location);
 	}
+}
+
+void UKartDraftComponent::NetMulticast_DraftEffect_Implementation()
+{
+	DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("DRAFT!"), 0, FColor::Green, 1, true, 2);
 }

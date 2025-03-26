@@ -66,6 +66,8 @@ private:
 #pragma region ShieldFunction
 	UFUNCTION(Server, Reliable)
 	void Server_CheckShieldUsingTime();
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_ShieldEffect();
 #pragma endregion
 	
 private:
@@ -133,7 +135,7 @@ public:
 	float ShieldElapsedTime = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float ShieldTime = 3.f;
+	float ShieldTime = 30.f;
 #pragma endregion
 	
 };
