@@ -74,7 +74,6 @@ void UKartCollisionComponent::InitializeComponent()
 		// 서버에서만 충돌을 감지할 예정
 		if (KartBody && Kart->HasAuthority())
 		{
-			FFastLogger::LogConsole(TEXT("Kart Collision Component Initialized!"));
 			KartBody->OnComponentHit.AddDynamic(this, &UKartCollisionComponent::OnCollisionKart);
 		}
 	}
@@ -93,7 +92,7 @@ void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollisio
 	FVector ImpactNormal = CollisionInfo.CollisionNormal.GetSafeNormal();
 	float SlopeAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(ImpactNormal, FVector::UpVector)));
 
-	if (SlopeAngle < 50.f)
+	if (SlopeAngle < 70.f)
 	{
 		// 평지나 언덕 -> 충돌 무시
 		return;
@@ -102,5 +101,6 @@ void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollisio
 	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 
 	Kart->GetAccelerationComponent()->ClearAcceleration();
+	FFastLogger::LogConsole(TEXT("Kart Collision Component Initialized!"));
 }
 

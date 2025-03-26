@@ -34,6 +34,7 @@ void UKartPowerBoosterVFXComponent::InitializeComponent()
 	}
 
 	SetAutoActivate(false);
+	Deactivate();
 
 	Kart = Cast<AKart>(GetOwner());
 	if (Kart)
