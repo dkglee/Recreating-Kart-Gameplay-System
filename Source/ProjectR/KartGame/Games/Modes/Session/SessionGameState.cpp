@@ -34,9 +34,16 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 		}
 	}
 
-	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
-		Client_UpdatePlayerInfo(PlayerInfo);
+		ASessionPlayerController* PC = Cast<ASessionPlayerController>(*It);
+		if (PC->IsLocalController())
+		{
+			PC->UpdateSessionList(PlayerInfo);
+		} else
+		{
+			PC->Client_UpdatePlayerInfo(PlayerInfo);
+		}
 	}
 }
 
@@ -48,19 +55,6 @@ void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
 	PlayerInfo[PlayerIndex] = TEXT("");
 	
 	ReadyMap.Remove(PlayerName);
-}
-
-void ASessionGameState::Client_UpdatePlayerInfo_Implementation(const TArray<FString>& PlayerNameList)
-{
-	ASessionPlayerController* PC = Cast<ASessionPlayerController>(
-		UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	if (!PC)
-	{
-		return;
-	}
-
-	PC->UpdateSessionList(PlayerNameList);
 }
 
 bool ASessionGameState::IsPlayerReadyAll()

@@ -14,6 +14,9 @@ class PROJECTR_API ASessionPlayerController : public APlayerController
 public:
 	void UpdateSessionList(const TArray<FString>& PlayerList);
 	
+	UFUNCTION(Client, Reliable)
+	void Client_UpdatePlayerInfo(const TArray<FString>& PlayerNameList);
+	
 protected:
 	virtual void AcknowledgePossession(APawn* InPawn) override;
 

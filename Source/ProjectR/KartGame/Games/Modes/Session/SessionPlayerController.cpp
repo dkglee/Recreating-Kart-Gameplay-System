@@ -24,6 +24,15 @@ void ASessionPlayerController::BeginPlay()
 	{
 		SetShowMouseCursor(true);
 	}
+
+	if (!ReadySession)
+    {
+    	ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+    	ReadySession->GetGameStartButton()->GetRoot()->
+    		OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+    	ReadySession->InitializeData();
+    	ReadySession->AddToViewport();
+    }
 }
 
 void ASessionPlayerController::CheckAndStartGame()
@@ -48,4 +57,10 @@ void ASessionPlayerController::UpdateSessionList(const TArray<FString>& PlayerLi
 	}
 	
 	ReadySession->UpdatePlayers(PlayerList);
+}
+
+void ASessionPlayerController::Client_UpdatePlayerInfo_Implementation(
+	const TArray<FString>& PlayerNameList)
+{
+	UpdateSessionList(PlayerNameList);
 }

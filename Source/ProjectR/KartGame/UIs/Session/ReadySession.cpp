@@ -46,7 +46,7 @@ void UReadySession::InitializeData()
 	NamedOnlineSession->SessionSettings.Get(TEXT("RoomName"), RoomTitleData);
 	
 	RoomId->SetText(FText::FromString(NamedOnlineSession->GetSessionIdStr().Left(7)));
-	RoomTitle->SetText(FText::FromString(RoomTitleData));
+	RoomTitle->SetText(FText::FromString(FSessionUtil::DecodeData(RoomTitleData)));
 }
 
 void UReadySession::UpdatePlayers(const TArray<FString>& PlayerList)
