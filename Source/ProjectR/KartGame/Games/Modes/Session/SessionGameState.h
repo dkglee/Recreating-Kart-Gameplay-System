@@ -35,4 +35,6 @@ private:
 	// TODO: PlayerState로 이전
 	UPROPERTY()
 	TMap<FString, bool> ReadyMap;
+
+	void UpdateSessionInfo();
 };

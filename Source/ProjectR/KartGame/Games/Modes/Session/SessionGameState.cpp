@@ -31,7 +31,24 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 			break;
 		}
 	}
+	
+	UpdateSessionInfo();
+}
 
+void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
+{
+	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
+	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
+	PlayerInfoMap.Remove(PlayerIndex);
+	PlayerInfo[PlayerIndex] = TEXT("");
+	
+	ReadyMap.Remove(PlayerName);
+	
+	UpdateSessionInfo();
+}
+
+void ASessionGameState::UpdateSessionInfo()
+{
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		ASessionPlayerController* PC = Cast<ASessionPlayerController>(*It);
@@ -43,16 +60,6 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 			PC->Client_UpdatePlayerInfo(PlayerInfo);
 		}
 	}
-}
-
-void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
-{
-	const FString PlayerName = FSessionUtil::GetSteamIdByController(PlayerController);
-	const uint8 PlayerIndex = *PlayerInfoMap.FindKey(PlayerName);
-	PlayerInfoMap.Remove(PlayerIndex);
-	PlayerInfo[PlayerIndex] = TEXT("");
-	
-	ReadyMap.Remove(PlayerName);
 }
 
 bool ASessionGameState::IsPlayerReadyAll()
