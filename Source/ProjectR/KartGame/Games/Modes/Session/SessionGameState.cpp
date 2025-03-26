@@ -2,8 +2,6 @@
 
 #include "SessionUtil.h"
 #include "SessionPlayerController.h"
-#include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 ASessionGameState::ASessionGameState()
 {

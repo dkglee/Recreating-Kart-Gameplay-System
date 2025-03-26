@@ -20,11 +20,12 @@ void ASessionPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocalPlayerController())
+	if (!IsLocalPlayerController())
 	{
-		SetShowMouseCursor(true);
+		return;
 	}
-
+	
+	SetShowMouseCursor(true);
 	if (!ReadySession)
     {
     	ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
