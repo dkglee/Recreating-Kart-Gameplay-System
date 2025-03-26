@@ -3,15 +3,12 @@
 
 #include "KartEngineSoundComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "KartInfo.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartSystemLibrary.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Components/BoxComponent.h"
 #include "Sound/SoundBase.h"
-#include "Kismet/KismetStringLibrary.h"
 
 // Sets default values for this component's properties
 UKartEngineSoundComponent::UKartEngineSoundComponent()

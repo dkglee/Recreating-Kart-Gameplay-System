@@ -2,10 +2,7 @@
 
 #include "Kart.h"
 #include "KartFrictionComponent.h"
-#include "KartNetworkSyncComponent.h"
 #include "Components/BoxComponent.h"
-#include "KartGame/Items/ItemBox.h"
-#include "KartGame/Games/Objects/CheckPoint.h"
 #include "Net/UnrealNetwork.h"
 
 UKartCollisionComponentLegacy::UKartCollisionComponentLegacy()
