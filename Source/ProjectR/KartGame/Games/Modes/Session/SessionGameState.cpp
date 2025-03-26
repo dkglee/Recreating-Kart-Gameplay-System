@@ -4,7 +4,6 @@
 #include "SessionPlayerController.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
-#include "Net/UnrealNetwork.h"
 
 ASessionGameState::ASessionGameState()
 {
@@ -14,12 +13,6 @@ ASessionGameState::ASessionGameState()
 		PlayerInfoMap.Add(i , TEXT(""));
 	}
 }
-
-void ASessionGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	 DOREPLIFETIME(ASessionGameState, PlayerInfo);
-}
-
 
 void ASessionGameState::BeginPlay()
 {
@@ -43,8 +36,7 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 
 	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
 	{
-		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
-		PC->UpdateSessionList();
+		Client_UpdatePlayerInfo(PlayerState->GetPlayerController(), PlayerInfo);
 	}
 }
 
@@ -56,18 +48,11 @@ void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
 	PlayerInfo[PlayerIndex] = TEXT("");
 	
 	ReadyMap.Remove(PlayerName);
-
-	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
-	{
-		ASessionPlayerController* PC = Cast<ASessionPlayerController>(PlayerState->GetPlayerController());
-		PC->UpdateSessionList();
-	}
 }
 
-void ASessionGameState::OnRep_PlayerInfo()
+void ASessionGameState::Client_UpdatePlayerInfo_Implementation(APlayerController* TargetController, const TArray<FString>& PlayerNameList)
 {
-	ASessionPlayerController* PC = Cast<ASessionPlayerController>(
-		UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	ASessionPlayerController* PC = Cast<ASessionPlayerController>(TargetController);
 
 	if (!PC)
 	{

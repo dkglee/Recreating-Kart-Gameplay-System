@@ -17,13 +17,12 @@ class PROJECTR_API UReadySession : public UUserWidget
 
 public:
 	void UpdatePlayers();
+	void InitializeData();
 
 	GETTER(TObjectPtr<UCommonButton>, GameStartButton)
 	
 protected:
 	virtual void NativePreConstruct() override;
-	
-	virtual void NativeOnInitialized() override;
 
 private:
 	const uint8 PlayerInfoGridWidth = 4;

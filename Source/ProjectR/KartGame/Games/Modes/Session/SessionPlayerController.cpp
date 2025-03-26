@@ -37,12 +37,13 @@ void ASessionPlayerController::UpdateSessionList()
 	{
 		return;
 	}
-	
+
 	if (!ReadySession)
 	{
 		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
 		ReadySession->GetGameStartButton()->GetRoot()->
 			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+		ReadySession->InitializeData();
 		ReadySession->AddToViewport();
 	}
 	

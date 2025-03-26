@@ -15,23 +15,6 @@ void UReadySession::NativePreConstruct()
 	InitializeWidget();
 }
 
-void UReadySession::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-
-	const FNamedOnlineSession* NamedOnlineSession = FSessionUtil::GetCurrentSession();
-	if (!NamedOnlineSession)
-	{
-		return;
-	}
-
-	FString RoomTitleData;
-	NamedOnlineSession->SessionSettings.Get(TEXT("RoomName"), RoomTitleData);
-	
-	RoomId->SetText(FText::FromString(NamedOnlineSession->GetSessionIdStr().Left(7)));
-	RoomTitle->SetText(FText::FromString(RoomTitleData));
-}
-
 void UReadySession::InitializeWidget()
 {
 	if (!IsValid(PlayerInfoClass))
@@ -49,6 +32,21 @@ void UReadySession::InitializeWidget()
 			PlayerInfoGrid->AddChildToUniformGrid(PlayerWidget, H, W);
 		}
 	}
+}
+
+void UReadySession::InitializeData()
+{
+	const FNamedOnlineSession* NamedOnlineSession = FSessionUtil::GetCurrentSession();
+	if (!NamedOnlineSession)
+	{  
+		return; 
+	}
+
+	FString RoomTitleData;
+	NamedOnlineSession->SessionSettings.Get(TEXT("RoomName"), RoomTitleData);
+	
+	RoomId->SetText(FText::FromString(NamedOnlineSession->GetSessionIdStr().Left(7)));
+	RoomTitle->SetText(FText::FromString(RoomTitleData));
 }
 
 void UReadySession::UpdatePlayers()

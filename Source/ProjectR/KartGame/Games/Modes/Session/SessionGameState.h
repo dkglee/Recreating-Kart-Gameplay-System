@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "CommonUtil.h"
 #include "GameFramework/GameStateBase.h"
+
 #include "SessionGameState.generated.h"
 
 UCLASS()
@@ -22,17 +23,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options", meta = (AllowPrivateAccess = true))
 	uint8 MaxPlayerCount = 8;
 	
-	UPROPERTY(Replicated, ReplicatedUsing=OnRep_PlayerInfo)
+	UPROPERTY()
 	TArray<FString> PlayerInfo;
 
-	UFUNCTION()
-	void OnRep_PlayerInfo();
+	UFUNCTION(Client, Reliable)
+	void Client_UpdatePlayerInfo(APlayerController* TargetController, const TArray<FString>& PlayerNameList);
 
 	// 서버에서만 처리하면 되기 때문에 서버에서만 가지고 있기
 	UPROPERTY()
