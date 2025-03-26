@@ -16,7 +16,7 @@ class PROJECTR_API UReadySession : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void UpdatePlayers();
+	void UpdatePlayers(const TArray<FString>& PlayerList);
 	void InitializeData();
 
 	GETTER(TObjectPtr<UCommonButton>, GameStartButton)

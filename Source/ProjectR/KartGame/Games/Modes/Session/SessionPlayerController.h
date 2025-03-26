@@ -12,7 +12,7 @@ class PROJECTR_API ASessionPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	void UpdateSessionList();
+	void UpdateSessionList(const TArray<FString>& PlayerList);
 	
 protected:
 	virtual void AcknowledgePossession(APawn* InPawn) override;

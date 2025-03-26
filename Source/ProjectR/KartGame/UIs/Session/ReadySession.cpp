@@ -49,10 +49,9 @@ void UReadySession::InitializeData()
 	RoomTitle->SetText(FText::FromString(RoomTitleData));
 }
 
-void UReadySession::UpdatePlayers()
+void UReadySession::UpdatePlayers(const TArray<FString>& PlayerList)
 {
-	ASessionGameState* GS = Cast<ASessionGameState>(GetWorld()->GetGameState());
-	for (int i = 0; i < GS->GetPlayerInfo().Num(); i++)
+	for (int i = 0; i < PlayerList.Num(); i++)
 	{
 		UReadySessionPlayerWidget* ChildWidget = Cast<UReadySessionPlayerWidget>(
 			PlayerInfoGrid->GetChildAt(i));
@@ -60,6 +59,6 @@ void UReadySession::UpdatePlayers()
 		{
 			return;
 		}
-		ChildWidget->InitializeData(GS->GetPlayerInfo()[i]);
+		ChildWidget->InitializeData(PlayerList[i]);
 	}
 }

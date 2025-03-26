@@ -31,7 +31,7 @@ void ASessionPlayerController::CheckAndStartGame()
 	GetWorld()->GetAuthGameMode<ASessionGameMode>()->StartGameToPlay();
 }
 
-void ASessionPlayerController::UpdateSessionList()
+void ASessionPlayerController::UpdateSessionList(const TArray<FString>& PlayerList)
 {
 	if (!IsLocalPlayerController())
 	{
@@ -47,5 +47,5 @@ void ASessionPlayerController::UpdateSessionList()
 		ReadySession->AddToViewport();
 	}
 	
-	ReadySession->UpdatePlayers();
+	ReadySession->UpdatePlayers(PlayerList);
 }
