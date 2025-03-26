@@ -80,6 +80,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 	{
 		Server_ChangebUsingBooster(false);
+		OnBoosterDeactivated.Broadcast();
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -88,6 +89,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (ElapsedTime >= BoosterTime)
 	{
 		Server_ChangebUsingBooster(false);
+		OnBoosterDeactivated.Broadcast();
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -120,6 +122,11 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		{
 			ServerRPC_SetbOnBooster(bOnBooster);
 		}
+
+		if (bOnBooster)
+		{
+			OnBoosterActivated.Broadcast(BoosterTime, true);
+		}
 	}
 
 	DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
@@ -135,10 +142,6 @@ void UKartBoosterComponent::ProcessInstantBoost()
 	if (bInstantBoostEnabled)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
-		// // Impulse 방식으로 처리
-		// FVector Impulse = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * InstantBoostScale;
-		// KartBody->AddImpulse(Impulse);
-		// bInstantBoostEnabled = false;
 		bInstantBoostEnabled = false;
 		bInstantBoostActive = true;
 		GetWorld()->GetTimerManager().ClearTimer(InstantBoostActiveTimer);
@@ -151,6 +154,8 @@ void UKartBoosterComponent::ProcessInstantBoost()
 			}
 		});
 		GetWorld()->GetTimerManager().SetTimer(InstantBoostActiveTimer, TimerDelegate, InstantBoostActiveDuration, false);
+
+		OnBoosterActivated.Broadcast(InstantBoostActiveDuration, false);
 	}
 }
 
@@ -180,6 +185,7 @@ void UKartBoosterComponent::ApplyInstantBoost()
 		if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 		{
 			bInstantBoostActive = false;
+			OnBoosterDeactivated.Broadcast();
 			GetWorld()->GetTimerManager().ClearTimer(InstantBoostActiveTimer);
 			return;
 		}

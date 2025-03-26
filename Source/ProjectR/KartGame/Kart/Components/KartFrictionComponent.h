@@ -103,7 +103,7 @@ private:
 	float InFrictionGripCoeff = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float MinimumFrictionDelay = 0.8f;
+	float MinimumFrictionDelay = 0.6f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	FTimerHandle FrictionDelayTimer;
 	float bForceDrfit = false; 

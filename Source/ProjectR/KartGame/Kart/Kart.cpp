@@ -4,6 +4,7 @@
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
 #include "KartBoosterComponent.h"
+#include "KartBoosterVFXComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartCollisionComponentLegacy.h"
 #include "KartDriftSoundComponent.h"
@@ -53,7 +54,9 @@ AKart::AKart()
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
-
+	// Rootbox의 Simulation Generate Hit Event를 true로 해줘야 물리 충돌이 발생할 때 Hit Event가 발생함.
+	RootBox->SetNotifyRigidBodyCollision(true);
+	
 	RootBox->SetLinearDamping(0.9f);
 	RootBox->SetAngularDamping(0.9f);
 
@@ -69,8 +72,12 @@ AKart::AKart()
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
 	SpringArmComponent->bUsePawnControlRotation = false;
-	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->bEnableCameraLag = false;
 	SpringArmComponent->bEnableCameraRotationLag = true;
+	SpringArmComponent->TargetArmLength = 450.0f;
+	SpringArmComponent->SocketOffset = {0, 0, 150.0f};
+	SpringArmComponent->bDoCollisionTest = false;
+	CameraComponent->SetRelativeRotation({-10, 0, 0});
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -124,11 +131,13 @@ AKart::AKart()
 	LeftSkidMark->SetupAttachment(LR_Wheel);
 	LeftSkidMark->SetNetAddressable();
 	LeftSkidMark->SetIsReplicated(true);
+	LeftSkidMark->SetRelativeLocation(FVector{25.000000, 10.000000, -5.000000});
 
 	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+	RightSkidMark->SetRelativeLocation(FVector{25.000000, -10.000000, -5.000000});
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);
@@ -183,6 +192,14 @@ AKart::AKart()
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
+
+	// Booster Niagara
+	BoosterVfxComponent = CreateDefaultSubobject<UKartBoosterVFXComponent>(TEXT("Booster VFX Component"));
+	// BoosterVfxComponent->SetupAttachment(RootBox);
+	BoosterVfxComponent->SetNetAddressable();
+	BoosterVfxComponent->SetIsReplicated(true);
+	BoosterVfxComponent->SetRelativeLocation({-90, 0, 15});
+	BoosterVfxComponent->SetRelativeRotation({0, 180, 0});
 }
 
 // Called when the game starts or when spawned
