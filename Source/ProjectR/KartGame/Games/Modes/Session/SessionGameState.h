@@ -19,8 +19,6 @@ public:
 
 	bool IsPlayerReadyAll();
 
-	GETTER(TArray<FString>, PlayerInfo)
-
 protected:
 	virtual void BeginPlay() override;
 	
@@ -32,7 +30,7 @@ private:
 	TArray<FString> PlayerInfo;
 
 	UFUNCTION(Client, Reliable)
-	void Client_UpdatePlayerInfo(APlayerController* TargetController, const TArray<FString>& PlayerNameList);
+	void Client_UpdatePlayerInfo(const TArray<FString>& PlayerNameList);
 
 	// 서버에서만 처리하면 되기 때문에 서버에서만 가지고 있기
 	UPROPERTY()

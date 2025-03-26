@@ -36,7 +36,7 @@ void ASessionGameState::JoinPlayer(APlayerController* PlayerController)
 
 	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
 	{
-		Client_UpdatePlayerInfo(PlayerState->GetPlayerController(), PlayerInfo);
+		Client_UpdatePlayerInfo(PlayerInfo);
 	}
 }
 
@@ -50,9 +50,10 @@ void ASessionGameState::LeavePlayer(APlayerController* PlayerController)
 	ReadyMap.Remove(PlayerName);
 }
 
-void ASessionGameState::Client_UpdatePlayerInfo_Implementation(APlayerController* TargetController, const TArray<FString>& PlayerNameList)
+void ASessionGameState::Client_UpdatePlayerInfo_Implementation(const TArray<FString>& PlayerNameList)
 {
-	ASessionPlayerController* PC = Cast<ASessionPlayerController>(TargetController);
+	ASessionPlayerController* PC = Cast<ASessionPlayerController>(
+		UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	if (!PC)
 	{
