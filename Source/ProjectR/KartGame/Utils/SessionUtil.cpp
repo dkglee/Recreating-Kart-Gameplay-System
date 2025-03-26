@@ -65,11 +65,14 @@ void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 	
 	SessionSettings->Set(FName(TEXT("MatchType")), MatchType
 		, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	SessionSettings->Set(FName(TEXT("RoomName")), SessionCreateData.RoomName
+	
+	std::string RoomNameString = TCHAR_TO_UTF8(*SessionCreateData.RoomName);
+	SessionSettings->Set(FName(TEXT("RoomName")), FBase64::Encode(
+		TArray<uint8>((uint8*)RoomNameString.c_str(), RoomNameString.length()))
 		, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	OnlineSessionInterface->CreateSession(0,
-		FName(*SessionCreateData.RoomName), *SessionSettings);
+		NAME_GameSession, *SessionSettings);
 }
 
 void FSessionUtil::SearchSession(FSessionSearchData& SessionSearchData)
@@ -146,4 +149,20 @@ FString FSessionUtil::GetSteamIdByController(const APlayerController* PlayerCont
 	}
 
 	return SteamSubSystem->GetIdentityInterface()->GetPlayerNickname(*SteamUniqueId);
+}
+
+FString FSessionUtil::EncodeData(const FString& Str)
+{
+	std::string RoomNameString = TCHAR_TO_UTF8(*Str);
+	return FBase64::Encode(TArray(
+		(uint8*)RoomNameString.c_str(),
+		RoomNameString.length()));
+}
+
+FString FSessionUtil::DecodeData(const FString& Str)
+{
+	TArray<uint8> ArrayData;
+	FBase64::Decode(Str, ArrayData);	
+	const std::string Utf8String((char*)ArrayData.GetData(), ArrayData.Num());
+	return UTF8_TO_TCHAR(Utf8String.c_str());
 }
