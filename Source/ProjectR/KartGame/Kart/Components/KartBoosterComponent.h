@@ -27,6 +27,8 @@ protected:
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_AddBoosterForce();
+	UFUNCTION(Server, Reliable)
+	void Server_ChangebUsingBooster(bool value);
 	UFUNCTION()
 	void ProcessInstantBoost();
 	UFUNCTION()

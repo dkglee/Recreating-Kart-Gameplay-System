@@ -66,7 +66,6 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	}
 }
 
-
 void AWaterBomb::MoveToEstimateLocation(float DeltaTime)
 {
 	if (HasAuthority() == false) return;
