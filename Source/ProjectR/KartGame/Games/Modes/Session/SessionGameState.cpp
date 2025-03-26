@@ -59,7 +59,7 @@ void ASessionGameState::Client_UpdatePlayerInfo_Implementation(APlayerController
 		return;
 	}
 
-	PC->UpdateSessionList();
+	PC->UpdateSessionList(PlayerNameList);
 }
 
 bool ASessionGameState::IsPlayerReadyAll()
