@@ -70,7 +70,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 {
 	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 	{
-		Kart->SetbUsingBooster(false);
+		Server_ChangebUsingBooster(false);
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -78,7 +78,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
 	if (ElapsedTime >= BoosterTime)
 	{
-		Kart->SetbUsingBooster(false);
+		Server_ChangebUsingBooster(false);
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -100,6 +100,11 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		
 		Server_AddBoosterForce_Implementation();
 	}
+}
+
+void UKartBoosterComponent::Server_ChangebUsingBooster_Implementation(bool value)
+{
+	Kart->SetbUsingBooster(value);
 }
 
 void UKartBoosterComponent::ProcessInstantBoost()
