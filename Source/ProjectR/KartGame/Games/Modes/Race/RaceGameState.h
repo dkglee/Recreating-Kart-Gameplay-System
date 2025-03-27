@@ -22,6 +22,7 @@ public:
 	GETTER_SETTER(ERaceStatus, RaceStatus)
 	GETTER_SETTER(FDateTime, RaceStartTime)
 	GETTER(FDateTime, RaceEndTime)
+	GETTER(TObjectPtr<ACheckPoint>, StartPoint)
 	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
 	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
 	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
@@ -43,6 +44,9 @@ private:
 
 	UPROPERTY()
 	TMap<FString, ACheckPoint*> CheckPointData;
+
+	UPROPERTY()
+	TObjectPtr<ACheckPoint> StartPoint;
 
 	void SortRank();
 
