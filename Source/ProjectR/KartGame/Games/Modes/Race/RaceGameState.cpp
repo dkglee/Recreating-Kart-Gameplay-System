@@ -74,6 +74,11 @@ void ARaceGameState::SortRank()
 	{
 		return;
 	}
+
+	if (RaceStatus == ERaceStatus::Finish)
+	{
+		return;
+	}
 	
 	Algo::HeapSort(PlayerArray, [](const APlayerState* A, const APlayerState* B)
 	{
@@ -139,7 +144,7 @@ void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
 		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
 		if (!PC)
 		{
-			continue;;
+			continue;
 		}
 
 		if (PC->IsLocalController())

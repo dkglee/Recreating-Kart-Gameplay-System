@@ -56,5 +56,5 @@ void ARacePlayerController::EndGame()
 {
 	// 종료 UI 노출 처리 (해당 부분은 서버와 동기화가 굳이굳이 필요하진 않다)
 	// 어차피 리타이어 관련 여부는 서버에서 체크하기 때문이다.
-	FFastLogger::LogScreen(FColor::Red, TEXT("게임 종료"));
+	MainHUD->ShowResult();
 }

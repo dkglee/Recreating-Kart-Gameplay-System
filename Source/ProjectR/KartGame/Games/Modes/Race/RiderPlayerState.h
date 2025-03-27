@@ -27,6 +27,7 @@ public:
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
 	GETTER_SETTER(uint8, Ranking);
+	GETTER_SETTER(FDateTime, RaceEndTime);
 
 	FOnGoNextLapNotified OnGoNextLapNotified;
 
