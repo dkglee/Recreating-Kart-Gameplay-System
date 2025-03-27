@@ -60,11 +60,15 @@ void ARiderPlayerState::GoNextLap()
 
 	if (HasAuthority())
 	{
-		if (!GetPawn()->IsLocallyControlled())
+		if (CurrentLap == GetWorld()->GetGameState<ARaceGameState>()->GetMaxLaps())
 		{
-			return;
+			// Finish Games
 		}
-		OnGoNextLapNotified.Broadcast(CurrentLap);
+		
+		if (GetPawn()->IsLocallyControlled())
+		{
+			OnGoNextLapNotified.Broadcast(CurrentLap);
+		}
 	}
 }
 

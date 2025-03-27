@@ -17,14 +17,16 @@ class PROJECTR_API ARaceGameState : public AGameStateBase
 	
 public:
 	ARaceGameState();
-	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
-	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
-	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
 
 #pragma region GetSet
 	GETTER_SETTER(ERaceStatus, RaceStatus)
 	GETTER_SETTER(FDateTime, RaceStartTime)
+	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
+	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
+	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
 #pragma endregion
+
+	void CountDownToFinish();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -34,7 +36,6 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Options|Race", meta = (AllowPrivateAccess = true))
 	uint8 MaxLaps = 3;
 	
 	uint16 MaxCheckPoint = 0;
@@ -49,4 +50,7 @@ private:
 
 	UPROPERTY(Replicated)
 	FDateTime RaceStartTime;
+	
+	UPROPERTY(Replicated)
+	FDateTime RaceEndTime;
 };
