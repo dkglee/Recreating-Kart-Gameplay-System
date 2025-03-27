@@ -3,13 +3,11 @@
 
 #include "KartBoosterComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "KartFrictionComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
-#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -129,7 +127,7 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		}
 	}
 
-	DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
+	//DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
 }
 
 void UKartBoosterComponent::Server_ChangebUsingBooster_Implementation(bool value)

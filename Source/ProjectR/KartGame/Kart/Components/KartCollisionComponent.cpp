@@ -33,8 +33,6 @@ void UKartCollisionComponent::BeginPlay()
 void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FFastLogger::LogConsole(TEXT("Kart Collision Detected!"));
-	
 	if (OtherActor->IsA(AItemBox::StaticClass()) ||
 	OtherActor->IsA(ACheckPoint::StaticClass()))
 	{

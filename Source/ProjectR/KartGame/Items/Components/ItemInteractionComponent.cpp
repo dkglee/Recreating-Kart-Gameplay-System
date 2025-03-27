@@ -7,7 +7,6 @@
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "Components/BoxComponent.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -84,6 +83,7 @@ void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 	if (bShieldOn)
 	{
 		FFastLogger::LogConsole(TEXT("InteractionComponent : blocked by shield"));
+		NetMulticast_ShieldEffect();
 		if (Kart->HasAuthority())
 		{
 			bShieldOn = false;
@@ -231,5 +231,13 @@ void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 	{
 		bShieldOn = false;
 		ShieldElapsedTime = 0.f;
+	}
+}
+
+void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation()
+{
+	if (Kart->IsLocallyControlled())
+	{
+		DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("Shield!"), 0, FColor::Green, 1, true, 3);
 	}
 }

@@ -9,8 +9,6 @@
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties

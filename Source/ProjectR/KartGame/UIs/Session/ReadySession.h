@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ReadySession.generated.h"
 
+class UTextBlock;
 class UCommonButton;
 class UReadySessionPlayerWidget;
 class UUniformGridPanel;
@@ -15,14 +16,13 @@ class PROJECTR_API UReadySession : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void UpdatePlayers();
+	void UpdatePlayers(const TArray<FString>& PlayerList);
+	void InitializeData();
 
 	GETTER(TObjectPtr<UCommonButton>, GameStartButton)
 	
 protected:
 	virtual void NativePreConstruct() override;
-	
-	virtual void NativeOnInitialized() override;
 
 private:
 	const uint8 PlayerInfoGridWidth = 4;
@@ -36,6 +36,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonButton> GameStartButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RoomId;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RoomTitle;
 
 	void InitializeWidget();
 };

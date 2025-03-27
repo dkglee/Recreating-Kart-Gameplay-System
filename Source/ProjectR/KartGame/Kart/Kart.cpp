@@ -7,7 +7,7 @@
 #include "KartBoosterComponent.h"
 #include "KartBasicBoosterVFXComponent.h"
 #include "KartCollisionComponent.h"
-#include "KartCollisionComponentLegacy.h"
+#include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
@@ -185,6 +185,12 @@ AKart::AKart()
 	BoosterComponent->SetNetAddressable();
 	BoosterComponent->SetIsReplicated(true);
 
+	
+	DraftComponent = CreateDefaultSubobject<UKartDraftComponent>(TEXT("Kart Draft Component"));
+	DraftComponent->SetNetAddressable();
+	DraftComponent->SetIsReplicated(true);
+
+	
 	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("KartSkeletalMeshComponent"));
 	KartSkeletalMeshComponent->SetupAttachment(RootBox);
 	KartSkeletalMeshComponent->SetNetAddressable();

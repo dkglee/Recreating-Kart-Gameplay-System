@@ -1,9 +1,8 @@
 ﻿#include "ReadySessionPlayerWidget.h"
 
 #include "Components/TextBlock.h"
-#include "GameFramework/PlayerState.h"
 
-void UReadySessionPlayerWidget::InitializeData(const APlayerState* PS)
+void UReadySessionPlayerWidget::InitializeData(const FString& PlayerNickName)
 {
-	PlayerName->SetText(FText::FromString(PS->GetName()));
+	PlayerName->SetText(FText::FromString(PlayerNickName));
 }

@@ -10,7 +10,6 @@
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartSystemLibrary.h"
-#include "StringDev.h"
 
 
 // Sets default values for this component's properties

@@ -3,7 +3,6 @@
 
 #include "KartSkidMarkComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
