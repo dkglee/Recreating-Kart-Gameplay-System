@@ -16,4 +16,8 @@ protected:
 
 private:
 	uint8 StartToPlayerCount;
+
+	FTimerHandle GameStartTimerHandle;
+
+	void StartGame();
 };

@@ -23,8 +23,6 @@ public:
 	void Client_SetHUDToStart();
 	
 private:
-	FTimerHandle TimerHandle;
-
 #pragma region UIFactory
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainUI> MainHUDClass;
