@@ -38,7 +38,7 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* HitComponent,
 	{
 		return;
 	}
-
+	
 	FCollision CollisionInfo;
 	
 	// 충돌이 발생했을 때 발생한 두 개의 클라이언트에게 충돌 로직을 실행하도록 요청한다. // 그냥 자기 자신만 검출하면 되네
@@ -48,9 +48,9 @@ void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* HitComponent,
 		CollisionInfo.KartInfo = OtherKart->GetNetworkSyncComponent()->GetKartInfo();
 		CollisionInfo.bCollisionWithKart = true;
 	}
-
+	
 	CollisionInfo.CollisionNormal = Hit.ImpactNormal;
-
+	
 	if (Kart->IsLocallyControlled())
 	{
 		ClientRPC_OnCollisionKart_Implementation(CollisionInfo);
@@ -73,6 +73,7 @@ void UKartCollisionComponent::InitializeComponent()
 		if (KartBody && Kart->HasAuthority())
 		{
 			KartBody->OnComponentHit.AddDynamic(this, &UKartCollisionComponent::OnCollisionKart);
+			// KartBody->OnComponentBeginOverlap.AddDynamic(this, &UKartCollisionComponent::OnOverlapKart);
 		}
 	}
 }
@@ -85,8 +86,71 @@ void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 }
 
+void UKartCollisionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CoolTimeHandle);
+		if (KartBody)
+		{
+			KartBody->OnComponentHit.RemoveDynamic(this, &UKartCollisionComponent::OnCollisionKart);
+			KartBody->OnComponentBeginOverlap.RemoveDynamic(this, &UKartCollisionComponent::OnOverlapKart);
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
+void UKartCollisionComponent::OnOverlapKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// if (OtherActor->IsA(AItemBox::StaticClass()) ||
+	// OtherActor->IsA(ACheckPoint::StaticClass()))
+	// {
+	// 	return;
+	// }
+	//
+	// FCollision CollisionInfo;
+	//
+	// // 충돌이 발생했을 때 발생한 두 개의 클라이언트에게 충돌 로직을 실행하도록 요청한다. // 그냥 자기 자신만 검출하면 되네
+	// AKart* OtherKart = Cast<AKart>(OtherActor);
+	// if (OtherKart)
+	// {
+	// 	CollisionInfo.KartInfo = OtherKart->GetNetworkSyncComponent()->GetKartInfo();
+	// 	CollisionInfo.bCollisionWithKart = true;
+	// }
+	//
+	// CollisionInfo.CollisionNormal = SweepResult.ImpactNormal;
+	//
+	// if (Kart->IsLocallyControlled())
+	// {
+	// 	ClientRPC_OnCollisionKart_Implementation(CollisionInfo);
+	// }
+	// else
+	// {
+	// 	ClientRPC_OnCollisionKart(CollisionInfo);
+	// }
+}
+
 void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollision CollisionInfo)
 {
+	// 쿨타임 체크
+	if (bCoolTime)
+	{
+		FFastLogger::LogConsole(TEXT("Kart Collision Component CoolTime!"));
+		return;
+	}
+
+	bCoolTime = true;
+	TWeakObjectPtr<UKartCollisionComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartCollisionComponent* StrongThis = WeakThis.Get();
+			StrongThis->bCoolTime = false;
+		}
+	}), CoolTime, false);
+	
 	FVector ImpactNormal = CollisionInfo.CollisionNormal.GetSafeNormal();
 	float SlopeAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(ImpactNormal, FVector::UpVector)));
 
@@ -99,6 +163,5 @@ void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollisio
 	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 
 	Kart->GetAccelerationComponent()->ClearAcceleration();
-	FFastLogger::LogConsole(TEXT("Kart Collision Component Initialized!"));
 }
 
