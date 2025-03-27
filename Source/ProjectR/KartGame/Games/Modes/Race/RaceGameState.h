@@ -21,12 +21,13 @@ public:
 #pragma region GetSet
 	GETTER_SETTER(ERaceStatus, RaceStatus)
 	GETTER_SETTER(FDateTime, RaceStartTime)
+	GETTER(FDateTime, RaceEndTime)
 	FORCEINLINE uint16 GetMaxCheckPoint() const { return MaxCheckPoint; }
 	FORCEINLINE uint16 GetMaxLaps() const { return MaxLaps; }
 	FORCEINLINE TMap<FString, ACheckPoint*> GetCheckPointData() const { return CheckPointData; }
 #pragma endregion
 
-	void CountDownToFinish();
+	void CountDownToFinish(const FDateTime& FinishTime);
 	
 protected:
 	virtual void BeginPlay() override;

@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainUI.generated.h"
 
+class UCountDownToEnd;
 class UDashBoardUI;
 class UItemInventory;
 class URealTimeRankingHUDBoard;
@@ -22,15 +23,22 @@ public:
 	GETTER(TObjectPtr<UDashBoardUI>, WBP_DashBoardUI);
 	GETTER(TObjectPtr<UItemInventory>, WBP_ItemInventory);
 	GETTER(TObjectPtr<UCountDownToStart>, CountDownToStartWidget)
+	GETTER(TObjectPtr<UCountDownToEnd>, CountDownToEndWidget)
 #pragma endregion
 	
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCountDownToStart> CountDownToStartWidget;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UDashBoardUI> WBP_DashBoardUI;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UItemInventory> WBP_ItemInventory;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<URealTimeRankingHUDBoard> RealTimeRankingBoard;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCountDownToEnd> CountDownToEndWidget;
 };

@@ -47,6 +47,9 @@ private:
 
 	UPROPERTY(Replicated)
 	uint8 Ranking = 0;
+	
+	UPROPERTY(Replicated)
+	FDateTime RaceEndTime;
 
 	UFUNCTION()
 	void OnRep_CurrentLap();

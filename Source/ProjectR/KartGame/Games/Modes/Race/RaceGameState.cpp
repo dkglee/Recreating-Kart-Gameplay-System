@@ -1,5 +1,6 @@
 ﻿#include "RaceGameState.h"
 
+#include "RacePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
@@ -123,8 +124,30 @@ void ARaceGameState::SortRank()
 	}
 }
 
-void ARaceGameState::CountDownToFinish()
+void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	SetRaceStatus(ERaceStatus::HoldToFinish);
-	RaceEndTime = FDateTime::Now();
+	RaceEndTime = FinishTime;
+
+	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	{
+		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
+		if (!PC)
+		{
+			continue;;
+		}
+
+		if (PC->IsLocalController())
+		{
+			PC->CountDownToEndGame();
+		} else
+		{
+			PC->Client_CountDownToEndGame();
+		}
+	}
 }

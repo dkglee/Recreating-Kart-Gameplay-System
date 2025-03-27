@@ -25,6 +25,7 @@ void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
 	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
 	DOREPLIFETIME(ARiderPlayerState, Ranking);
+	DOREPLIFETIME(ARiderPlayerState, RaceEndTime);
 }
 
 void ARiderPlayerState::SetCheckPoint(const FString& CheckPointNum)
@@ -58,17 +59,16 @@ void ARiderPlayerState::GoNextLap()
 	CurrentLap += 1;
 	CurrentKartCheckPoint = TEXT("0");
 
-	if (HasAuthority())
+	ARaceGameState* GS = GetWorld()->GetGameState<ARaceGameState>();
+	if (CurrentLap == GS->GetMaxLaps())
 	{
-		if (CurrentLap == GetWorld()->GetGameState<ARaceGameState>()->GetMaxLaps())
-		{
-			// Finish Games
-		}
-		
-		if (GetPawn()->IsLocallyControlled())
-		{
-			OnGoNextLapNotified.Broadcast(CurrentLap);
-		}
+		RaceEndTime = FDateTime::Now();
+		GS->CountDownToFinish(RaceEndTime);
+	}
+	
+	if (GetPawn()->IsLocallyControlled())
+	{
+		OnGoNextLapNotified.Broadcast(CurrentLap);
 	}
 }
 
