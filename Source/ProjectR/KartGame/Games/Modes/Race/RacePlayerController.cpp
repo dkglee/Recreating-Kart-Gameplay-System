@@ -1,8 +1,10 @@
 ﻿#include "RacePlayerController.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "RaceGameState.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/PlayerStart.h"
 #include "KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
@@ -65,8 +67,17 @@ void ARacePlayerController::EndGame()
 void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 {
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(
-		GetWorld(), FName(FString::Printf(TEXT("Player_Start_%d"), Index)), Actors);
+	UGameplayStatics::GetAllActorsOfClass(
+		GetWorld(), APlayerStart::StaticClass(), Actors);
 
-	GetPawn()->SetActorTransform(Actors[0]->GetTransform());
+	for (AActor* Actor : Actors)
+	{
+		APlayerStart* PlayerStart = Cast<APlayerStart>(Actor);
+
+		if (PlayerStart->PlayerStartTag == FName(FString::Printf(TEXT("Player_Start_%d"), Index)))
+		{
+			GetPawn()->SetActorTransform(PlayerStart->GetTransform());
+			return;
+		}
+	}
 }
