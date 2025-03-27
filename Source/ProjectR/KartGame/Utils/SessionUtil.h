@@ -33,6 +33,7 @@ public:
 	static void SearchSession(FSessionSearchData& SessionSearchData);
 	static void JoinSession(const UWorld* World, FOnlineSessionSearchResult& Result,
 		const FOnJoinSessionCompleteDelegate& OnJoinSessionCompleteDelegate);
+	static void DestroySession();
 	
 	static FNamedOnlineSession* GetCurrentSession();
 	static FString EncodeData(const FString& Str);

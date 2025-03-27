@@ -1,5 +1,6 @@
 ﻿#include "RiderPlayerState.h"
 
+#include "Kart.h"
 #include "Net/UnrealNetwork.h"
 #include "RaceGameState.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
@@ -64,6 +65,10 @@ void ARiderPlayerState::GoNextLap()
 	{
 		RaceEndTime = FDateTime::Now();
 		GS->CountDownToFinish(RaceEndTime);
+
+		AKart* Kart = GetPawn<AKart>();
+		Kart->SetbCanMove(false);
+		
 		return;
 	}
 	
