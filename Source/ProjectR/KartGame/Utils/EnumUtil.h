@@ -3,7 +3,7 @@
 #include "EnumUtil.generated.h"
 
 UENUM()
-enum class ELobbyUI : uint8
+enum class EUIKey : uint8
 {
 	GameModeList,
 	SessionRoom,
@@ -15,4 +15,14 @@ enum class EMatchType : uint8
 	Undefined,
 	Item,
 	Speed
+};
+
+UENUM()
+enum class ERaceStatus
+{
+	Idle,
+	Ready,
+	Playing,
+	HoldToFinish,
+	Finish
 };

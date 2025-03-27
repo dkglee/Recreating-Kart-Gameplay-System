@@ -3,6 +3,7 @@
 #include "EnumUtil.h"
 #include "Components/Button.h"
 #include "KartGame/Games/KartGameInstance.h"
+#include "KartGame/Games/Component/WidgetControlComponent.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 #include "SubUI/GameLobbySubUI.h"
 
@@ -32,8 +33,10 @@ void UMainLobbyUI::SetDefaultWidgetInfo()
 		return;
 	}
 
-	PC->OnClickInputKey_C_Notified.AddDynamic(this, &ThisClass::OpenGameModeLobby);
-	PC->OnClickInputKey_F5_Notified.AddDynamic(this, &ThisClass::SearchGameAndJoinSessions);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_C_Notified
+		.AddDynamic(this, &ThisClass::OpenGameModeLobby);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_F5_Notified
+		.AddDynamic(this, &ThisClass::SearchGameAndJoinSessions);
 }
 
 void UMainLobbyUI::ClearWidgetInfo()
@@ -46,8 +49,10 @@ void UMainLobbyUI::ClearWidgetInfo()
 		return;
 	}
 	
-	PC->OnClickInputKey_C_Notified.RemoveDynamic(this, &ThisClass::OpenGameModeLobby);
-	PC->OnClickInputKey_F5_Notified.RemoveDynamic(this, &ThisClass::SearchGameAndJoinSessions);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_C_Notified
+		.RemoveDynamic(this, &ThisClass::OpenGameModeLobby);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_F5_Notified
+		.RemoveDynamic(this, &ThisClass::SearchGameAndJoinSessions);
 }
 
 void UMainLobbyUI::OpenGameModeLobby()
@@ -58,5 +63,5 @@ void UMainLobbyUI::OpenGameModeLobby()
 		return;
 	}
 
-	PC->PushWidgetStack(ELobbyUI::GameModeList);
+	PC->GetWidgetControlComponent()->PushWidgetStack(EUIKey::GameModeList);
 }
