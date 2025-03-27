@@ -17,14 +17,16 @@ void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 	
 	StartToPlayerCount += 1;
 	
-	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
-	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
-	
-	if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
-	{
-		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+	// const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
+	// const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
+	//
+	// if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
+	// {
+	// 	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+	// 		&ThisClass::StartGame, 3, false);
+	// }
+	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
 			&ThisClass::StartGame, 3, false);
-	}
 }
 
 void ARaceGameMode::StartGame()
