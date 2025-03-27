@@ -3,7 +3,9 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
 #include "KartBoosterComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
@@ -16,6 +18,7 @@
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "KartFrictionComponent.h"
+#include "KartInstantBoostVFXComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartResetComponent.h"
 #include "KartSkeletalMeshComponent.h"
@@ -27,6 +30,8 @@
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
+#include "KartInstantBoostVFXComponent.h"
+#include "KartPowerBoosterVFXComponent.h"
 
 // Sets default values
 AKart::AKart()
@@ -53,7 +58,9 @@ AKart::AKart()
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
-
+	// Rootbox의 Simulation Generate Hit Event를 true로 해줘야 물리 충돌이 발생할 때 Hit Event가 발생함.
+	RootBox->SetNotifyRigidBodyCollision(true);
+	
 	RootBox->SetLinearDamping(0.9f);
 	RootBox->SetAngularDamping(0.9f);
 
@@ -69,8 +76,12 @@ AKart::AKart()
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
 	SpringArmComponent->bUsePawnControlRotation = false;
-	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->bEnableCameraLag = false;
 	SpringArmComponent->bEnableCameraRotationLag = true;
+	SpringArmComponent->TargetArmLength = 450.0f;
+	SpringArmComponent->SocketOffset = {0, 0, 150.0f};
+	SpringArmComponent->bDoCollisionTest = false;
+	CameraComponent->SetRelativeRotation({-10, 0, 0});
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -124,11 +135,13 @@ AKart::AKart()
 	LeftSkidMark->SetupAttachment(LR_Wheel);
 	LeftSkidMark->SetNetAddressable();
 	LeftSkidMark->SetIsReplicated(true);
+	LeftSkidMark->SetRelativeLocation(FVector{25.000000, 10.000000, -5.000000});
 
 	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+	RightSkidMark->SetRelativeLocation(FVector{25.000000, -10.000000, -5.000000});
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);
@@ -160,33 +173,56 @@ AKart::AKart()
 		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
 	}
 	
-	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("Kart Reset Component"));
+	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("KartResetComponent"));
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
-	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("KartCollisionComponent"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
 
-	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("Kart Booster Component"));
+	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("KartBoosterComponent"));
 	BoosterComponent->SetNetAddressable();
 	BoosterComponent->SetIsReplicated(true);
 
+	
 	DraftComponent = CreateDefaultSubobject<UKartDraftComponent>(TEXT("Kart Draft Component"));
 	DraftComponent->SetNetAddressable();
 	DraftComponent->SetIsReplicated(true);
 
-	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("Kart Skeletal Mesh Component"));
+	
+	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("KartSkeletalMeshComponent"));
 	KartSkeletalMeshComponent->SetupAttachment(RootBox);
 	KartSkeletalMeshComponent->SetNetAddressable();
 	KartSkeletalMeshComponent->SetIsReplicated(true);
 
 	// Linetrace Location 초기화
-	LineTraceLocations.Reserve(4);  
+	LineTraceLocations.Reserve(4);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
 	LineTraceLocations.Add(FVector::ZeroVector);
+
+	// Booster Niagara
+	LeftInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostLeft"));
+	LeftInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostLeft"));
+	LeftInstantBoost->SetNetAddressable();
+	LeftInstantBoost->SetIsReplicated(true);
+
+	RightInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostRight"));
+	RightInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostRight"));
+	RightInstantBoost->SetNetAddressable();
+	RightInstantBoost->SetIsReplicated(true);
+
+	LeftBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostLeft"));
+	LeftBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostLeft"));
+	LeftBoost->SetNetAddressable();
+	LeftBoost->SetIsReplicated(true);
+	
+	RightBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostRight"));
+	RightBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostRight"));
+	RightBoost->SetNetAddressable();
+	RightBoost->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned

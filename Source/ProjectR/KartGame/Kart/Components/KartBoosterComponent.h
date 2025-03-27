@@ -7,6 +7,11 @@
 #include "Components/ActorComponent.h"
 #include "KartBoosterComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBoosterActivated, float, BoosterTime);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoosterDeactivated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInstantBoosterActivated, float, BoosterTime);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInstantBoosterDeactivated);
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartBoosterComponent : public UActorComponent
@@ -33,6 +38,8 @@ private:
 	void ProcessInstantBoost();
 	UFUNCTION()
 	void EnableBoostWindow();
+	UFUNCTION()
+	void ApplyInstantBoost();
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SetbOnBooster(bool bInOnBooster);
 	UFUNCTION(NetMulticast, Reliable)
@@ -42,6 +49,12 @@ public:
 	void ProcessBooster(bool bBoosterUsing);
 
 	GETTER(bool, bOnBooster);
+	
+	FOnBoosterActivated OnBoosterActivated;
+	FOnBoosterDeactivated OnBoosterDeactivated;
+	FOnInstantBoosterActivated OnInstantBoosterActivated;
+	FOnInstantBoosterDeactivated OnInstantBoosterDeactivated;
+	
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Booster", meta = (AllowPrivateAccess = "true"))
@@ -64,7 +77,7 @@ private:
 	float ElapsedTime = 0.f;
 #pragma endregion 
 
-#pragma region InstanceBoosterVariance
+#pragma region InstantBoosterVariance
 	UPROPERTY()
 	bool bInstantBoostEnabled = false;
 
@@ -74,8 +87,15 @@ private:
 	float InstantBoostDuration = 1.5f;
 	UPROPERTY()
 	float InstantBoostScale = 0.5f;
+
+	UPROPERTY()
+	FTimerHandle InstantBoostActiveTimer;
+	UPROPERTY()
+	bool bInstantBoostActive = false;
+	UPROPERTY()
+	float InstantBoostActiveDuration = 0.5f;
 #pragma endregion
 	
 	UPROPERTY()
-	bool bOnBooster;
+	bool bOnBooster = false;
 };

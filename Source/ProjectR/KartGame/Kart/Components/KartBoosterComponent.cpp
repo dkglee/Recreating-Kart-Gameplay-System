@@ -51,7 +51,10 @@ void UKartBoosterComponent::InitializeComponent()
 void UKartBoosterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	
+
+	if (!Kart->IsLocallyControlled()) return;
+
+	ApplyInstantBoost();
 }
 
 void UKartBoosterComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -75,6 +78,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
 	{
 		Server_ChangebUsingBooster(false);
+		OnBoosterDeactivated.Broadcast();
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -83,6 +87,7 @@ void UKartBoosterComponent::Server_AddBoosterForce_Implementation()
 	if (ElapsedTime >= BoosterTime)
 	{
 		Server_ChangebUsingBooster(false);
+		OnBoosterDeactivated.Broadcast();
 		ElapsedTime = 0.f;
 		return;
 	}
@@ -115,6 +120,11 @@ void UKartBoosterComponent::ProcessBooster(bool bBoosterUsing)
 		{
 			ServerRPC_SetbOnBooster(bOnBooster);
 		}
+
+		if (bOnBooster)
+		{
+			OnBoosterActivated.Broadcast(BoosterTime);
+		}
 	}
 
 	//DrawDebugString(GetWorld(), Kart->GetActorLocation(), bOnBooster ? TEXT("Booster On") : TEXT("Booster Off"), nullptr, FColor::Red, 0.f);
@@ -130,10 +140,20 @@ void UKartBoosterComponent::ProcessInstantBoost()
 	if (bInstantBoostEnabled)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(InstantBoostTimer);
-		// Impulse 방식으로 처리
-		FVector Impulse = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * InstantBoostScale;
-		KartBody->AddImpulse(Impulse);
 		bInstantBoostEnabled = false;
+		bInstantBoostActive = true;
+		GetWorld()->GetTimerManager().ClearTimer(InstantBoostActiveTimer);
+		TWeakObjectPtr<UKartBoosterComponent> WeakThis = this;
+		auto TimerDelegate = FTimerDelegate::CreateLambda([WeakThis]() {
+			if (WeakThis.IsValid())
+			{
+				UKartBoosterComponent* StrongThis = WeakThis.Get();
+				StrongThis->bInstantBoostActive = false;
+			}
+		});
+		GetWorld()->GetTimerManager().SetTimer(InstantBoostActiveTimer, TimerDelegate, InstantBoostActiveDuration, false);
+
+		OnInstantBoosterActivated.Broadcast(InstantBoostActiveDuration);
 	}
 }
 
@@ -154,6 +174,28 @@ void UKartBoosterComponent::EnableBoostWindow()
 			}
 		}
 	}), InstantBoostDuration, false);
+}
+
+void UKartBoosterComponent::ApplyInstantBoost()
+{
+	if (bInstantBoostActive)
+	{
+		if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0)
+		{
+			bInstantBoostActive = false;
+			OnInstantBoosterDeactivated.Broadcast();
+			GetWorld()->GetTimerManager().ClearTimer(InstantBoostActiveTimer);
+			return;
+		}
+		
+		FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * 0.6f;
+    
+	    for (int32 i = 0; i < AccelerationComponent->GetWheels().Num(); i++)
+	    {
+	    	FVector location = AccelerationComponent->GetWheels()[i]->GetComponentLocation();
+	    	KartBody->AddForceAtLocation(force, location);
+	    }
+	}
 }
 
 void UKartBoosterComponent::ServerRPC_SetbOnBooster_Implementation(bool bInOnBooster)

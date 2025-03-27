@@ -135,7 +135,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		CheckTraceTime();
 	}
 
-	DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	// DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::CheckTraceTime()
