@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainUI.generated.h"
 
+class URankingResultUI;
 class UCountDownToEnd;
 class UDashBoardUI;
 class UItemInventory;
@@ -18,6 +19,7 @@ class PROJECTR_API UMainUI : public UUserWidget
 
 public:
 	void InitializeData();
+	void ShowResult();
 	
 #pragma region GETTERSETTER
 	GETTER(TObjectPtr<UDashBoardUI>, WBP_DashBoardUI);
@@ -41,4 +43,7 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCountDownToEnd> CountDownToEndWidget;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<URankingResultUI> RankingResultUI;
 };

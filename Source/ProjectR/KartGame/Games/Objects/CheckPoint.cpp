@@ -94,3 +94,12 @@ uint16 ACheckPoint::GetPinMainNumber() const
 	
 	return CurrentCheckPointPinNumArray[0];
 }
+
+FTransform ACheckPoint::GetTransformByStartIndex(const uint8 Index)
+{
+	FTransform NewTransform;
+	NewTransform.SetLocation(GetActorLocation() + StartRelativePos[Index]);
+	NewTransform.SetRotation(FQuat::MakeFromRotator(GetActorRotation()));
+
+	return NewTransform;
+}

@@ -27,6 +27,8 @@ public:
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
 	GETTER_SETTER(uint8, Ranking);
+	GETTER_SETTER(FDateTime, RaceEndTime);
+	GETTER_SETTER(bool, IsRaceEnd);
 
 	FOnGoNextLapNotified OnGoNextLapNotified;
 
@@ -50,6 +52,9 @@ private:
 	
 	UPROPERTY(Replicated)
 	FDateTime RaceEndTime;
+	
+	UPROPERTY(Replicated)
+	uint8 IsRaceEnd:1 = false;
 
 	UFUNCTION()
 	void OnRep_CurrentLap();

@@ -37,6 +37,11 @@ void ARaceGameState::BeginPlay()
 	{
 		const ACheckPoint* CheckPointA = static_cast<const ACheckPoint*>(A);
 		const ACheckPoint* CheckPointB = static_cast<const ACheckPoint*>(B);
+
+		if (CheckPointA->GetPinMainNumber() == CheckPointB->GetPinMainNumber() && CheckPointA->GetPinMainNumber() == 0)
+		{
+			return !CheckPointA->GetIsStart();
+		}
 		
 		return CheckPointA->GetPinMainNumber() < CheckPointB->GetPinMainNumber();
 	});
@@ -48,7 +53,7 @@ void ARaceGameState::BeginPlay()
 		CheckPointData.Add(NewCheckPoint->GetCurrentCheckPoint(), NewCheckPoint);
 	}
 
-	const ACheckPoint* FirstPoint = static_cast<ACheckPoint*>(CheckPointList[0]);
+	StartPoint = static_cast<ACheckPoint*>(CheckPointList[0]);
 	const ACheckPoint* LastPoint = static_cast<ACheckPoint*>(CheckPointList[CheckPointList.Num() - 1]);
 	// 체크포인트 최대 숫자는 보통 0 ~ 최대 숫자 까지기 때문에 0 ~ 최대 숫자 만큼 보다
 	// 적은 갯수를 보유하고 있으면 맵에 있는 체크포인트 자체에 문제가 있음을 의미한다.
@@ -57,7 +62,7 @@ void ARaceGameState::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("현재 잘못된 맵 세팅입니다. 재확인이 필요합니다: 사유 체크포인트 갯수 부족"))
 	}
 
-	MaxLaps = FirstPoint->GetMaxLaps();
+	MaxLaps = StartPoint->GetMaxLaps();
 	MaxCheckPoint = LastPoint->GetPinMainNumber();
 }
 
@@ -71,6 +76,16 @@ void ARaceGameState::Tick(float DeltaSeconds)
 void ARaceGameState::SortRank()
 {
 	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (RaceStatus == ERaceStatus::Idle)
+	{
+		return;
+	}
+	
+	if (RaceStatus == ERaceStatus::Finish)
 	{
 		return;
 	}
@@ -139,7 +154,7 @@ void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
 		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
 		if (!PC)
 		{
-			continue;;
+			continue;
 		}
 
 		if (PC->IsLocalController())

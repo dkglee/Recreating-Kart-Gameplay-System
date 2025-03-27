@@ -20,6 +20,9 @@ public:
 
 	uint16 GetPinMainNumber() const;
 	GETTER(uint8, MaxLaps)
+	GETTER(bool, IsStart)
+
+	FTransform GetTransformByStartIndex(const uint8 Index);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -47,4 +50,7 @@ private:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	void SaveCheckPoint(const AActor* CheckKart);
+
+	UPROPERTY(EditAnywhere, Category = "Options|Track", meta = (AllowPrivateAccess = true, EditCondition = IsStart, MakeEditWidget = true))
+	TArray<FVector> StartRelativePos;
 };
