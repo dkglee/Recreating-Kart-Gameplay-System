@@ -14,19 +14,24 @@ void ARaceGameMode::BeginPlay()
 void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+
+	if (!FSessionUtil::GetCurrentSession())
+	{
+		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+			&ThisClass::StartGame, 0.5, false);
+		return;
+	}
 	
 	StartToPlayerCount += 1;
 	
-	// const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
-	// const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
-	//
-	// if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
-	// {
-	// 	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
-	// 		&ThisClass::StartGame, 3, false);
-	// }
-	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
+	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
+	
+	if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
+	{
+		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
 			&ThisClass::StartGame, 3, false);
+	}
 }
 
 void ARaceGameMode::StartGame()
@@ -35,6 +40,11 @@ void ARaceGameMode::StartGame()
 	 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
 	 * 게임 시작을 위한 트리거 설정을 진행한다.
 	 */
+	if (GetGameState<ARaceGameState>()->GetRaceStatus() != ERaceStatus::Idle)
+	{
+		return;
+	}
+	
 	GetGameState<ARaceGameState>()->SetRaceStatus(ERaceStatus::Ready);
 	for (const TObjectPtr<APlayerState> PlayerState : GetGameState<ARaceGameState>()->PlayerArray)
 	{
