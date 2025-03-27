@@ -52,6 +52,6 @@ void URealTimeRankingHUDItem::InitializeData(APlayerState* PS)
 	CurrentRank = RiderPS->GetRanking();
 	IsInitializedToSetPosition = false;
 	
-	RankView->SetText(FText::FromString(FString::FromInt(RiderPS->GetRanking())));
+	RankView->SetText(FText::FromString(FString::FromInt(CurrentRank)));
 	RiderName->SetText(FText::FromString(PS->GetPlayerName()));
 }
