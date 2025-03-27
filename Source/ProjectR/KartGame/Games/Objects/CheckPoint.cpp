@@ -78,8 +78,8 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 
 	if (IsNextLapToMove)
 	{
-		PS->GoNextLap();
 		UE_LOG(LogTemp, Display, TEXT("다음 랩 이동"));
+		PS->GoNextLap();
 	}
 }
 

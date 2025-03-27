@@ -21,6 +21,11 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void Client_SetHUDToStart();
+
+	void CountDownToEndGame();
+
+	UFUNCTION(Client, Reliable)
+	void Client_CountDownToEndGame();
 	
 private:
 #pragma region UIFactory
@@ -33,4 +38,7 @@ private:
 
 	UFUNCTION()
 	void KartSetToMove();
+
+	UFUNCTION()
+	void EndGame();
 };

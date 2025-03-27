@@ -1,5 +1,6 @@
 ﻿#include "RaceGameState.h"
 
+#include "RacePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
@@ -16,6 +17,7 @@ void ARaceGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	
 	DOREPLIFETIME(ARaceGameState, RaceStatus);
 	DOREPLIFETIME(ARaceGameState, RaceStartTime);
+	DOREPLIFETIME(ARaceGameState, RaceEndTime);
 }
 
 void ARaceGameState::BeginPlay()
@@ -46,6 +48,7 @@ void ARaceGameState::BeginPlay()
 		CheckPointData.Add(NewCheckPoint->GetCurrentCheckPoint(), NewCheckPoint);
 	}
 
+	const ACheckPoint* FirstPoint = static_cast<ACheckPoint*>(CheckPointList[0]);
 	const ACheckPoint* LastPoint = static_cast<ACheckPoint*>(CheckPointList[CheckPointList.Num() - 1]);
 	// 체크포인트 최대 숫자는 보통 0 ~ 최대 숫자 까지기 때문에 0 ~ 최대 숫자 만큼 보다
 	// 적은 갯수를 보유하고 있으면 맵에 있는 체크포인트 자체에 문제가 있음을 의미한다.
@@ -54,6 +57,7 @@ void ARaceGameState::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("현재 잘못된 맵 세팅입니다. 재확인이 필요합니다: 사유 체크포인트 갯수 부족"))
 	}
 
+	MaxLaps = FirstPoint->GetMaxLaps();
 	MaxCheckPoint = LastPoint->GetPinMainNumber();
 }
 
@@ -117,5 +121,33 @@ void ARaceGameState::SortRank()
 		Rank += 1;
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
 		PS->SetRanking(Rank);
+	}
+}
+
+void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
+	SetRaceStatus(ERaceStatus::HoldToFinish);
+	RaceEndTime = FinishTime;
+
+	for (TObjectPtr<APlayerState> PlayerState : PlayerArray)
+	{
+		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
+		if (!PC)
+		{
+			continue;;
+		}
+
+		if (PC->IsLocalController())
+		{
+			PC->CountDownToEndGame();
+		} else
+		{
+			PC->Client_CountDownToEndGame();
+		}
 	}
 }
