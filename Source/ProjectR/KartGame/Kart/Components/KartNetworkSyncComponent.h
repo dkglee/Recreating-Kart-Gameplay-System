@@ -43,7 +43,7 @@ private:
 	// Simulated Proxy인 경우 해당 값을 적용
 	UPROPERTY(ReplicatedUsing=OnRep_KartInfo)
 	FKartInfo KartInfo;
-
+	
 	UFUNCTION()
 	void OnRep_KartInfo();
 
