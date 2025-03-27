@@ -47,6 +47,7 @@ private:
 	UPROPERTY()
 	FTimerHandle ItemBoxRespawnTimerHandle;
 	
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	class UBoxComponent* Root;

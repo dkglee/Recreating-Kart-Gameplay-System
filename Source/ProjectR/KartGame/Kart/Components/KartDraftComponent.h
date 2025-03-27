@@ -28,6 +28,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
+	UFUNCTION(NetMulticast, Reliable)
 	void DrawTraceLineBox(FVector start, FVector end, FVector boxHalfSize, FColor boxColor);
 
 	UFUNCTION(Server, Reliable)
@@ -70,5 +71,9 @@ private:
 
 	UPROPERTY()
 	FTimerHandle DraftTimerHandle;
+
+	UPROPERTY()
+	TArray<AActor*> IgnoredActors;
+
 	
 };
