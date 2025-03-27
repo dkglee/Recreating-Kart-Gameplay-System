@@ -7,6 +7,7 @@
 #include "Components/EditableText.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
+#include "KartGame/Games/Component/WidgetControlComponent.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 
 void USessionCreatePopupWidget::NativeOnInitialized()
@@ -33,7 +34,8 @@ void USessionCreatePopupWidget::OpenSessionCreate()
 	SetVisibility(ESlateVisibility::Visible);
 	if (PC)
 	{
-		PC->OnClickInputKey_Esc_Notified.AddDynamic(this, &ThisClass::RemoveSessionCreate);
+		PC->GetWidgetControlComponent()->OnTriggerInputKey_Esc_Notified
+			.AddDynamic(this, &ThisClass::RemoveSessionCreate);
 	}
 }
 
@@ -42,7 +44,8 @@ void USessionCreatePopupWidget::RemoveSessionCreate()
 	SetVisibility(ESlateVisibility::Hidden);
 	if (PC)
 	{
-		PC->OnClickInputKey_Esc_Notified.RemoveDynamic(this, &ThisClass::RemoveSessionCreate);
+		PC->GetWidgetControlComponent()->OnTriggerInputKey_Esc_Notified
+			.RemoveDynamic(this, &ThisClass::RemoveSessionCreate);
 	}
 }
 

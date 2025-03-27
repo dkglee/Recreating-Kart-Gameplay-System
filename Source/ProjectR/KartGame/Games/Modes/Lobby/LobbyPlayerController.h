@@ -1,15 +1,16 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "GameFramework/PlayerController.h"
 #include "LobbyPlayerController.generated.h"
 
+class UWidgetControlComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickInputKey_Notified);
 
 enum class ELobbyUI : uint8;
 
 class UGameModeListUI;
-class UInputAction;
 class UInputMappingContext;
 class UMainLobbyUI;
 
@@ -19,43 +20,25 @@ class PROJECTR_API ALobbyPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	FOnClickInputKey_Notified OnClickInputKey_C_Notified;
-	FOnClickInputKey_Notified OnClickInputKey_F5_Notified;
-	FOnClickInputKey_Notified OnClickInputKey_Esc_Notified;
-
-	void PushWidgetStack(const ELobbyUI& LobbyUIKey);
-	void PopWidgetStack();
+	ALobbyPlayerController();
+	
+	GETTER(TObjectPtr<UWidgetControlComponent>, WidgetControlComponent)
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetupInputComponent() override;
 	
 private:
 	// TODO: 모듈화
 	UPROPERTY()
 	TArray<TObjectPtr<UUserWidget>> WidgetStack;
 
-#pragma region Input
 	UPROPERTY(EditDefaultsOnly, Category = "Options|Input", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> IMC_Lobby;
-	UPROPERTY(EditDefaultsOnly, Category = "Options|Input|Key", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> IA_C;
-	UPROPERTY(EditDefaultsOnly, Category = "Options|Input|Key", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> IA_F5;
-	UPROPERTY(EditDefaultsOnly, Category = "Options|Input", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> IA_ExitWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widget Control", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UWidgetControlComponent> WidgetControlComponent;
 	
-	void OnTrigger_C();
-	void OnTrigger_F5();
-	void OnTrigger_ExitWidget();
-#pragma endregion
 #pragma region WidgetInfo
-	UPROPERTY()
-	TObjectPtr<UMainLobbyUI> MainLobbyUI;
-	
-	UPROPERTY()
-	TMap<ELobbyUI, TObjectPtr<UUserWidget>> WidgetValue;
-	
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainLobbyUI> MainLobbyUIClass;
 	

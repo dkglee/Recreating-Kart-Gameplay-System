@@ -5,6 +5,9 @@
 #include "Blueprint/UserWidget.h"
 #include "MainUI.generated.h"
 
+class UDashBoardUI;
+class UItemInventory;
+class URealTimeRankingHUDBoard;
 class UCountDownToStart;
 
 UCLASS()
@@ -13,18 +16,21 @@ class PROJECTR_API UMainUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	void InitializeData();
 	
 #pragma region GETTERSETTER
-	GETTER(class UDashBoardUI*, WBP_DashBoardUI);
-	GETTER(class UItemInventory*, WBP_ItemInventory);
+	GETTER(TObjectPtr<UDashBoardUI>, WBP_DashBoardUI);
+	GETTER(TObjectPtr<UItemInventory>, WBP_ItemInventory);
 	GETTER(TObjectPtr<UCountDownToStart>, CountDownToStartWidget)
 #pragma endregion
 	
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCountDownToStart> CountDownToStartWidget;
 	UPROPERTY(meta = (BindWidget))
-	class UDashBoardUI* WBP_DashBoardUI;
+	TObjectPtr<UDashBoardUI> WBP_DashBoardUI;
 	UPROPERTY(meta = (BindWidget))
-	class UItemInventory* WBP_ItemInventory;
+	TObjectPtr<UItemInventory> WBP_ItemInventory;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<URealTimeRankingHUDBoard> RealTimeRankingBoard;
 };

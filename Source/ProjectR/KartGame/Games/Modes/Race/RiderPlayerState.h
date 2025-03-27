@@ -6,6 +6,7 @@
 #include "RiderPlayerState.generated.h"
 
 class ACheckPoint;
+class FLifetimeProperty;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGoNextLapNotified, uint8, LapInfo);
 
@@ -32,7 +33,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
 	UPROPERTY()

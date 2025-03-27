@@ -1,32 +1,65 @@
 ﻿#include "RaceGameMode.h"
 
+#include "SessionUtil.h"
+#include "OnlineSessionSettings.h"
+#include "RaceGameState.h"
+#include "RacePlayerController.h"
 #include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 void ARaceGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-AActor* ARaceGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
+void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	uint8 PlayerId = 0;
-	if (Player && Player->PlayerState)
+	Super::PostLogin(NewPlayer);
+
+	if (!FSessionUtil::GetCurrentSession())
 	{
-		PlayerId = Player->PlayerState->GetPlayerId();
+		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+			&ThisClass::StartGame, 0.5, false);
+		return;
 	}
 	
-	const FString TagToFind = FString::Printf(TEXT("Player-Start-%d"),
-		PlayerId + 1);
+	StartToPlayerCount += 1;
 	
-	TArray<AActor*> ResultList; 
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(),
-		FName(*TagToFind), ResultList);
-
-	if (ResultList.Num() > 0)
+	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
+	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
+	
+	if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
 	{
-		return ResultList[0];
+		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+			&ThisClass::StartGame, 3, false);
 	}
+}
 
-	return Super::FindPlayerStart_Implementation(Player, IncomingName);
+void ARaceGameMode::StartGame()
+{
+	/**
+	 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
+	 * 게임 시작을 위한 트리거 설정을 진행한다.
+	 */
+	if (GetGameState<ARaceGameState>()->GetRaceStatus() != ERaceStatus::Idle)
+	{
+		return;
+	}
+	
+	GetGameState<ARaceGameState>()->SetRaceStatus(ERaceStatus::Ready);
+	for (const TObjectPtr<APlayerState> PlayerState : GetGameState<ARaceGameState>()->PlayerArray)
+	{
+		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
+		if (!PC)
+		{
+			return;
+		}
+
+		if (PC->IsLocalController())
+		{
+			PC->SetHUDToStart();
+		} else
+		{
+			PC->Client_SetHUDToStart();
+		}
+	}
 }

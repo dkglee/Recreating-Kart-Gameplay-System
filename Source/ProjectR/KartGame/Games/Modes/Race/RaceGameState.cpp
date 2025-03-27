@@ -3,10 +3,19 @@
 #include "Kismet/GameplayStatics.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 ARaceGameState::ARaceGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void ARaceGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ARaceGameState, RaceStatus);
+	DOREPLIFETIME(ARaceGameState, RaceStartTime);
 }
 
 void ARaceGameState::BeginPlay()

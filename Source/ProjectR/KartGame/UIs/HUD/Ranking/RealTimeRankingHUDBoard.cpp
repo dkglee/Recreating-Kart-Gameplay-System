@@ -6,10 +6,8 @@
 #include "KartGame/Games/Modes/Race/RaceGameState.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
-void URealTimeRankingHUDBoard::NativeOnInitialized()
+void URealTimeRankingHUDBoard::InitializeData()
 {
-	Super::NativeOnInitialized();
-
 	for (TObjectPtr<APlayerState> PlayerState : GetWorld()->GetGameState<ARaceGameState>()->PlayerArray)
 	{
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
@@ -22,9 +20,4 @@ void URealTimeRankingHUDBoard::NativeOnInitialized()
 
 		RankListItem.Add(NewRankBoard);
 	}
-}
-
-void URealTimeRankingHUDBoard::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
 }

@@ -13,6 +13,26 @@ void UTrackInfo::NativeConstruct()
 
 	GetOwningPlayerState<ARiderPlayerState>()->
 		OnGoNextLapNotified.AddDynamic(this, &ThisClass::UpdateCurrentTrack);
+
+	RaceGameState = GetWorld()->GetGameState<ARaceGameState>();
+}
+
+void UTrackInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (RaceGameState->GetRaceStatus() == ERaceStatus::Playing)
+	{
+		const FTimespan TimeDifference =
+			FDateTime::Now() - RaceGameState->GetRaceStartTime();
+
+		const uint32 TotalMinutes = TimeDifference.GetTotalMinutes();
+		const uint8 Seconds = TimeDifference.GetSeconds();
+		const int Milliseconds = TimeDifference.GetFractionMicro() / 1000;
+
+		CurrentTime->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d:%03d")
+			, TotalMinutes, Seconds, Milliseconds)));
+	}
 }
 
 void UTrackInfo::UpdateCurrentTrack(const uint8 CurrentTrack)

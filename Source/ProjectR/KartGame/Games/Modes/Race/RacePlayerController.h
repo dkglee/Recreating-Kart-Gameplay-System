@@ -5,10 +5,9 @@
 #include "GameFramework/PlayerController.h"
 #include "RacePlayerController.generated.h"
 
+class UTrackLoadingUI;
 class UMainUI;
-/**
- * 
- */
+
 UCLASS()
 class PROJECTR_API ARacePlayerController : public APlayerController
 {
@@ -18,20 +17,19 @@ public:
 #pragma region GetterSetter
 	GETTER(TObjectPtr<UMainUI>, MainHUD);
 #pragma endregion
-	
-protected:
-	virtual void BeginPlay() override;
+	void SetHUDToStart();
+
+	UFUNCTION(Client, Reliable)
+	void Client_SetHUDToStart();
 	
 private:
-	FTimerHandle TimerHandle;
-	
+#pragma region UIFactory
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainUI> MainHUDClass;
-
+#pragma endregion
+	
 	UPROPERTY()
 	TObjectPtr<UMainUI> MainHUD;
-
-	void SetHUDToStart();
 
 	UFUNCTION()
 	void KartSetToMove();

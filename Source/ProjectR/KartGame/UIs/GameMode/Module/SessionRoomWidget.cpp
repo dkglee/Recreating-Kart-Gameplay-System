@@ -26,10 +26,10 @@ void USessionRoomWidget::InitializeData(const FOnlineSessionSearchResult& Search
 	RoomTitle->SetText(FText::FromString(FSessionUtil::DecodeData(RoomName)));
 
 	const uint8 MaxPlayerCount = SearchResult.Session.SessionSettings.NumPublicConnections;
-	const uint8 CurrentPlayerCount = SearchResult.Session.NumOpenPublicConnections;
+	const uint8 RemainPlayerCount = SearchResult.Session.NumOpenPublicConnections;
 	
 	CurrentPlayer->SetText(FText::FromString(FString::FromInt(
-		MaxPlayerCount - CurrentPlayerCount)));
+		MaxPlayerCount - RemainPlayerCount)));
 	MaxPlayer->SetText(FText::FromString(FString::FromInt(MaxPlayerCount)));
 }
 
