@@ -27,11 +27,11 @@ void UKartInstantBoostVFXComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	UNiagaraSystem* NiagaraAsset = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RocketThrusterExhaustFX/FX/NS_RocketExhaust_Afterburn.NS_RocketExhaust_Afterburn"));
-	if (NiagaraAsset)
-	{
-		SetAsset(NiagaraAsset);
-	}
+	// UNiagaraSystem* NiagaraAsset = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RocketThrusterExhaustFX/FX/NS_RocketExhaust_Afterburn.NS_RocketExhaust_Afterburn"));
+	// if (NiagaraAsset)
+	// {
+	// 	SetAsset(NiagaraAsset);
+	// }
 	
 	SetAutoActivate(false);
 	Deactivate();

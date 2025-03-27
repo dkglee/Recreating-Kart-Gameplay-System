@@ -86,7 +86,7 @@ private:
 	UPROPERTY()
 	float InstantBoostDuration = 1.5f;
 	UPROPERTY()
-	float InstantBoostScale = 0.5f;
+	float InstantBoostScale = 1.0f;
 
 	UPROPERTY()
 	FTimerHandle InstantBoostActiveTimer;
