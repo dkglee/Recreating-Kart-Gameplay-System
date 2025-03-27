@@ -188,7 +188,7 @@ void UKartBoosterComponent::ApplyInstantBoost()
 			return;
 		}
 		
-		FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * 0.6f;
+		FVector force = KartBody->GetForwardVector() * KartBody->GetMass() * BoosterForce * InstantBoostScale;
     
 	    for (int32 i = 0; i < AccelerationComponent->GetWheels().Num(); i++)
 	    {
