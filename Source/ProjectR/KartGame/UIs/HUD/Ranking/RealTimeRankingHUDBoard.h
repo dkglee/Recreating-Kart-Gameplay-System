@@ -13,10 +13,8 @@ class PROJECTR_API URealTimeRankingHUDBoard : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeOnInitialized() override;
-	
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+public:
+	void InitializeData();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|List", meta = (AllowPrivateAccess = true))

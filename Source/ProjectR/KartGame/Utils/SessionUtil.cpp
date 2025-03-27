@@ -4,7 +4,6 @@
 #include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
-#include "Interfaces/OnlineUserInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
@@ -124,31 +123,6 @@ FNamedOnlineSession* FSessionUtil::GetCurrentSession()
 	}
 
 	return OnlineSessionInterface->GetNamedSession(NAME_GameSession);
-}
-
-FString FSessionUtil::GetSteamIdByController(const APlayerController* PlayerController)
-{
-	const IOnlineSubsystem* SteamSubSystem = IOnlineSubsystem::Get(FName("Steam"));
-	if (!SteamSubSystem)
-	{
-		return TEXT("");
-	}
-	
-	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-	if (!LocalPlayer)
-	{
-		return TEXT("");
-	}
-
-	const FUniqueNetIdPtr SteamUniqueId = SteamSubSystem->GetIdentityInterface()
-			->GetUniquePlayerId(LocalPlayer->GetControllerId());
-
-	if (!SteamUniqueId.IsValid())
-	{
-		return TEXT("");
-	}
-
-	return SteamSubSystem->GetIdentityInterface()->GetPlayerNickname(*SteamUniqueId);
 }
 
 FString FSessionUtil::EncodeData(const FString& Str)
