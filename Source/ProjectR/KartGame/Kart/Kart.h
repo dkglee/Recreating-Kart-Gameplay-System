@@ -143,7 +143,8 @@ private:
 	class UKartBasicBoosterVFXComponent* LeftBoost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartBasicBoosterVFXComponent* RightBoost;
-	
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* AirBoost;
 #pragma endregion
 	
 #pragma region UI
