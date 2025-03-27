@@ -4,8 +4,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "KartGame/UIs/Lobby/MainLobbyUI.h"
 #include "KartGame/UIs/GameMode/GameModeListUI.h"
-#include "EnumUtil.h"
 #include "KartGame/Games/Component/WidgetControlComponent.h"
+#include "EnumUtil.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {

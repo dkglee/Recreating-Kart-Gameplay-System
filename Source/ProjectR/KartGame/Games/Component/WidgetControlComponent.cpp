@@ -5,9 +5,31 @@
 #include "Blueprint/UserWidget.h"
 #include "KartGame/UIs/_Common/WidgetStackInterface.h"
 
-
 UWidgetControlComponent::UWidgetControlComponent()
 {
+	static ConstructorHelpers::FObjectFinder<UInputAction> TempInputEscAction
+		(TEXT("/Script/EnhancedInput.InputAction'/Game/Games/Lobby/Modes/Input/IA_ExitWidget.IA_ExitWidget'"));
+
+	if (TempInputEscAction.Succeeded())
+	{
+		IA_Esc = TempInputEscAction.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> TempInputCAction
+		(TEXT("/Script/EnhancedInput.InputAction'/Game/Games/Lobby/Modes/Input/InputKey/IA_C.IA_C'"));
+
+	if (TempInputCAction.Succeeded())
+	{
+		IA_C = TempInputCAction.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> TempInputF5Action
+		(TEXT("/Script/EnhancedInput.InputAction'/Game/Games/Lobby/Modes/Input/InputKey/IA_F5.IA_F5'"));
+
+	if (TempInputF5Action.Succeeded())
+	{
+		IA_F5 = TempInputF5Action.Object;
+	}
 }
 
 void UWidgetControlComponent::Initialize(UUserWidget* NewBaseWidget)
