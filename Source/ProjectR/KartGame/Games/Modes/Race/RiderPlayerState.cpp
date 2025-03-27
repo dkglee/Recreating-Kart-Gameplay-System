@@ -58,12 +58,13 @@ void ARiderPlayerState::GoNextLap()
 {
 	CurrentLap += 1;
 	CurrentKartCheckPoint = TEXT("0");
-
+	
 	ARaceGameState* GS = GetWorld()->GetGameState<ARaceGameState>();
 	if (CurrentLap == GS->GetMaxLaps())
 	{
 		RaceEndTime = FDateTime::Now();
 		GS->CountDownToFinish(RaceEndTime);
+		return;
 	}
 	
 	if (GetPawn()->IsLocallyControlled())

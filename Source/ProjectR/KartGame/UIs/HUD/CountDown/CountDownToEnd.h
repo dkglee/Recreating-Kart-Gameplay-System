@@ -28,7 +28,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	uint8 MaxCountDown = 10;
 	
-	uint8 CountDownNum;
+	uint8 CountDownNum = 10;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CountDownText;

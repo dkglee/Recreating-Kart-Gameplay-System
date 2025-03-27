@@ -16,7 +16,9 @@ void UCountDownToEnd::OnCountDownAnimationEnd()
 {
 	ARaceGameState* GS = GetWorld()->GetGameState<ARaceGameState>();
 	CountDownNum = FMath::Max(MaxCountDown -
-		(FDateTime::Now() - GS->GetRaceEndTime()).GetTotalSeconds(), 0);
+		FMath::FloorToInt((FDateTime::Now() - GS->GetRaceEndTime()).GetTotalSeconds()), 0);
+
+	UE_LOG(LogTemp, Display, TEXT("남은 카운트 : %d"), CountDownNum);
 	
 	if (CountDownNum != 0)
 	{
