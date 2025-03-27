@@ -4,6 +4,8 @@
 #include "GameFramework/PlayerController.h"
 #include "SessionPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSessionInputKey_Notified);
+
 class UReadySession;
 
 UCLASS()
@@ -12,6 +14,8 @@ class PROJECTR_API ASessionPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
+	FOnSessionInputKey_Notified OnInputKey_Esc_Notified;
+	
 	void UpdateSessionList(const TArray<FString>& PlayerList);
 	
 	UFUNCTION(Client, Reliable)

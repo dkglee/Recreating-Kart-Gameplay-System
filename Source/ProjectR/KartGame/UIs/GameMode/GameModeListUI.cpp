@@ -1,7 +1,7 @@
 ﻿#include "GameModeListUI.h"
 
-#include "FastLogger.h"
 #include "Components/Button.h"
+#include "KartGame/Games/Component/WidgetControlComponent.h"
 #include "KartGame/Games/Modes/Lobby/LobbyPlayerController.h"
 #include "Module/SessionCreatePopupWidget.h"
 #include "SubUI/ItemModeListUI.h"
@@ -24,8 +24,10 @@ void UGameModeListUI::SetDefaultWidgetInfo()
 		return;
 	}
 
-	PC->OnClickInputKey_C_Notified.AddDynamic(SessionCreatePopup,
-		&USessionCreatePopupWidget::OpenSessionCreate);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_C_Notified
+		.AddDynamic(SessionCreatePopup,
+			&USessionCreatePopupWidget::OpenSessionCreate);
+	
 	ItemModeListUI->UpdateToSearch();
 }
 
@@ -40,6 +42,7 @@ void UGameModeListUI::ClearWidgetInfo()
 		return;
 	}
 	
-	PC->OnClickInputKey_C_Notified.RemoveDynamic(SessionCreatePopup,
-		&USessionCreatePopupWidget::OpenSessionCreate);
+	PC->GetWidgetControlComponent()->OnTriggerInputKey_C_Notified
+		.RemoveDynamic(SessionCreatePopup,
+			&USessionCreatePopupWidget::OpenSessionCreate);
 }
