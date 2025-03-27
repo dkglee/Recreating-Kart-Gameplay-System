@@ -16,3 +16,13 @@ enum class EMatchType : uint8
 	Item,
 	Speed
 };
+
+UENUM()
+enum class ERaceStatus
+{
+	Idle,
+	Ready,
+	Playing,
+	HoldToFinish,
+	Finish
+};

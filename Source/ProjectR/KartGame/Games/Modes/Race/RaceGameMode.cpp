@@ -33,6 +33,7 @@ void ARaceGameMode::StartGame()
 	 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
 	 * 게임 시작을 위한 트리거 설정을 진행한다.
 	 */
+	GetGameState<ARaceGameState>()->SetRaceStatus(ERaceStatus::Ready);
 	for (const TObjectPtr<APlayerState> PlayerState : GetGameState<ARaceGameState>()->PlayerArray)
 	{
 		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
