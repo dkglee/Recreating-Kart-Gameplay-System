@@ -24,4 +24,7 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> RunningTime;
+	
+	UPROPERTY(EditAnywhere, Category = "Options", meta = (AllowPrivateAccess = true))
+	FString RetireComment = TEXT("Retire");
 };

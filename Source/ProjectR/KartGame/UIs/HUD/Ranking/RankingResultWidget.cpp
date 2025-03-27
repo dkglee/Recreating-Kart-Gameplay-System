@@ -12,9 +12,11 @@ void URankingResultWidget::InitializeData(ARiderPlayerState* PS)
 	const uint32 TotalMinutes = TimeDifference.GetTotalMinutes();
 	const uint8 Seconds = TimeDifference.GetSeconds();
 	const int Milliseconds = TimeDifference.GetFractionMicro() / 1000;
+
+	const FText Timer = FText::FromString(FString::Printf(TEXT("%02d:%02d:%03d")
+			, TotalMinutes, Seconds, Milliseconds));
 	
-	Rank->SetText(FText::FromString(FString::FromInt(PS->GetRanking() + 1)));
+	Rank->SetText(FText::FromString(FString::FromInt(PS->GetRanking())));
 	PlayerName->SetText(FText::FromString(PS->GetPlayerName()));
-	RunningTime->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d:%03d")
-			, TotalMinutes, Seconds, Milliseconds)));
+	RunningTime->SetText(PS->GetIsRaceEnd() ? Timer : FText::FromString(RetireComment));
 }
