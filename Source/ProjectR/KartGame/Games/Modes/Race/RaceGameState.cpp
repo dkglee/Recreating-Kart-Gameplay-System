@@ -80,6 +80,11 @@ void ARaceGameState::SortRank()
 		return;
 	}
 
+	if (RaceStatus == ERaceStatus::Idle)
+	{
+		return;
+	}
+	
 	if (RaceStatus == ERaceStatus::Finish)
 	{
 		return;

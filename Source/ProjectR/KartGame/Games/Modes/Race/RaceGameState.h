@@ -42,6 +42,8 @@ private:
 	
 	uint16 MaxCheckPoint = 0;
 
+	uint8 CurrentPlayerCount = 0;
+
 	UPROPERTY()
 	TMap<FString, ACheckPoint*> CheckPointData;
 

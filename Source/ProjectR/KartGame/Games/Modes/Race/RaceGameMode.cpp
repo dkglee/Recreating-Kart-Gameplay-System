@@ -4,7 +4,6 @@
 #include "OnlineSessionSettings.h"
 #include "RaceGameState.h"
 #include "RacePlayerController.h"
-#include "RiderPlayerState.h"
 #include "GameFramework/PlayerState.h"
 
 void ARaceGameMode::BeginPlay()
@@ -24,13 +23,20 @@ void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 
 	StartToPlayerCount += 1;
+	ARacePlayerController* PC = Cast<ARacePlayerController>(NewPlayer);
+	
+	if (PC->HasAuthority())
+	{
+		PC->SpawnKartWithCheckPoint(StartToPlayerCount);
+	}
+	
 	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
 	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
 	
 	if (StartToPlayerCount == (MaxPlayerCount - RemainPlayerCount))
 	{
 		GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
-			&ThisClass::StartGame, 1, false);
+			&ThisClass::StartGame, 3, false);
 	}
 }
 
@@ -51,14 +57,14 @@ void ARaceGameMode::StartGame()
 
 	for (int i = 0; i < GS->PlayerArray.Num(); i++)
 	{
-		ARacePlayerController* PC = Cast<ARacePlayerController>(GS->PlayerArray[i]->GetPlayerController());
+		ARacePlayerController* PC = Cast<ARacePlayerController>(
+			GS->PlayerArray[i]->GetPlayerController());
+		
 		if (!PC)
 		{
 			return;
 		}
 
-		PC->SpawnKartWithCheckPoint(i);
-		
 		if (PC->IsLocalController())
 		{
 			PC->SetHUDToStart();

@@ -1,6 +1,5 @@
 ﻿#include "RacePlayerController.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "RaceGameState.h"
 #include "Blueprint/UserWidget.h"
@@ -8,6 +7,7 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
+#include "Kismet/GameplayStatics.h"
 
 void ARacePlayerController::SetHUDToStart()
 {     
@@ -64,10 +64,9 @@ void ARacePlayerController::EndGame()
 
 void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 {
-	const FTransform NewTransform = GetWorld()->GetGameState<ARaceGameState>()
-		->GetStartPoint()->GetTransformByStartIndex(Index);
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(
+		GetWorld(), FName(FString::Printf(TEXT("Player_Start_%d"), Index)), Actors);
 
-	FFastLogger::LogScreen(FColor::Red, TEXT("무빙 테스트: %d -> %s"), Index, *NewTransform.GetLocation().ToString());
-	
-	GetPawn()->SetActorTransform(NewTransform);
+	GetPawn()->SetActorTransform(Actors[0]->GetTransform());
 }
