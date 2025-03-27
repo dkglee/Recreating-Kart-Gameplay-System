@@ -10,9 +10,10 @@ void ARacePlayerController::SetHUDToStart()
 	if (IsLocalController())
     {
     	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
-    	MainHUD->AddToViewport();
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
+    	MainHUD->AddToViewport();
+		MainHUD->InitializeData();
     }
 }
 
