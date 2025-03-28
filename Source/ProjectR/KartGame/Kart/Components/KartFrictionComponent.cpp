@@ -171,6 +171,7 @@ void UKartFrictionComponent::DetermineDriftState()
 		float SteeringAngle = FMath::DegreesToRadians(WheelRot.Yaw);
 
 		float SlipAngle = FMath::Atan2(WheelRightVelocity, WheelForwardVelocity) - SteeringAngle;
+		// float SlipAngle = FMath::Atan2(ForwardVelocity, RightVelocity) - SteeringAngle;
 		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
 
 		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold) 
