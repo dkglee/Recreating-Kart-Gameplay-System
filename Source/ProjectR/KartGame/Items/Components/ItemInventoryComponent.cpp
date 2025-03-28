@@ -3,6 +3,7 @@
 
 #include "ItemInventoryComponent.h"
 
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
@@ -16,6 +17,7 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/ItemInventory/ItemInventory.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -37,6 +39,16 @@ void UItemInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 	InitialAimUIPos = Kart->GetUsingAimComponent()->GetRelativeLocation();
 	InitialAimUIScale = Kart->GetUsingAimComponent()->GetRelativeScale3D();
+
+	for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AActor* actor = *ActorItr;
+		if (Cast<AKart>(actor))
+		{
+			continue;
+		}
+		IgnoredActors.Add(*ActorItr);
+	}
 }
 
 void UItemInventoryComponent::InitializeComponent()
@@ -242,6 +254,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 {
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
+	Params.AddIgnoredActors(IgnoredActors);
 
 	FinalTarget = nullptr;
 	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
@@ -259,11 +272,13 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		ECC_Pawn,
 		FCollisionShape::MakeBox(InitialBoxSize),
 		Params);
-	
+
+
 	if (bInitialHit)
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
+			FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget)
 			{
@@ -275,6 +290,10 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 				}
 			}
 		}
+	}
+	else
+	{
+		FinalTarget = nullptr;
 	}
 
 	// 박스의 scale y 보간
@@ -331,7 +350,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{

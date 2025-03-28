@@ -105,6 +105,9 @@ private:
 	
 	UPROPERTY(Replicated, VisibleAnywhere)
 	bool bInventoryIsFull = false;
+
+	TArray<AActor*> IgnoredActors;
+
 #pragma endregion 
 	// 에임 UI 변수
 #pragma region AimVariance

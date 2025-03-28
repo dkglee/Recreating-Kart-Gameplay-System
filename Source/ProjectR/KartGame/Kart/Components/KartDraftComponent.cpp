@@ -3,12 +3,15 @@
 
 #include "KartDraftComponent.h"
 
+#include "EngineUtils.h"
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartSuspensionComponent.h"
+#include "Landscape.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -27,7 +30,16 @@ void UKartDraftComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AActor* actor = *ActorItr;
+		if (Cast<AKart>(actor))
+		{
+			continue;
+		}
+		IgnoredActors.Add(*ActorItr);
+	}
+
 }
 
 void UKartDraftComponent::InitializeComponent()
@@ -68,10 +80,11 @@ void UKartDraftComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void UKartDraftComponent::DrawTraceLineBox(FVector start, FVector end, FVector boxHalfSize, FColor boxColor)
+void UKartDraftComponent::DrawTraceLineBox_Implementation(FVector start, FVector end, FVector boxHalfSize,
+	FColor boxColor)
 {
 	// 서버만 보이도록 설정
-	if (Kart->HasAuthority() == false) return;
+	//if (Kart->HasAuthority() == false) return;
 	
 	int NumSteps = 10;
 	for (int i = 0; i <= NumSteps; i++)
@@ -83,11 +96,13 @@ void UKartDraftComponent::DrawTraceLineBox(FVector start, FVector end, FVector b
 	}
 }
 
+
 void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVector end, FVector boxHalfSize)
 {
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
-
+	Params.AddIgnoredActors(IgnoredActors);
+	
 	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
 	float ClosestDistance = TNumericLimits<float>::Max();
 
@@ -107,12 +122,14 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
+
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget && PotentialTarget != FinalTarget)
 			{
 				float Distance = FVector::Distance(start, Hit.ImpactPoint);
 				if (Distance < ClosestDistance)
 				{
+					//FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
 					ClosestDistance = Distance;
 					FinalTarget = PotentialTarget;
 				}
@@ -127,6 +144,10 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 			}
 		}
 	}
+	else
+	{
+		FinalTarget = nullptr;
+	}
 
 	FColor boxColor = FColor::Green;
 	if (FinalTarget != nullptr)
@@ -135,19 +156,26 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		CheckTraceTime();
 	}
 
-	// DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	 DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::CheckTraceTime()
 {
 	if (Kart->HasAuthority() == false) return;
 
-	if (Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity.Size() < 100.f)
+	float forwardSpeed = UKismetMathLibrary::Dot_VectorVector(Kart->GetRootBox()->GetForwardVector(),Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity);
+
+	if (forwardSpeed < 100.f)
 	{
+		FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+		ElapsedTime = 0.f;
 		return;
 	}
-
+	
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
+	FFastLogger::LogConsole(TEXT("draft time : %f"), ElapsedTime);
+
+
 
 	if (ElapsedTime >= DraftStartTime && bDraftStart == false)
 	{
@@ -162,6 +190,7 @@ void UKartDraftComponent::CheckTraceTime()
 			if (WeakThis.IsValid())
 			{
 				WeakThis->bDraftStart = false;
+				WeakThis->FinalTarget = nullptr;
 			}
 		}, DraftDuration, false);
 	}
