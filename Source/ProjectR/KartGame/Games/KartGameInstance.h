@@ -18,6 +18,6 @@ protected:
 	virtual void Init() override;
 
 private:
-	uint8 InGamePlayerCount = 2;
+	uint8 InGamePlayerCount = 1;
 	uint8 PingCount = 0;
 };
