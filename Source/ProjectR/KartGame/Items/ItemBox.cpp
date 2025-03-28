@@ -29,6 +29,13 @@ void AItemBox::Tick(float DeltaTime)
 	RotateBody();
 }
 
+void AItemBox::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorldTimerManager().ClearTimer(ItemBoxRespawnTimerHandle);
+}
+
 void AItemBox::InitComponents()
 {
 	Root = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));

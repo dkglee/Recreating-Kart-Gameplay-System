@@ -3,6 +3,8 @@
 
 #include "KartDraftComponent.h"
 
+#include <KartGame/UIs/NotificationTextUI/NotificationTextUI.h>
+
 #include "EngineUtils.h"
 #include "FastLogger.h"
 #include "Kart.h"
@@ -10,15 +12,14 @@
 #include "KartNetworkSyncComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
+#include "KartGame/UIs/HUD/MainUI.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 
-// Sets default values for this component's properties
 UKartDraftComponent::UKartDraftComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
@@ -38,7 +39,6 @@ void UKartDraftComponent::BeginPlay()
 		}
 		IgnoredActors.Add(*ActorItr);
 	}
-
 }
 
 void UKartDraftComponent::InitializeComponent()
@@ -71,6 +71,7 @@ void UKartDraftComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UKartDraftComponent, bDraftStart);
+	DOREPLIFETIME(UKartDraftComponent, ElapsedTime);
 }
 
 void UKartDraftComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -152,35 +153,35 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 	if (FinalTarget != nullptr)
 	{
 		boxColor = FColor::Red;
-		CheckTraceTime();
+		Server_CheckTraceTime();
 	}
 
-	 //DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	 DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
-void UKartDraftComponent::CheckTraceTime()
+void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 {
-	if (Kart->HasAuthority() == false) return;
-
 	float forwardSpeed = UKismetMathLibrary::Dot_VectorVector(Kart->GetRootBox()->GetForwardVector(),Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity);
+	float KartSpeedKm = FMath::Abs(forwardSpeed) * 0.036;
+	int32 DashBoardSpeed = FMath::RoundToInt(KartSpeedKm * 2);
+	
+	FFastLogger::LogConsole(TEXT("속도 : %d"), DashBoardSpeed);
 
-	if (forwardSpeed < 100.f)
-	{
-		FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
-		ElapsedTime = 0.f;
-		return;
-	}
+	// if (DashBoardSpeed < 100.f)
+	// {
+	// 	FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+	// 	ElapsedTime = 0.f;
+	// 	return;
+	// }
 	
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
-	FFastLogger::LogConsole(TEXT("draft time : %f"), ElapsedTime);
-
-
-
+	//FFastLogger::LogConsole(TEXT("draft time : %f"), ElapsedTime);
+	
 	if (ElapsedTime >= DraftStartTime && bDraftStart == false)
 	{
-		NetMulticast_DraftEffect();
-		FFastLogger::LogConsole(TEXT("DRAFT!"));
 		bDraftStart = true;
+		NetMulticast_DraftEffect(true);
+	
 		ElapsedTime = 0.f;
 		GetWorld()->GetTimerManager().ClearTimer(DraftTimerHandle);
 		TWeakObjectPtr<UKartDraftComponent> WeakThis = this;
@@ -188,6 +189,7 @@ void UKartDraftComponent::CheckTraceTime()
 		{
 			if (WeakThis.IsValid())
 			{
+				WeakThis->NetMulticast_DraftEffect(false);
 				WeakThis->bDraftStart = false;
 				WeakThis->FinalTarget = nullptr;
 			}
@@ -209,7 +211,13 @@ void UKartDraftComponent::AddDraftForce()
 	}
 }
 
-void UKartDraftComponent::NetMulticast_DraftEffect_Implementation()
+void UKartDraftComponent::NetMulticast_DraftEffect_Implementation(bool value)
 {
-	DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("DRAFT!"), 0, FColor::Green, 1, true, 2);
+	if (Kart->IsLocallyControlled() == false) return;
+	
+	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
+	if (pc)
+	{
+		pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetDraftTextVisible(value);
+	}
 }

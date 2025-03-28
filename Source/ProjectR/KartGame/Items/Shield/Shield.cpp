@@ -35,11 +35,6 @@ void AShield::Tick(float DeltaTime)
 	if (Kart)
 	{
 		Kart->GetItemInteractionComponent()->bShieldOn = true;
-		auto* pc = Cast<ARacePlayerController>(Kart->GetController());
-		if (pc)
-		{
-			pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(true);
-		}
 		FFastLogger::LogConsole(TEXT("shield on"));
 		this->Destroy();
 	}

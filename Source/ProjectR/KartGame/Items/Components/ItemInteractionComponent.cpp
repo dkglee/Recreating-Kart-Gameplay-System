@@ -226,6 +226,7 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 
 void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 {
+	NetMulticast_ShieldEffect(true);
 	ShieldElapsedTime += GetWorld()->GetDeltaSeconds();
 	if (ShieldElapsedTime >= ShieldTime)
 	{
@@ -237,12 +238,12 @@ void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 
 void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool value)
 {
-	if (Kart->IsLocallyControlled())
+	if (Kart->IsLocallyControlled() == false) return;
+	
+	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
+	if (pc)
 	{
-		auto* pc = Cast<ARacePlayerController>(Kart->GetController());
-		if (pc)
-		{
-			pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(value);
-		}
+		pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(value);
 	}
 }
+

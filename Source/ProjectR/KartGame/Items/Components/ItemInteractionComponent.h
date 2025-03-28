@@ -68,6 +68,7 @@ private:
 	void Server_CheckShieldUsingTime();
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_ShieldEffect(bool value);
+
 #pragma endregion
 	
 private:
