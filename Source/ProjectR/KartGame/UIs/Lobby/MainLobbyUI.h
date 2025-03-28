@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "SessionUtil.h"
 #include "Blueprint/UserWidget.h"
 #include "KartGame/UIs/_Common/WidgetStackInterface.h"
 #include "MainLobbyUI.generated.h"
@@ -22,6 +23,9 @@ protected:
 	virtual void NativeConstruct() override;
 	
 private: 
+	FSessionSearchData SessionSearchData;
+	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> LobbyUISwitcher;
 
@@ -29,11 +33,13 @@ private:
 	TObjectPtr<UGameLobbySubUI> GameLobbySubUI;
 
 	UFUNCTION()
-	void CreateGameSessions();
-	
-	UFUNCTION()
 	void SearchGameAndJoinSessions();
 
 	UFUNCTION()
 	void OpenGameModeLobby();
+	
+	UFUNCTION()
+	void OnCompleteSearch(bool IsSuccess);
+	
+	void OnJoinSession(FName SessionName, EOnJoinSessionCompleteResult::Type Type);
 };
