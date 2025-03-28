@@ -21,8 +21,14 @@ void ARaceGameMode::PostLogin(APlayerController* NewPlayer)
 			&ThisClass::StartGame, 0.5, false);
 		return;
 	}
-	
+
 	StartToPlayerCount += 1;
+	ARacePlayerController* PC = Cast<ARacePlayerController>(NewPlayer);
+	
+	if (PC->HasAuthority())
+	{
+		PC->SpawnKartWithCheckPoint(StartToPlayerCount);
+	}
 	
 	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
 	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
@@ -40,15 +46,20 @@ void ARaceGameMode::StartGame()
 	 * TODO: 여기에 게임 시작을 위한 스폰 위치 조정 작업과
 	 * 게임 시작을 위한 트리거 설정을 진행한다.
 	 */
-	if (GetGameState<ARaceGameState>()->GetRaceStatus() != ERaceStatus::Idle)
+	ARaceGameState* GS = GetGameState<ARaceGameState>();
+	
+	if (GS->GetRaceStatus() != ERaceStatus::Idle)
 	{
 		return;
 	}
 	
-	GetGameState<ARaceGameState>()->SetRaceStatus(ERaceStatus::Ready);
-	for (const TObjectPtr<APlayerState> PlayerState : GetGameState<ARaceGameState>()->PlayerArray)
+	GS->SetRaceStatus(ERaceStatus::Ready);
+
+	for (int i = 0; i < GS->PlayerArray.Num(); i++)
 	{
-		ARacePlayerController* PC = Cast<ARacePlayerController>(PlayerState->GetPlayerController());
+		ARacePlayerController* PC = Cast<ARacePlayerController>(
+			GS->PlayerArray[i]->GetPlayerController());
+		
 		if (!PC)
 		{
 			return;

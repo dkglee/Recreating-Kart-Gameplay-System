@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartAirBoostVFXComponent.h"
 #include "KartBasicBoosterVFXComponent.h"
 #include "KartBoosterComponent.h"
 #include "KartBasicBoosterVFXComponent.h"
@@ -223,6 +224,11 @@ AKart::AKart()
 	RightBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostRight"));
 	RightBoost->SetNetAddressable();
 	RightBoost->SetIsReplicated(true);
+	
+	AirBoost = CreateDefaultSubobject<UKartAirBoostVFXComponent>(TEXT("AirBoost"));
+	AirBoost->SetupAttachment(KartSkeletalMeshComponent, FName("AirBoost"));
+	AirBoost->SetNetAddressable();
+	AirBoost->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
