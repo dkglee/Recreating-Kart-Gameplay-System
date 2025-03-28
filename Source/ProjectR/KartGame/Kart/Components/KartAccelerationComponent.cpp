@@ -3,6 +3,7 @@
 
 #include "KartAccelerationComponent.h"
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "InputAction.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
@@ -82,6 +83,7 @@ void UKartAccelerationComponent::BroadCastAccelerationStarted(const FInputAction
 {
 	// if (InputActionValue.Get<float>() > 0.0f)
 	// {
+	FFastLogger::LogConsole(TEXT("Input Check : %f"), InputActionValue.Get<float>());
 		OnAccelerationStarted.Broadcast();
 	// }
 }
