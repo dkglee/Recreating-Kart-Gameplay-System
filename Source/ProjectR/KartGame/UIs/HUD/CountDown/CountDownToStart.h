@@ -15,11 +15,11 @@ class PROJECTR_API UCountDownToStart : public UUserWidget
 
 public:
 	FOnGameStartNotified OnGameStartNotified;
+
+	void StartCountDown();
 	
 protected:
 	virtual void NativePreConstruct() override;
-	
-	virtual void NativeOnInitialized() override;
 
 private:
 	FWidgetAnimationDynamicEvent OnCountEndNotified;

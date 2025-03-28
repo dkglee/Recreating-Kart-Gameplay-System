@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "RacePlayerController.generated.h"
 
+class UPingManagerComponent;
 class AKart;
 class UTrackLoadingUI;
 class UMainUI;
@@ -15,10 +16,8 @@ class PROJECTR_API ARacePlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-#pragma region GetterSetter
-	GETTER(TObjectPtr<UMainUI>, MainHUD);
+	ARacePlayerController();
 	
-#pragma endregion
 	void SetHUDToStart();
 
 	UFUNCTION(Client, Reliable)
@@ -31,21 +30,32 @@ public:
 
 	void SpawnKartWithCheckPoint(const uint8 Index);
 	
+#pragma region GetterSetter
+	GETTER(TObjectPtr<UMainUI>, MainHUD);
+	
+#pragma endregion
+
+protected:
+	virtual void BeginPlay() override;
+	
 private:
 #pragma region UIFactory
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<UMainUI> MainHUDClass;
 #pragma endregion
+
+	UPROPERTY()
+	TObjectPtr<UPingManagerComponent> PingManagerComponent;
 	
 	UPROPERTY()
 	TObjectPtr<UMainUI> MainHUD;
-
-	UPROPERTY()
-	TSubclassOf<AKart> KartClass;
 
 	UFUNCTION()
 	void KartSetToMove();
 
 	UFUNCTION()
 	void EndGame();
+
+	UFUNCTION()
+	void StartGameToGameState();
 };

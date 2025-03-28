@@ -1,13 +1,34 @@
 ﻿#include "RacePlayerController.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Kart.h"
+#include "RaceGameMode.h"
 #include "RaceGameState.h"
-#include "Blueprint/UserWidget.h"
-#include "GameFramework/PlayerStart.h"
 #include "KartGame/UIs/HUD/MainUI.h"
+#include "GameFramework/PlayerStart.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
+#include "KartGame/Games/Component/PingManagerComponent.h"
 #include "Kismet/GameplayStatics.h"
+
+ARacePlayerController::ARacePlayerController()
+{
+	PingManagerComponent = CreateDefaultSubobject<UPingManagerComponent>("Ping Manager Component");
+	PingManagerComponent->SetNetAddressable();
+	PingManagerComponent->SetIsReplicated(true);
+}
+
+void ARacePlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	PingManagerComponent->OnAllPingAccessNotified.AddDynamic(this, &ThisClass::StartGameToGameState);
+
+	if (IsLocalController())
+	{
+		MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
+		MainHUD->AddToViewport();
+	}
+}
 
 void ARacePlayerController::SetHUDToStart()
 {
@@ -15,12 +36,10 @@ void ARacePlayerController::SetHUDToStart()
     {
 		GetPawn<AKart>()->SetbCanMove(false);
 		
-    	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
 		MainHUD->GetCountDownToEndWidget()->OnGameEndNotified.AddDynamic(this
 			, &ThisClass::EndGame);
-    	MainHUD->AddToViewport();
 		MainHUD->InitializeData();
     }
 }
@@ -78,4 +97,9 @@ void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 			return;
 		}
 	}
+}
+
+void ARacePlayerController::StartGameToGameState()
+{
+	GetWorld()->GetAuthGameMode<ARaceGameMode>()->StartGame();
 }
