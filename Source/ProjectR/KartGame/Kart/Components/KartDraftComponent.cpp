@@ -169,7 +169,7 @@ void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 
 	if (DashBoardSpeed < 100.f)
 	{
-		FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+		//FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
 		ElapsedTime = 0.f;
 		return;
 	}

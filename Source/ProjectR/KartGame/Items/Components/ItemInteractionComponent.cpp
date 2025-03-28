@@ -7,7 +7,6 @@
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/TextBlock.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
