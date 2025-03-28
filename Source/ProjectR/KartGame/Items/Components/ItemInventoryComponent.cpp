@@ -3,6 +3,7 @@
 
 #include "ItemInventoryComponent.h"
 
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
@@ -11,6 +12,7 @@
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Booster/Booster.h"
 #include "KartGame/Items/Missile/Missile.h"
+#include "KartGame/Items/Shield/Shield.h"
 #include "KartGame/Items/WaterBomb/WaterBomb.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
@@ -36,6 +38,16 @@ void UItemInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 	InitialAimUIPos = Kart->GetUsingAimComponent()->GetRelativeLocation();
 	InitialAimUIScale = Kart->GetUsingAimComponent()->GetRelativeScale3D();
+
+	for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AActor* actor = *ActorItr;
+		if (Cast<AKart>(actor))
+		{
+			continue;
+		}
+		IgnoredActors.Add(*ActorItr);
+	}
 }
 
 void UItemInventoryComponent::InitializeComponent()
@@ -115,6 +127,11 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
+	if (Kart->GetbUsingBooster() == true && Inventory[0].ItemName == EItemName::Booster)
+	{
+		return;
+	}
+
 	Server_UseItem();
 }
 
@@ -164,7 +181,7 @@ void UItemInventoryComponent::LockPlayer()
 	FVector start = Kart->GetRootComponent()->GetComponentLocation();
 	FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * MaxLockOnDist;
 
-	FVector BoxHalfSize(FVector(100.f,100.f,50.f));
+	FVector BoxHalfSize(FVector(100.f,100.f,100.f));
 	FindTargetAndTakeAim(start, end, BoxHalfSize);
 }
 
@@ -185,6 +202,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 				itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
 				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
 				missile->SetLockOnPlayer(LockedTarget);
+				missile->SetOwningPlayer(Kart);
 				LockedTarget = nullptr;
 			}
 			else if (LockedTarget == nullptr)
@@ -195,13 +213,31 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 		}
 	case EItemName::WaterBomb:
 		{
-			GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
+			itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorUpVector() * 100.f);
+			auto* waterBomb = GetWorld()->SpawnActor<AWaterBomb>(itemData.ItemClass, itemTransform);
+			if (waterBomb)
+			{
+				waterBomb->SetOwningPlayer(Kart);
+			}
 			break;
 		}
 	case EItemName::Booster:
 		{
-			GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			auto* booster = GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
+			if (booster)
+			{
+				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
+				booster->SetOwningPlayer(Kart);
+			}
 			break;
+		}
+	case EItemName::Shield:
+		{
+			auto* shield = GetWorld()->SpawnActor<AShield>(itemData.ItemClass, itemTransform);
+			if (shield)
+			{
+				shield->SetOwningPlayer(Kart);
+			}
 		}
 	default:
 		break;
@@ -217,6 +253,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 {
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
+	Params.AddIgnoredActors(IgnoredActors);
 
 	FinalTarget = nullptr;
 	// 앞에 있는 카트 중에 가장 가까운 카트를 찾는 로직
@@ -234,11 +271,13 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		ECC_Pawn,
 		FCollisionShape::MakeBox(InitialBoxSize),
 		Params);
-	
+
+
 	if (bInitialHit)
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
+			//FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget)
 			{
@@ -250,6 +289,10 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 				}
 			}
 		}
+	}
+	else
+	{
+		FinalTarget = nullptr;
 	}
 
 	// 박스의 scale y 보간

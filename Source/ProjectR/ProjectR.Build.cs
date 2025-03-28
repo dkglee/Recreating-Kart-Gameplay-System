@@ -27,7 +27,9 @@ public class ProjectR : ModuleRules
 			"ProjectR/KartGame/Kart/",
 			"ProjectR/KartGame/Kart/Components/",
 			"ProjectR/KartGame/Kart/Utils/",
-			"ProjectR/KartGame/Utils/"
+			"ProjectR/KartGame/Utils/",
+			"ProjectR/KartGame/Kart/Animations/",
+			"ProjectR/KartGame/Kart/VFXs/"
 		});
 	}
 }

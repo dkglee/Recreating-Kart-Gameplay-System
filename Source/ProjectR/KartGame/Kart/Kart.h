@@ -48,6 +48,9 @@ public:
 	GETTER_SETTER(bool, bCanMove);
 	GETTER(class USceneComponent*, TargetAimSocketComponent);
 	GETTER(class UWidgetComponent*, UsingAimComponent);
+	GETTER(class UKartBoosterComponent*, BoosterComponent);
+	GETTER(class UKartDraftComponent*, DraftComponent);
+	GETTER_SETTER(bool, bUsingBooster);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -61,7 +64,9 @@ private:
 	
 #pragma region ForeignVariable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
-	bool bCanMove = false;
+	bool bCanMove = true;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	bool bUsingBooster = false;
 #pragma endregion
 
 #pragma region CoreSkills
@@ -102,7 +107,13 @@ private:
 	class UKartNetworkSyncComponent* NetworkSyncComponent = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	class UKartResetComponent* KartResetComponent = nullptr;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartBoosterComponent* BoosterComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartDraftComponent* DraftComponent = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	class UKartSkeletalMeshComponent* KartSkeletalMeshComponent = nullptr;
+	
 	// Aim Widget Component 추가
 	// 장진혁
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AimUI", meta = (AllowPrivateAccess = "true"))
@@ -124,6 +135,16 @@ private:
 	class UKartSkidMarkComponent* LeftSkidMark = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartSkidMarkComponent* RightSkidMark = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* LeftInstantBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* RightInstantBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* LeftBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* RightBoost;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartBasicBoosterVFXComponent* AirBoost;
 #pragma endregion
 	
 #pragma region UI
@@ -135,5 +156,9 @@ private:
 	class UKartEngineSoundComponent* EngineSoundComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
+#pragma endregion
+
+#pragma region Etc
+	TArray<FVector> LineTraceLocations;
 #pragma endregion
 };

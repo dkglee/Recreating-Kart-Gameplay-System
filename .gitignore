@@ -76,3 +76,5 @@ DerivedDataCache/*
 
 .idea
 /Content/Fab/*
+/Content/RocketThrusterExhaustFX/
+Builds/*

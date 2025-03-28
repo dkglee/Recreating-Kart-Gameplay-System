@@ -6,7 +6,6 @@
 #include "KartGame/Games/Modes/Race/RaceGameState.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 #include "KartGame/Games/Objects/CheckPoint.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 
 UKartResetComponent::UKartResetComponent()

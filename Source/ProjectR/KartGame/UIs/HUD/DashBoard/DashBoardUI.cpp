@@ -15,6 +15,8 @@ void UDashBoardUI::NativeConstruct()
 void UDashBoardUI::SetDashBoardValue(float CurrentSpeed, float MaxSpeed)
 {
 	float Rate = FMath::Abs(CurrentSpeed) / MaxSpeed;
+
+	APawn* Pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	DashBoard_Back->SetValue(Rate);
 
 	// cm/s -> m/s -> km/h

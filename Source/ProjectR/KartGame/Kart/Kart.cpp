@@ -3,7 +3,12 @@
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
+#include "KartAirBoostVFXComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
+#include "KartBoosterComponent.h"
+#include "KartBasicBoosterVFXComponent.h"
 #include "KartCollisionComponent.h"
+#include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
 #include "KartEngineSoundComponent.h"
 #include "KartSteeringComponent.h"
@@ -14,8 +19,10 @@
 #include "KartGame/Items/Components/ItemInventoryComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "KartFrictionComponent.h"
+#include "KartInstantBoostVFXComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartResetComponent.h"
+#include "KartSkeletalMeshComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartSkidMarkComponent.h"
 #include "Components/WidgetComponent.h"
@@ -23,6 +30,10 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
+#include "Net/UnrealNetwork.h"
+#include "KartInstantBoostVFXComponent.h"
+#include "KartPowerBoosterVFXComponent.h"
+#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
 
 // Sets default values
 AKart::AKart()
@@ -33,7 +44,7 @@ AKart::AKart()
 	bReplicates = true;
 	Super::SetReplicateMovement(false);
 
-	SetNetUpdateFrequency(1000.0f);
+	SetNetUpdateFrequency(10000.0f);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
 	(TEXT("/Game/Kart/Input/IMC_Kart.IMC_Kart"));
@@ -49,7 +60,9 @@ AKart::AKart()
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
-
+	// Rootbox의 Simulation Generate Hit Event를 true로 해줘야 물리 충돌이 발생할 때 Hit Event가 발생함.
+	RootBox->SetNotifyRigidBodyCollision(true);
+	
 	RootBox->SetLinearDamping(0.9f);
 	RootBox->SetAngularDamping(0.9f);
 
@@ -65,8 +78,12 @@ AKart::AKart()
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
 	SpringArmComponent->bUsePawnControlRotation = false;
-	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->bEnableCameraLag = false;
 	SpringArmComponent->bEnableCameraRotationLag = true;
+	SpringArmComponent->TargetArmLength = 450.0f;
+	SpringArmComponent->SocketOffset = {0, 0, 150.0f};
+	SpringArmComponent->bDoCollisionTest = false;
+	CameraComponent->SetRelativeRotation({-10, 0, 0});
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -120,11 +137,13 @@ AKart::AKart()
 	LeftSkidMark->SetupAttachment(LR_Wheel);
 	LeftSkidMark->SetNetAddressable();
 	LeftSkidMark->SetIsReplicated(true);
+	LeftSkidMark->SetRelativeLocation(FVector{25.000000, 10.000000, -5.000000});
 
 	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
+	RightSkidMark->SetRelativeLocation(FVector{25.000000, -10.000000, -5.000000});
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);
@@ -156,23 +175,71 @@ AKart::AKart()
 		UsingAimComponent->SetWidgetClass(UsingAimUI.Class);
 	}
 	
-	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("Kart Reset Component"));
+	KartResetComponent = CreateDefaultSubobject<UKartResetComponent>(TEXT("KartResetComponent"));
 	KartResetComponent->SetNetAddressable();
 	KartResetComponent->SetIsReplicated(true);
 	
-	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("Kart Collision Component"));
+	KartCollisionComponent = CreateDefaultSubobject<UKartCollisionComponent>(TEXT("KartCollisionComponent"));
 	KartCollisionComponent->SetNetAddressable();
 	KartCollisionComponent->SetIsReplicated(true);
+
+	BoosterComponent = CreateDefaultSubobject<UKartBoosterComponent>(TEXT("KartBoosterComponent"));
+	BoosterComponent->SetNetAddressable();
+	BoosterComponent->SetIsReplicated(true);
+
 	
+	DraftComponent = CreateDefaultSubobject<UKartDraftComponent>(TEXT("Kart Draft Component"));
+	DraftComponent->SetNetAddressable();
+	DraftComponent->SetIsReplicated(true);
+
+	
+	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("KartSkeletalMeshComponent"));
+	KartSkeletalMeshComponent->SetupAttachment(RootBox);
+	KartSkeletalMeshComponent->SetNetAddressable();
+	KartSkeletalMeshComponent->SetIsReplicated(true);
+
+	// Linetrace Location 초기화
+	LineTraceLocations.Reserve(4);
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
+	LineTraceLocations.Add(FVector::ZeroVector);
+
+	// Booster Niagara
+	LeftInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostLeft"));
+	LeftInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostLeft"));
+	LeftInstantBoost->SetNetAddressable();
+	LeftInstantBoost->SetIsReplicated(true);
+
+	RightInstantBoost = CreateDefaultSubobject<UKartInstantBoostVFXComponent>(TEXT("InstBoostRight"));
+	RightInstantBoost->SetupAttachment(KartSkeletalMeshComponent, FName("InstBoostRight"));
+	RightInstantBoost->SetNetAddressable();
+	RightInstantBoost->SetIsReplicated(true);
+
+	LeftBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostLeft"));
+	LeftBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostLeft"));
+	LeftBoost->SetNetAddressable();
+	LeftBoost->SetIsReplicated(true);
+	
+	RightBoost = CreateDefaultSubobject<UKartPowerBoosterVFXComponent>(TEXT("BoostRight"));
+	RightBoost->SetupAttachment(KartSkeletalMeshComponent, FName("BoostRight"));
+	RightBoost->SetNetAddressable();
+	RightBoost->SetIsReplicated(true);
+	
+	AirBoost = CreateDefaultSubobject<UKartAirBoostVFXComponent>(TEXT("AirBoost"));
+	AirBoost->SetupAttachment(KartSkeletalMeshComponent, FName("AirBoost"));
+	AirBoost->SetNetAddressable();
+	AirBoost->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
 void AKart::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// Kart Input Binding
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	
 	if (PC)
 	{
 		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
@@ -195,6 +262,8 @@ void AKart::BeginPlay()
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AKart, bUsingBooster);
 }
 
 // Called every frame
@@ -202,21 +271,27 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
+	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
+	FVector temp = GetActorLocation();
+	temp.Z += 100.f;
+
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
-	if(ItemInteractionComponent->bIsInteraction == false && IsLocallyControlled())
+	if(ItemInteractionComponent->GetbIsInteraction() == false && IsLocallyControlled())
 	{
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
-		flag &= LR_Wheel->ProcessSuspension();
-		flag &= RR_Wheel->ProcessSuspension();
-		flag &= LF_Wheel->ProcessSuspension();
-		flag &= RF_Wheel->ProcessSuspension();
+		flag &= LR_Wheel->ProcessSuspension(LineTraceLocations[0]);
+		flag &= RR_Wheel->ProcessSuspension(LineTraceLocations[1]);
+		flag &= LF_Wheel->ProcessSuspension(LineTraceLocations[2]);
+		flag &= RF_Wheel->ProcessSuspension(LineTraceLocations[3]);
 		
+		SteeringComponent->ProcessSteering();
 		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
-			SteeringComponent->ProcessSteeringAndTorque();
+			SteeringComponent->ProcessTorque();
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
@@ -228,9 +303,15 @@ void AKart::Tick(float DeltaTime)
 			LeftSkidMark->ProcessSkidMark(false);
 			RightSkidMark->ProcessSkidMark(false);
 		}
+		BoosterComponent->ProcessBooster(bUsingBooster);
 
 		EngineSoundComponent->PlayKartEngineSound();
 		DriftSoundComponent->PlayDriftSound(bDrift && flag);
+	}
+	else
+	{
+		LeftSkidMark->ProcessSkidMark(false);
+		RightSkidMark->ProcessSkidMark(false);
 	}
 	UpdateSpeedUI();
 }
@@ -252,6 +333,7 @@ void AKart::UpdateSpeedUI()
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();
 	FVector ForwardVector = RootBox->GetForwardVector();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
+	// float KartSpeed = RootBox->GetPhysicsLinearVelocity().Length();
 
 	ARacePlayerController* PC = Cast<ARacePlayerController>(GetController());
 	if (PC)

@@ -6,6 +6,7 @@
 #include "RiderPlayerState.generated.h"
 
 class ACheckPoint;
+class FLifetimeProperty;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGoNextLapNotified, uint8, LapInfo);
 
@@ -26,13 +27,15 @@ public:
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
 
 	GETTER_SETTER(uint8, Ranking);
+	GETTER_SETTER(FDateTime, RaceEndTime);
+	GETTER_SETTER(bool, IsRaceEnd);
 
 	FOnGoNextLapNotified OnGoNextLapNotified;
 
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
 	UPROPERTY()
@@ -46,6 +49,12 @@ private:
 
 	UPROPERTY(Replicated)
 	uint8 Ranking = 0;
+	
+	UPROPERTY(Replicated)
+	FDateTime RaceEndTime;
+	
+	UPROPERTY(Replicated)
+	uint8 IsRaceEnd:1 = false;
 
 	UFUNCTION()
 	void OnRep_CurrentLap();

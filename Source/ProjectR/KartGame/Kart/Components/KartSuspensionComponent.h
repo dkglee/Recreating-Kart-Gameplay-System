@@ -16,7 +16,7 @@ public:
 	// Sets default values for this component's properties
 	UKartSuspensionComponent();
 
-	bool ProcessSuspension();
+	bool ProcessSuspension(FVector& LineLocation);
 
 protected:
 	// Called when the game starts
@@ -32,7 +32,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
 	float SpringStrength = 4000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
-	int SuspensionLength = 60.0f;
+	int SuspensionLength = 50.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suspension", meta = (AllowPrivateAccess = "true"))
 	float DamperScale = 1000.0f;
 };

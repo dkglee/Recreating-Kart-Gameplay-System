@@ -78,8 +78,8 @@ void ACheckPoint::SaveCheckPoint(const AActor* CheckKart)
 
 	if (IsNextLapToMove)
 	{
-		PS->GoNextLap();
 		UE_LOG(LogTemp, Display, TEXT("다음 랩 이동"));
+		PS->GoNextLap();
 	}
 }
 
@@ -93,4 +93,13 @@ uint16 ACheckPoint::GetPinMainNumber() const
 	}
 	
 	return CurrentCheckPointPinNumArray[0];
+}
+
+FTransform ACheckPoint::GetTransformByStartIndex(const uint8 Index)
+{
+	FTransform NewTransform;
+	NewTransform.SetLocation(GetActorLocation() + StartRelativePos[Index]);
+	NewTransform.SetRotation(FQuat::MakeFromRotator(GetActorRotation()));
+
+	return NewTransform;
 }

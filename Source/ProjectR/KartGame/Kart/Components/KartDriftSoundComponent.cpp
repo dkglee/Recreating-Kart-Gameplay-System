@@ -61,6 +61,5 @@ void UKartDriftSoundComponent::InitializeComponent()
 
 void UKartDriftSoundComponent::PlayDriftSound(bool bDrift)
 {
-	// DrawDebugString(GetWorld(), KartBody->GetComponentLocation(), *FString::Printf(TEXT("Bool: %d"), bDrift), nullptr, FColor::Red, 0.0f);
 	SetBoolParameter(TEXT("bDrift"), bDrift);
 }

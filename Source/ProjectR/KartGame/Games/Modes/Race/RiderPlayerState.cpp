@@ -1,5 +1,6 @@
 ﻿#include "RiderPlayerState.h"
 
+#include "Kart.h"
 #include "Net/UnrealNetwork.h"
 #include "RaceGameState.h"
 #include "ProjectR/KartGame/Games/Objects/CheckPoint.h"
@@ -25,6 +26,8 @@ void ARiderPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	DOREPLIFETIME(ARiderPlayerState, CurrentLap);
 	DOREPLIFETIME(ARiderPlayerState, CurrentKartCheckPoint);
 	DOREPLIFETIME(ARiderPlayerState, Ranking);
+	DOREPLIFETIME(ARiderPlayerState, RaceEndTime);
+	DOREPLIFETIME(ARiderPlayerState, IsRaceEnd);
 }
 
 void ARiderPlayerState::SetCheckPoint(const FString& CheckPointNum)
@@ -57,13 +60,22 @@ void ARiderPlayerState::GoNextLap()
 {
 	CurrentLap += 1;
 	CurrentKartCheckPoint = TEXT("0");
-
-	if (HasAuthority())
+	
+	ARaceGameState* GS = GetWorld()->GetGameState<ARaceGameState>();
+	if (CurrentLap == GS->GetMaxLaps())
 	{
-		if (!GetPawn()->IsLocallyControlled())
-		{
-			return;
-		}
+		IsRaceEnd = true;
+		RaceEndTime = FDateTime::Now();
+		GS->CountDownToFinish(RaceEndTime);
+
+		AKart* Kart = GetPawn<AKart>();
+		Kart->SetbCanMove(false);
+		
+		return;
+	}
+	
+	if (GetPawn()->IsLocallyControlled())
+	{
 		OnGoNextLapNotified.Broadcast(CurrentLap);
 	}
 }

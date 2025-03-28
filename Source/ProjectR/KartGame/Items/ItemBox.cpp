@@ -3,13 +3,9 @@
 
 #include "ItemBox.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Components/ItemInventoryComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "ProjectR/ProjectR.h"
-#include "ProjectR/KartGame/Games/KartGameInstance.h"
 
 AItemBox::AItemBox()
 {
@@ -33,16 +29,24 @@ void AItemBox::Tick(float DeltaTime)
 	RotateBody();
 }
 
+void AItemBox::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorldTimerManager().ClearTimer(ItemBoxRespawnTimerHandle);
+}
+
 void AItemBox::InitComponents()
 {
 	Root = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 	Root->SetGenerateOverlapEvents(true);
+	Root->SetBoxExtent(FVector(75.f));
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	UDataTable* Items = LoadObject<UDataTable>(nullptr,TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
 		TArray<FName> RowNames = Items->GetRowNames();
@@ -93,7 +97,7 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)
 {
-	FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
+	//FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
 	
 	if (HasAuthority())
 	{
@@ -102,11 +106,20 @@ void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryCo
 
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
-	
-	GetWorldTimerManager().SetTimer(ItemBoxRespawnTimerHandle,  [this]()
+
+	if (GetWorldTimerManager().TimerExists(ItemBoxRespawnTimerHandle))
 	{
-		SetActorHiddenInGame(false);
-		SetActorEnableCollision(true);
+		GetWorldTimerManager().ClearTimer(ItemBoxRespawnTimerHandle);
+	}
+
+	TWeakObjectPtr<AItemBox> weakThis = this;
+	GetWorldTimerManager().SetTimer(ItemBoxRespawnTimerHandle,  [weakThis]()
+	{
+		if (weakThis.IsValid())
+		{
+			weakThis->SetActorHiddenInGame(false);
+			weakThis->SetActorEnableCollision(true);
+		}
 	}, 5.f, false);
 }
 

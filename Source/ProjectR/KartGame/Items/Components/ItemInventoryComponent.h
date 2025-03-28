@@ -31,6 +31,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// 아이템 획득
+#pragma region ItemGetFunc
 	void GetItem(const FItemTable itemData);
 
 	UFUNCTION(Server, Reliable)
@@ -38,8 +39,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_GetItem(const FItemTable itemData);
-
+#pragma endregion 
 	// 아이템 사용
+#pragma region ItemUseFunc
 	void UseItem();
 
 	UFUNCTION(Server, Reliable)
@@ -47,11 +49,13 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_UseItem();
-
+#pragma endregion 
 	// 아이템 스폰 함수
+#pragma region ItemSpawnFunc
 	void SpawnItem(const FItemTable itemData);
-	
+#pragma endregion 
 	// 조준형 아이템 함수
+#pragma region LockOnItemFunc
 	void LockPlayer();
 
 	void FindTargetAndTakeAim(FVector start, FVector end, FVector boxHalfSize);
@@ -64,6 +68,9 @@ public:
 
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
+#pragma endregion
+	// 에임 UI 함수
+#pragma region AimUIFunc
 	void SetUsingAimLocation();
 
 	UFUNCTION(Server, Reliable)
@@ -73,6 +80,8 @@ public:
 	void NetMulticast_SetUsingAimLocation(class UWidgetComponent* aim, bool bIsWorldPos, FVector pos, FVector scale);
 
 	void ChangeAimColor(bool bIsLockOn);
+#pragma endregion
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -86,24 +95,34 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
 
+	// 아이템 변수
+#pragma region ItemVariance
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	TArray<FItemTable> Inventory;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	int32 MaxInventorySpace = 2;
 	
 	UPROPERTY(Replicated, VisibleAnywhere)
 	bool bInventoryIsFull = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
-	float MaxLockOnDist = 7000.f;
+	UPROPERTY()
+	TArray<AActor*> IgnoredActors;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
-	float InitialBoxSizeOffset = 7.0f;
-
+#pragma endregion 
 	// 에임 UI 변수
+#pragma region AimVariance
+	UPROPERTY()
 	FVector InitialAimUIPos;
+	
+	UPROPERTY()
 	FVector InitialAimUIScale;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim", meta = (AllowPrivateAccess = "true"))
+	float MaxLockOnDist = 10000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim", meta = (AllowPrivateAccess = "true"))
+	float InitialBoxSizeOffset = 7.0f;
+#pragma endregion 
 
 };

@@ -1,4 +1,23 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "MainUI.h"
 
+#include "DashBoard/DashBoardUI.h"
+#include "ItemInventory/ItemInventory.h"
+#include "Ranking/RankingResultUI.h"
+#include "Ranking/RealTimeRankingHUDBoard.h"
+#include "TrackInfo/TrackInfo.h"
 
-#include "MainUI.h"
+void UMainUI::InitializeData()
+{
+	RealTimeRankingBoard->InitializeData();
+	TrackInfoUI->InitializeData();
+}
+
+void UMainUI::ShowResult()
+{
+	WBP_DashBoardUI->SetVisibility(ESlateVisibility::Hidden);
+	WBP_ItemInventory->SetVisibility(ESlateVisibility::Hidden);
+	RealTimeRankingBoard->SetVisibility(ESlateVisibility::Hidden);
+
+	RankingResultUI->SetVisibility(ESlateVisibility::Visible);
+	RankingResultUI->InitializeRanking();
+}

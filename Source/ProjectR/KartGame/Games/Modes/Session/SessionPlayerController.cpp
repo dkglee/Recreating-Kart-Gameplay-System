@@ -4,8 +4,15 @@
 #include "SessionGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "EnhancedInputSubsystems.h"
+#include "KartGame/Games/Component/WidgetControlComponent.h"
 #include "KartGame/UIs/Session/ReadySession.h"
 #include "KartGame/UIs/_Common/Button/CommonButton.h"
+
+ASessionPlayerController::ASessionPlayerController()
+{
+	WidgetControlComponent = CreateDefaultSubobject<UWidgetControlComponent>("Widget Control Component");
+}
 
 void ASessionPlayerController::AcknowledgePossession(APawn* InPawn)
 {
@@ -19,18 +26,57 @@ void ASessionPlayerController::AcknowledgePossession(APawn* InPawn)
 void ASessionPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (IsLocalPlayerController())
+	
+	if (!IsLocalPlayerController())
 	{
-		SetShowMouseCursor(true);
-		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
-		ReadySession->GetGameStartButton()->GetRoot()->
-			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
-		ReadySession->AddToViewport();
+		return;
 	}
+	
+	UEnhancedInputLocalPlayerSubsystem* SubSystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (SubSystem)
+	{
+		SubSystem->AddMappingContext(IMC_Session, 0);
+	}
+	
+	SetShowMouseCursor(true);
+	
+	if (!ReadySession)
+    {
+    	ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+    	ReadySession->GetGameStartButton()->GetRoot()->
+    		OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+    	ReadySession->InitializeData();
+    	ReadySession->AddToViewport();
+    }
 }
 
 void ASessionPlayerController::CheckAndStartGame()
 {
 	GetWorld()->GetAuthGameMode<ASessionGameMode>()->StartGameToPlay();
+}
+
+void ASessionPlayerController::UpdateSessionList(const TArray<FString>& PlayerList)
+{
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+
+	if (!ReadySession)
+	{
+		ReadySession = CreateWidget<UReadySession>(this, ReadySessionClass);
+		ReadySession->GetGameStartButton()->GetRoot()->
+			OnClicked.AddDynamic(this, &ThisClass::CheckAndStartGame);
+		ReadySession->InitializeData();
+		ReadySession->AddToViewport();
+	}
+	
+	ReadySession->UpdatePlayers(PlayerList);
+}
+
+void ASessionPlayerController::Client_UpdatePlayerInfo_Implementation(
+	const TArray<FString>& PlayerNameList)
+{
+	UpdateSessionList(PlayerNameList);
 }

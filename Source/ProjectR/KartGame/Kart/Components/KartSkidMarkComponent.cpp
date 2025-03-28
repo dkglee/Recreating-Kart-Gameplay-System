@@ -3,7 +3,6 @@
 
 #include "KartSkidMarkComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
@@ -25,7 +24,6 @@ UKartSkidMarkComponent::UKartSkidMarkComponent()
 	{
 		SetAsset(SkidMarkEffectAsset.Object);
 	}
-	Super::SetAutoActivate(false);
 }
 
 
@@ -36,6 +34,9 @@ void UKartSkidMarkComponent::BeginPlay()
 
 	// ...
 	SetFloatParameter(TEXT("SkidWidth"), 20.0f);
+	
+	SetForceSolo(true);
+	Super::SetAutoActivate(false);
 }
 
 void UKartSkidMarkComponent::InitializeComponent()

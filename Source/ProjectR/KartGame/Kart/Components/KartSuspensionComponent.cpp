@@ -3,12 +3,9 @@
 
 #include "KartSuspensionComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Math/UnitConversion.h"
 
 
 // Sets default values for this component's properties
@@ -41,7 +38,7 @@ void UKartSuspensionComponent::InitializeComponent()
 	}
 }
 
-bool UKartSuspensionComponent::ProcessSuspension()
+bool UKartSuspensionComponent::ProcessSuspension(FVector& LineLocation)
 {
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetUpVector() * -SuspensionLength;
@@ -54,6 +51,7 @@ bool UKartSuspensionComponent::ProcessSuspension()
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
+		LineLocation = HitResult.Location;
 		// Offset을 구한 뒤 Offset에 따른 힘을 가해준다.
 		float Offset = SuspensionLength - HitResult.Distance;
 

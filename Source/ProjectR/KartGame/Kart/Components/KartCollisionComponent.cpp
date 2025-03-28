@@ -1,94 +1,167 @@
-﻿#include "KartCollisionComponent.h"
+// Fill out your copyright notice in the Description page of Project Settings.
 
+
+#include "KartCollisionComponent.h"
+
+#include "FastLogger.h"
 #include "Kart.h"
-#include "KartFrictionComponent.h"
+#include "KartAccelerationComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "Components/BoxComponent.h"
-#include "KartGame/Items/ItemBox.h"
 #include "KartGame/Games/Objects/CheckPoint.h"
-#include "Net/UnrealNetwork.h"
+#include "KartGame/Items/ItemBox.h"
 
+
+// Sets default values for this component's properties
 UKartCollisionComponent::UKartCollisionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
-
 }
 
-void UKartCollisionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+
+// Called when the game starts
+void UKartCollisionComponent::BeginPlay()
 {
-	DOREPLIFETIME(UKartCollisionComponent, CurrentCollisionCooldownFrame)
+	Super::BeginPlay();
+
+	// ...
+	
+}
+
+void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor->IsA(AItemBox::StaticClass()) ||
+	OtherActor->IsA(ACheckPoint::StaticClass()))
+	{
+		return;
+	}
+	
+	FCollision CollisionInfo;
+	
+	// 충돌이 발생했을 때 발생한 두 개의 클라이언트에게 충돌 로직을 실행하도록 요청한다. // 그냥 자기 자신만 검출하면 되네
+	AKart* OtherKart = Cast<AKart>(OtherActor);
+	if (OtherKart)
+	{
+		CollisionInfo.KartInfo = OtherKart->GetNetworkSyncComponent()->GetKartInfo();
+		CollisionInfo.bCollisionWithKart = true;
+	}
+	
+	CollisionInfo.CollisionNormal = Hit.ImpactNormal;
+	
+	if (Kart->IsLocallyControlled())
+	{
+		ClientRPC_OnCollisionKart_Implementation(CollisionInfo);
+	}
+	else
+	{
+		ClientRPC_OnCollisionKart(CollisionInfo);
+	}
 }
 
 void UKartCollisionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
+
 	Kart = Cast<AKart>(GetOwner());
+	if (Kart)
+	{
+		KartBody = Kart->GetRootBox();
+		// 서버에서만 충돌을 감지할 예정
+		if (KartBody && Kart->HasAuthority())
+		{
+			KartBody->OnComponentHit.AddDynamic(this, &UKartCollisionComponent::OnCollisionKart);
+			// KartBody->OnComponentBeginOverlap.AddDynamic(this, &UKartCollisionComponent::OnOverlapKart);
+		}
+	}
 }
 
-void UKartCollisionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-	CurrentCollisionCooldownFrame = 0;
-	Kart->GetRootBox()->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnCollisionKart);	
-}
-
+// Called every frame
 void UKartCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (CurrentCollisionCooldownFrame > 0)
-	{
-		// 줄어든 이후에만 확인 처리하기
-		CurrentCollisionCooldownFrame -= 1;
+}
 
-		if (CurrentCollisionCooldownFrame == 0)
+void UKartCollisionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CoolTimeHandle);
+		if (KartBody)
 		{
-			Kart->GetFrictionComponent()->RollbackFriction();
+			KartBody->OnComponentHit.RemoveDynamic(this, &UKartCollisionComponent::OnCollisionKart);
+			KartBody->OnComponentBeginOverlap.RemoveDynamic(this, &UKartCollisionComponent::OnOverlapKart);
 		}
 	}
+	Super::EndPlay(EndPlayReason);
 }
 
-// Collision 처리는 서버에서만 진행하고 클라로 위치 보간을 요청시킨다.
-void UKartCollisionComponent::OnCollisionKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UKartCollisionComponent::OnOverlapKart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!Kart->HasAuthority())
-	{
-		return;
-	}
-
-	if (CurrentCollisionCooldownFrame > 0)
-	{
-		return;
-	}
-
-	if (OtherActor->IsA(AItemBox::StaticClass()) ||
-		OtherActor->IsA(ACheckPoint::StaticClass()))
-	{
-		return;
-	}
-	
-	CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
-	Kart->ClearAcceleration();
-	Kart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
-	const FVector KartImpulse = Kart->GetNetworkSyncComponent()
-				->GetKartInfo().Velocity;
-	
-	// 카트인 경우는 서로와의 충돌 처리
-	if (AKart* OtherKart = Cast<AKart>(OtherActor))
-	{
-		const FVector OtherKartImpulse = OtherKart->GetNetworkSyncComponent()
-			->GetKartInfo().Velocity;
-		
-		Kart->GetRootBox()->AddImpulse(OtherKartImpulse * -1 * CollisionPower);
-		OtherKart->GetKartCollisionComponent()->CurrentCollisionCooldownFrame = BaseCollisionCooldownFrame;
-		OtherKart->GetFrictionComponent()->SetInFrictionGripCoeff(0);
-		OtherKart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
-	} else
-	{
-		Kart->GetRootBox()->AddImpulse(KartImpulse * -1 * CollisionPower);
-	}
+	// if (OtherActor->IsA(AItemBox::StaticClass()) ||
+	// OtherActor->IsA(ACheckPoint::StaticClass()))
+	// {
+	// 	return;
+	// }
+	//
+	// FCollision CollisionInfo;
+	//
+	// // 충돌이 발생했을 때 발생한 두 개의 클라이언트에게 충돌 로직을 실행하도록 요청한다. // 그냥 자기 자신만 검출하면 되네
+	// AKart* OtherKart = Cast<AKart>(OtherActor);
+	// if (OtherKart)
+	// {
+	// 	CollisionInfo.KartInfo = OtherKart->GetNetworkSyncComponent()->GetKartInfo();
+	// 	CollisionInfo.bCollisionWithKart = true;
+	// }
+	//
+	// CollisionInfo.CollisionNormal = SweepResult.ImpactNormal;
+	//
+	// if (Kart->IsLocallyControlled())
+	// {
+	// 	ClientRPC_OnCollisionKart_Implementation(CollisionInfo);
+	// }
+	// else
+	// {
+	// 	ClientRPC_OnCollisionKart(CollisionInfo);
+	// }
 }
+
+void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollision CollisionInfo)
+{
+	// 쿨타임 체크
+	if (bCoolTime)
+	{
+		//FFastLogger::LogConsole(TEXT("Kart Collision Component CoolTime!"));
+		return;
+	}
+
+	bCoolTime = true;
+	TWeakObjectPtr<UKartCollisionComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartCollisionComponent* StrongThis = WeakThis.Get();
+			StrongThis->bCoolTime = false;
+		}
+	}), CoolTime, false);
+	
+	FVector ImpactNormal = CollisionInfo.CollisionNormal.GetSafeNormal();
+	float SlopeAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(ImpactNormal, FVector::UpVector)));
+
+	if (SlopeAngle < 70.f)
+	{
+		// 평지나 언덕 -> 충돌 무시
+		return;
+	}
+	
+	KartBody->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+	Kart->GetAccelerationComponent()->ClearAcceleration();
+}
+

@@ -1,7 +1,11 @@
 ﻿#include "ReadySession.h"
 
+#include "OnlineSessionSettings.h"
+#include "SessionUtil.h"
+#include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "GameFramework/GameStateBase.h"
+#include "KartGame/Games/Modes/Session/SessionGameState.h"
 #include "Module/ReadySessionPlayerWidget.h"
 
 void UReadySession::NativePreConstruct()
@@ -9,11 +13,6 @@ void UReadySession::NativePreConstruct()
 	Super::NativePreConstruct();
 	
 	InitializeWidget();
-}
-
-void UReadySession::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
 }
 
 void UReadySession::InitializeWidget()
@@ -35,16 +34,24 @@ void UReadySession::InitializeWidget()
 	}
 }
 
-void UReadySession::UpdatePlayers()
+void UReadySession::InitializeData()
 {
-	TArray<TObjectPtr<APlayerState>> PSArray = GetWorld()->GetGameState()->PlayerArray;
-	
-	if (PSArray.Num() == 0)
-	{
-		return;
+	const FNamedOnlineSession* NamedOnlineSession = FSessionUtil::GetCurrentSession();
+	if (!NamedOnlineSession)
+	{  
+		return; 
 	}
+
+	FString RoomTitleData;
+	NamedOnlineSession->SessionSettings.Get(TEXT("RoomName"), RoomTitleData);
 	
-	for (int i = 0; i < PSArray.Num(); i++)
+	RoomId->SetText(FText::FromString(NamedOnlineSession->GetSessionIdStr().Left(7)));
+	RoomTitle->SetText(FText::FromString(FSessionUtil::DecodeData(RoomTitleData)));
+}
+
+void UReadySession::UpdatePlayers(const TArray<FString>& PlayerList)
+{
+	for (int i = 0; i < PlayerList.Num(); i++)
 	{
 		UReadySessionPlayerWidget* ChildWidget = Cast<UReadySessionPlayerWidget>(
 			PlayerInfoGrid->GetChildAt(i));
@@ -52,6 +59,6 @@ void UReadySession::UpdatePlayers()
 		{
 			return;
 		}
-		ChildWidget->InitializeData(PSArray[i]);
+		ChildWidget->InitializeData(PlayerList[i]);
 	}
 }

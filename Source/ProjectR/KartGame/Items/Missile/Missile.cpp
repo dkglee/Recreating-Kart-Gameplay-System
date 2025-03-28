@@ -3,6 +3,7 @@
 
 #include "Missile.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
@@ -24,7 +25,7 @@ void AMissile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Root->OnComponentBeginOverlap.AddDynamic(this,&AMissile::OnMissileBeginOverlap);
+	Root->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnMissileBeginOverlap);
 }
 
 // Called every frame
@@ -47,12 +48,18 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (HasAuthority() == false) return;
+	//FFastLogger::LogConsole(TEXT("%s"), *OtherActor->GetName());
 	auto* kart = Cast<AKart>(OtherActor);
 	if (kart)
 	{
+		if (kart == GetOwningPlayer())
+		{
+			return;
+		}
+
 		if (kart == LockOnPlayer)
 		{
-			kart->GetItemInteractionComponent()->MissileHitInteraction();
+			kart->GetItemInteractionComponent()->Interaction(EInteractionType::Explosion);
 			Destroy();
 		}
 	}
@@ -66,20 +73,14 @@ void AMissile::MovetoTarget()
 		return;
 	}
 
-	if (HasAuthority())
-	{
-		Server_MovetoTarget();
-	}
-}
+	if (HasAuthority() == false) return;
 
-void AMissile::Server_MovetoTarget_Implementation()
-{
 	DistanceToTarget = FVector::Dist(GetActorLocation(), LockOnPlayer->GetActorLocation());
-	
+
 	FVector p0 = GetActorLocation();
 	FVector dir = (LockOnPlayer->GetActorLocation() - p0).GetSafeNormal();
 	float speedFactor = FMath::Clamp(DistanceToTarget / 100.0f, 0.5f, 2.0f);
-	FVector vt = dir * speed * speedFactor * GetWorld()->DeltaTimeSeconds;
+	FVector vt = dir * Speed * speedFactor * GetWorld()->DeltaTimeSeconds;
 
 	ElapsedTime += GetWorld()->DeltaTimeSeconds;
 	float DistanceFactor = FMath::Clamp(DistanceToTarget / 1000.0f, 0.1f, 1.0f);
@@ -93,7 +94,7 @@ void AMissile::Server_MovetoTarget_Implementation()
 	FRotator rot = GetActorRotation();
 	FRotator targetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),LockOnPlayer->GetActorLocation());
 	FRotator newRot = UKismetMathLibrary::RInterpTo(rot,targetRot,GetWorld()->DeltaTimeSeconds,1.0f);
-	
+
 	NetMulticast_MovetoTarget(newPos, newRot);
 }
 

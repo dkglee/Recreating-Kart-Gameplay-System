@@ -21,4 +21,6 @@ public:
 	static float CalculateNormalizedSpeedWithVector(FVector ForwardVector, FVector LinearVelocity, float MaxSpeed);
 	UFUNCTION(BlueprintPure, Category="Utilities")
 	static float CalculateNormalizedSpeedWithKart(class AKart* Kart, float MaxSpeed);
+	UFUNCTION(BlueprintPure, Category="Utilities")
+	static float CalculateNormalizedRightSpeedWithKart(class UBoxComponent* KartBody, float MaxSpeed);
 };
