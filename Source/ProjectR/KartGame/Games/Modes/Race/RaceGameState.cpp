@@ -145,6 +145,11 @@ void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
 	{
 		return;
 	}
+
+	if (GetRaceStatus() != ERaceStatus::Playing)
+	{
+		return;
+	}
 	
 	SetRaceStatus(ERaceStatus::HoldToFinish);
 	RaceEndTime = FinishTime;
