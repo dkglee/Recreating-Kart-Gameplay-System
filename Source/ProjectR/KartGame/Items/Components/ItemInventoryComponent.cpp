@@ -277,7 +277,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
-			FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
+			//FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget)
 			{

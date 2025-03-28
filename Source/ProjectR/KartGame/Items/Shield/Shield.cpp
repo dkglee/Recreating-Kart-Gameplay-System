@@ -5,7 +5,10 @@
 
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
 
 
 // Sets default values

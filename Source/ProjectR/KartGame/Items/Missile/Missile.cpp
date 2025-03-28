@@ -3,6 +3,7 @@
 
 #include "Missile.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
@@ -47,6 +48,7 @@ void AMissile::OnMissileBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (HasAuthority() == false) return;
+	//FFastLogger::LogConsole(TEXT("%s"), *OtherActor->GetName());
 	auto* kart = Cast<AKart>(OtherActor);
 	if (kart)
 	{

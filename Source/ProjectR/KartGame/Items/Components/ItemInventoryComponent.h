@@ -106,6 +106,7 @@ private:
 	UPROPERTY(Replicated, VisibleAnywhere)
 	bool bInventoryIsFull = false;
 
+	UPROPERTY()
 	TArray<AActor*> IgnoredActors;
 
 #pragma endregion 

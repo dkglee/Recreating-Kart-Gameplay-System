@@ -34,12 +34,13 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_FindTarget(FVector start, FVector end, FVector boxHalfSize);
 
-	void CheckTraceTime();
+	UFUNCTION(Server, Reliable)
+	void Server_CheckTraceTime();
 
 	void AddDraftForce();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_DraftEffect();
+	void NetMulticast_DraftEffect(bool value);
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
@@ -48,7 +49,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	class AKart* FinalTarget = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	float ElapsedTime = 0.f;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
@@ -58,7 +59,7 @@ private:
 	float DraftStartTime = 3.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
-	float DraftDuration = 1.f;
+	float DraftDuration = 1.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	float DraftDistance = 1000.f;
@@ -67,7 +68,7 @@ private:
 	FVector TraceBoxHalfSize = FVector(100.f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
-	float DraftForce = 300.f;
+	float DraftForce = 500.f;
 
 	UPROPERTY()
 	FTimerHandle DraftTimerHandle;
