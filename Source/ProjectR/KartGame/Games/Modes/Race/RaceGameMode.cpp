@@ -34,6 +34,7 @@ void ARaceGameMode::StartGame()
 		if (PC->HasAuthority())
 		{
 			PC->SetHUDToStart();
+			PC->SpawnKartWithCheckPoint(i + 1);
 		} else
 		{
 			PC->Client_SetHUDToStart();
