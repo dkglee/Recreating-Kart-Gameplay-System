@@ -29,6 +29,7 @@ public:
 #pragma endregion
 
 	void CountDownToFinish(const FDateTime& FinishTime);
+	void SetReadyForTheMatch();
 	
 protected:
 	virtual void BeginPlay() override;

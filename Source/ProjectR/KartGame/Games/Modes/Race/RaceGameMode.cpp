@@ -19,7 +19,7 @@ void ARaceGameMode::StartGame()
 		return;
 	}
 	
-	GS->SetRaceStatus(ERaceStatus::Ready);
+	GS->SetReadyForTheMatch();
 
 	for (int i = 0; i < GS->PlayerArray.Num(); i++)
 	{
@@ -31,7 +31,7 @@ void ARaceGameMode::StartGame()
 			return;
 		}
 
-		if (PC->IsLocalController())
+		if (PC->HasAuthority())
 		{
 			PC->SetHUDToStart();
 		} else

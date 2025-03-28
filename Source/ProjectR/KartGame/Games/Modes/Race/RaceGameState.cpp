@@ -171,3 +171,33 @@ void ARaceGameState::CountDownToFinish(const FDateTime& FinishTime)
 		}
 	}
 }
+
+void ARaceGameState::SetReadyForTheMatch()
+{
+	if (!StartPoint)
+	{
+		UE_LOG(LogTemp, Error, TEXT("제대로 활성화 되지 않은 트랙입니다. 개발 상태로 전환됩니다."))
+		return;
+	}
+	
+	SetRaceStatus(ERaceStatus::Ready);
+	
+	for (int i = 0; i < PlayerArray.Num(); i++)
+	{
+		ARacePlayerController* PC = Cast<ARacePlayerController>(
+				PlayerArray[i]->GetPlayerController());
+		
+		if (!PC)
+		{
+			return;
+		}
+
+		if (PC->HasAuthority())
+		{
+			PC->SetHUDToStart();
+		} else
+		{
+			PC->Client_SetHUDToStart();
+		}
+	}
+}

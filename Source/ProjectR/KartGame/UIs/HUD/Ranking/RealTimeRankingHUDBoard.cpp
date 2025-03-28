@@ -8,7 +8,10 @@
 
 void URealTimeRankingHUDBoard::InitializeData()
 {
-	for (TObjectPtr<APlayerState> PlayerState : GetWorld()->GetGameState<ARaceGameState>()->PlayerArray)
+	UE_LOG(LogTemp, Display, TEXT("Value: %d"), GetWorld()->GetGameState<ARaceGameState>()->PlayerArray.Num())
+	
+	for (TObjectPtr<APlayerState> PlayerState :
+		GetWorld()->GetGameState<ARaceGameState>()->PlayerArray)
 	{
 		ARiderPlayerState* PS = Cast<ARiderPlayerState>(PlayerState);
 

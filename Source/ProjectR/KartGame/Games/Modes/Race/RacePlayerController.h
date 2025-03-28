@@ -50,6 +50,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMainUI> MainHUD;
 
+	void CreateMainHUD();
+	
 	UFUNCTION()
 	void KartSetToMove();
 

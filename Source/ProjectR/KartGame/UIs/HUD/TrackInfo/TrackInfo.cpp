@@ -11,12 +11,19 @@ void UTrackInfo::InitializeData()
 
 	GetOwningPlayerState<ARiderPlayerState>()->
 		OnGoNextLapNotified.AddDynamic(this, &ThisClass::UpdateCurrentTrack);
+
+	IsInitialized = true;
 }
 
 void UTrackInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+	if (!IsInitialized)
+	{
+		return;
+	}
+	
 	if (GetWorld()->GetGameState<ARaceGameState>()->GetRaceStatus() == ERaceStatus::Playing)
 	{
 		const FTimespan TimeDifference =

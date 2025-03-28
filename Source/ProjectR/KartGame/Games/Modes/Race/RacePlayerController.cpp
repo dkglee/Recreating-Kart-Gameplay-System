@@ -23,24 +23,41 @@ void ARacePlayerController::BeginPlay()
 	Super::BeginPlay();
 	PingManagerComponent->OnAllPingAccessNotified.AddDynamic(this, &ThisClass::StartGameToGameState);
 
-	if (IsLocalController())
+	CreateMainHUD();
+}
+
+void ARacePlayerController::CreateMainHUD()
+{
+	if (!IsLocalController())
 	{
-		MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
-		MainHUD->AddToViewport();
+		return;
 	}
+
+	if (MainHUD)
+	{
+		return;
+	}
+	
+	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
+	MainHUD->AddToViewport();
 }
 
 void ARacePlayerController::SetHUDToStart()
 {
+	if (HasAuthority())
+	{
+		GetPawn<AKart>()->SetbCanMove(false);
+	}
+
 	if (IsLocalController())
     {
-		GetPawn<AKart>()->SetbCanMove(false);
+		// 혹시 모를 방어코드드님
+		CreateMainHUD();
 		
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
 		MainHUD->GetCountDownToEndWidget()->OnGameEndNotified.AddDynamic(this
 			, &ThisClass::EndGame);
-		MainHUD->InitializeData();
     }
 }
 
