@@ -4,10 +4,8 @@
 #include "KartGame/Games/Modes/Race/RaceGameState.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
-void UTrackInfo::NativeConstruct()
+void UTrackInfo::InitializeData()
 {
-	Super::NativeConstruct();
-
 	MaxTrackInfo->SetText(FText::FromString(
 			FString::FromInt(GetWorld()->GetGameState<ARaceGameState>()->GetMaxLaps())));
 
