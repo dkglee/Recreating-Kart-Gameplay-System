@@ -17,9 +17,6 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
-	UPROPERTY()
-	TObjectPtr<ARaceGameState> RaceGameState;
-	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CurrentTrackInfo;
 	

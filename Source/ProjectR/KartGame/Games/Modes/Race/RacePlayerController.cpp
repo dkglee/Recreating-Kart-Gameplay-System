@@ -1,20 +1,16 @@
 ﻿#include "RacePlayerController.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "RaceGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/PlayerStart.h"
-#include "KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
 #include "Kismet/GameplayStatics.h"
 
-
-
 void ARacePlayerController::SetHUDToStart()
-{     
+{
 	if (IsLocalController())
     {
 		GetPawn<AKart>()->SetbCanMove(false);
