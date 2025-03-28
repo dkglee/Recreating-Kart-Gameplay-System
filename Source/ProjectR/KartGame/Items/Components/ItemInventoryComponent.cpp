@@ -17,7 +17,6 @@
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/ItemInventory/ItemInventory.h"
-#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -350,7 +349,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{

@@ -39,7 +39,7 @@ void AItemBox::InitComponents()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	UDataTable* Items = LoadObject<UDataTable>(nullptr,TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
 		TArray<FName> RowNames = Items->GetRowNames();

@@ -9,7 +9,6 @@
 #include "KartAccelerationComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartSuspensionComponent.h"
-#include "Landscape.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -156,7 +155,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		CheckTraceTime();
 	}
 
-	 DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	 //DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::CheckTraceTime()
