@@ -4,10 +4,12 @@
 #include "ItemInventory/ItemInventory.h"
 #include "Ranking/RankingResultUI.h"
 #include "Ranking/RealTimeRankingHUDBoard.h"
+#include "TrackInfo/TrackInfo.h"
 
 void UMainUI::InitializeData()
 {
 	RealTimeRankingBoard->InitializeData();
+	TrackInfoUI->InitializeData();
 }
 
 void UMainUI::ShowResult()

@@ -4,27 +4,23 @@
 #include "KartGame/Games/Modes/Race/RaceGameState.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
-void UTrackInfo::NativeConstruct()
+void UTrackInfo::InitializeData()
 {
-	Super::NativeConstruct();
-
 	MaxTrackInfo->SetText(FText::FromString(
 			FString::FromInt(GetWorld()->GetGameState<ARaceGameState>()->GetMaxLaps())));
 
 	GetOwningPlayerState<ARiderPlayerState>()->
 		OnGoNextLapNotified.AddDynamic(this, &ThisClass::UpdateCurrentTrack);
-
-	RaceGameState = GetWorld()->GetGameState<ARaceGameState>();
 }
 
 void UTrackInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (RaceGameState->GetRaceStatus() == ERaceStatus::Playing)
+	if (GetWorld()->GetGameState<ARaceGameState>()->GetRaceStatus() == ERaceStatus::Playing)
 	{
 		const FTimespan TimeDifference =
-			FDateTime::Now() - RaceGameState->GetRaceStartTime();
+			FDateTime::Now() - GetWorld()->GetGameState<ARaceGameState>()->GetRaceStartTime();
 
 		const uint32 TotalMinutes = TimeDifference.GetTotalMinutes();
 		const uint8 Seconds = TimeDifference.GetSeconds();
