@@ -3,6 +3,7 @@
 
 #include "KartAccelerationComponent.h"
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "InputAction.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
@@ -76,14 +77,24 @@ void UKartAccelerationComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void UKartAccelerationComponent::OnMovementInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetAcceleration = InputActionValue.Get<float>();
+	if (FMath::IsNearlyEqual(ForwardInputDetected, TargetAcceleration, 0.01f))
+	{
+		return;
+	}
+	else
+	{
+		ForwardInputDetected = TargetAcceleration;
+		if (ForwardInputDetected > 0.0f)
+		{
+			OnAccelerationStarted.Broadcast();
+		}
+	}
+
 }
 
 void UKartAccelerationComponent::BroadCastAccelerationStarted(const FInputActionValue& InputActionValue)
 {
-	// if (InputActionValue.Get<float>() > 0.0f)
-	// {
-		OnAccelerationStarted.Broadcast();
-	// }
+	// OnAccelerationStarted.Broadcast();
 }
 
 void UKartAccelerationComponent::ProcessAcceleration(bool bGameStart)

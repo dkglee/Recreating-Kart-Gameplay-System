@@ -44,7 +44,7 @@ AKart::AKart()
 	bReplicates = true;
 	Super::SetReplicateMovement(false);
 
-	SetNetUpdateFrequency(1000.0f);
+	SetNetUpdateFrequency(10000.0f);
 
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_KART
 	(TEXT("/Game/Kart/Input/IMC_Kart.IMC_Kart"));

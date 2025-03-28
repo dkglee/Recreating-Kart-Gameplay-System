@@ -14,12 +14,12 @@ class PROJECTR_API UGameLobbySubUI : public UUserWidget
 
 public:
 	GETTER(TObjectPtr<UButton>, GameSearchButton)
-	GETTER(TObjectPtr<UButton>, GameCreateButton)
+	GETTER(TObjectPtr<UButton>, GameQuickJoinButton)
 
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> GameSearchButton;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> GameCreateButton;
+	TObjectPtr<UButton> GameQuickJoinButton;
 };
