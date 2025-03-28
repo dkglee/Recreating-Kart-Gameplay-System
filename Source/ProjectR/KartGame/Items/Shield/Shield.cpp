@@ -5,7 +5,10 @@
 
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
 
 
 // Sets default values
@@ -32,6 +35,11 @@ void AShield::Tick(float DeltaTime)
 	if (Kart)
 	{
 		Kart->GetItemInteractionComponent()->bShieldOn = true;
+		auto* pc = Cast<ARacePlayerController>(Kart->GetController());
+		if (pc)
+		{
+			pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(true);
+		}
 		FFastLogger::LogConsole(TEXT("shield on"));
 		this->Destroy();
 	}

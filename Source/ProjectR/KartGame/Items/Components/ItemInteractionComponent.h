@@ -67,7 +67,7 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_CheckShieldUsingTime();
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_ShieldEffect();
+	void NetMulticast_ShieldEffect(bool value);
 #pragma endregion
 	
 private:

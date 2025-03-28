@@ -7,21 +7,21 @@
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/TextBlock.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
 #include "Net/UnrealNetwork.h"
 
 
-// Sets default values for this component's properties
 UItemInteractionComponent::UItemInteractionComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
 
 }
 
-// Called when the game starts
 void UItemInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -83,7 +83,7 @@ void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 	if (bShieldOn)
 	{
 		FFastLogger::LogConsole(TEXT("InteractionComponent : blocked by shield"));
-		NetMulticast_ShieldEffect();
+		NetMulticast_ShieldEffect(false);
 		if (Kart->HasAuthority())
 		{
 			bShieldOn = false;
@@ -229,15 +229,20 @@ void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 	ShieldElapsedTime += GetWorld()->GetDeltaSeconds();
 	if (ShieldElapsedTime >= ShieldTime)
 	{
+		NetMulticast_ShieldEffect(false);
 		bShieldOn = false;
 		ShieldElapsedTime = 0.f;
 	}
 }
 
-void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation()
+void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool value)
 {
 	if (Kart->IsLocallyControlled())
 	{
-		DrawDebugString(GetWorld(), Kart->GetActorLocation() + Kart->GetActorUpVector() * 50.f, TEXT("Shield!"), 0, FColor::Green, 1, true, 3);
+		auto* pc = Cast<ARacePlayerController>(Kart->GetController());
+		if (pc)
+		{
+			pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(value);
+		}
 	}
 }

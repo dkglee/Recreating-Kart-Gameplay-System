@@ -33,6 +33,7 @@
 #include "Net/UnrealNetwork.h"
 #include "KartInstantBoostVFXComponent.h"
 #include "KartPowerBoosterVFXComponent.h"
+#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
 
 // Sets default values
 AKart::AKart()
@@ -238,6 +239,7 @@ void AKart::BeginPlay()
 	
 	// Kart Input Binding
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	
 	if (PC)
 	{
 		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
