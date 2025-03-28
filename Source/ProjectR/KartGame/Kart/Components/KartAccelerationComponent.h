@@ -77,4 +77,5 @@ private:
 	float TargetAcceleration;
 
 	bool bWasSteering = false;
+	float ForwardInputDetected = false;
 };
