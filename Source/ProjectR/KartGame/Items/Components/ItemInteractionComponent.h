@@ -135,7 +135,7 @@ public:
 	float ShieldElapsedTime = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	float ShieldTime = 30.f;
+	float ShieldTime = 3.f;
 #pragma endregion
 	
 };
