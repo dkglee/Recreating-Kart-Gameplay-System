@@ -12,14 +12,13 @@ class PROJECTR_API UTrackInfo : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	void InitializeData();
+	
 protected:
-	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
-	UPROPERTY()
-	TObjectPtr<ARaceGameState> RaceGameState;
-	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CurrentTrackInfo;
 	

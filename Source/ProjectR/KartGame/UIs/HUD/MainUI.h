@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainUI.generated.h"
 
+class UTrackInfo;
 class URankingResultUI;
 class UCountDownToEnd;
 class UDashBoardUI;
@@ -51,4 +52,7 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UNotificationTextUI> WBP_NotificationTextUI;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTrackInfo> TrackInfoUI;
 };
