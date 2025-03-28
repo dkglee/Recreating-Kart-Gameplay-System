@@ -162,17 +162,17 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 {
 	float forwardSpeed = UKismetMathLibrary::Dot_VectorVector(Kart->GetRootBox()->GetForwardVector(),Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity);
-	float KartSpeedKm = FMath::Abs(forwardSpeed) * 0.036;
+	float KartSpeedKm = forwardSpeed * 0.036;
 	int32 DashBoardSpeed = FMath::RoundToInt(KartSpeedKm * 2);
 	
 	FFastLogger::LogConsole(TEXT("속도 : %d"), DashBoardSpeed);
 
-	// if (DashBoardSpeed < 100.f)
-	// {
-	// 	FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
-	// 	ElapsedTime = 0.f;
-	// 	return;
-	// }
+	if (DashBoardSpeed < 100.f)
+	{
+		FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+		ElapsedTime = 0.f;
+		return;
+	}
 	
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
 	//FFastLogger::LogConsole(TEXT("draft time : %f"), ElapsedTime);
