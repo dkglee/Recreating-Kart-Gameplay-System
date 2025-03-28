@@ -22,7 +22,8 @@ void UKartBasicBoosterVFXComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	SetForceSolo(true);
+	Super::SetAutoActivate(false);
 }
 
 void UKartBasicBoosterVFXComponent::InitializeComponent()
