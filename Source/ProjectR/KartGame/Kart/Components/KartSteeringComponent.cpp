@@ -73,9 +73,9 @@ void UKartSteeringComponent::ProcessSteering()
 	ApplySteeringToKart_Implementation(TargetSteering);
 }
 
-void UKartSteeringComponent::ProcessTorque()
+void UKartSteeringComponent::ProcessTorque(bool bDrift)
 {
-	ApplyTorqueToKartV2_Implementation(SteeringIntensity);
+	ApplyTorqueToKartV2_Implementation(SteeringIntensity, bDrift);
 }
 
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
@@ -106,7 +106,7 @@ void UKartSteeringComponent::ApplySteeringToKart_Implementation(float InTargetSt
 }
 
 // 해당 함수는 실질적으로 Kart Body에 Torque를 가할 때 사용될 거임
-void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering)
+void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering, bool bDrift)
 {
 	float InNormalizedSpeed = UKartSystemLibrary::CalculateNormalizedSpeedWithBox(KartBody, Kart->GetMaxSpeed());
 	float SteeringPower = SteeringCurve->GetFloatValue(InNormalizedSpeed);
@@ -115,8 +115,43 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 	FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
 	float KartSpeed = FVector::DotProduct(ForwardVector, LinearVelocity);
 	float KartSign = FMath::Sign(KartSpeed);
+
+	float NewTurnScaling = TurnScaling;
+
+	// Drift Boost Logic
+	if (bDrift)
+	{
+		if (!bWasDrifting)
+		{
+			// 드리프트가 처음 시작됨
+			DriftBoostTimer = 0.0f;
+			bWasDrifting = true;
+		}
+
+		if (DriftBoostTimer < DriftBoostDuration)
+		{
+			// 순간적으로 강한 토크 (2.8배)
+			float BoostAlpha = 1.0f - (DriftBoostTimer / DriftBoostDuration); // 1에서 0으로 감소
+			float BoostScale = 3.0f * BoostAlpha + 1.0f; // 2.8 -> 1.0 으로 선형감소
+			NewTurnScaling *= BoostScale;
+
+			DriftBoostTimer += GetWorld()->GetDeltaSeconds();
+		}
+		else
+		{
+			// 일반 TurnScaling 으로 복귀
+			NewTurnScaling = TurnScaling;
+		}
+	}
+	else
+	{
+		// 드리프트 중이 아님
+		bWasDrifting = false;
+		DriftBoostTimer = 0.0f;
+	}
 	
-	float Force = InSteering * SteeringPower * TurnScaling * KartSign;
+	
+	float Force = InSteering * SteeringPower * NewTurnScaling * KartSign;
 
 	// Torque Vector 생성
 	FVector KartUpVector = KartBody->GetUpVector();

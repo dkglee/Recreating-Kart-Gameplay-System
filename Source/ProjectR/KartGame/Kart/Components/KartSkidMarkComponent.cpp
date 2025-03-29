@@ -24,6 +24,7 @@ UKartSkidMarkComponent::UKartSkidMarkComponent()
 	{
 		SetAsset(SkidMarkEffectAsset.Object);
 	}
+	Super::SetAutoActivate(false);
 }
 
 
@@ -36,7 +37,6 @@ void UKartSkidMarkComponent::BeginPlay()
 	SetFloatParameter(TEXT("SkidWidth"), 20.0f);
 	
 	SetForceSolo(true);
-	Super::SetAutoActivate(false);
 }
 
 void UKartSkidMarkComponent::InitializeComponent()

@@ -15,9 +15,9 @@ UKartAirBoostVFXComponent::UKartAirBoostVFXComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-	SetRelativeLocation(FVector(20, 0, 0));
+	SetRelativeLocation(FVector(-5.743609, 0, 0));
 	SetRelativeRotation(FRotator(-90, 0, 0));
-	SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
+	SetRelativeScale3D(FVector(0.01, 0.01, 0.01));
 }
 
 

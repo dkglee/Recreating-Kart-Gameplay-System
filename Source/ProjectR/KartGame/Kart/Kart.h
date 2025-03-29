@@ -51,6 +51,8 @@ public:
 	GETTER(class UKartBoosterComponent*, BoosterComponent);
 	GETTER(class UKartDraftComponent*, DraftComponent);
 	GETTER_SETTER(bool, bUsingBooster);
+	GETTER(class USpringArmComponent*, SpringArmComponent);
+	GETTER(class UCameraComponent*, CameraComponent);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -160,5 +162,10 @@ private:
 
 #pragma region Etc
 	TArray<FVector> LineTraceLocations;
+#pragma endregion
+
+#pragma region Camera
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	class UKartCameraComponent* KartCameraComponent = nullptr;
 #pragma endregion
 };

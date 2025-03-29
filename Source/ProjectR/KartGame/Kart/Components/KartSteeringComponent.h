@@ -29,7 +29,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void ProcessSteering();
-	void ProcessTorque();
+	void ProcessTorque(bool bDrift);
 
 #pragma region GetterSetters
 	GETTER(float, SteeringIntensity);
@@ -44,7 +44,7 @@ private:
 	void ApplySteeringToKart(float InTargetSteering);
 	// 서버에서 호출되어야 함. (클라이언트에서 호출)
 	UFUNCTION(Server, Reliable)
-	void ApplyTorqueToKartV2(float InSteering);
+	void ApplyTorqueToKartV2(float InSteering, bool bDrfit);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -71,4 +71,8 @@ private:
 	class UCurveFloat* SteeringCurve = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float TurnScaling = 350.0f;
+
+	bool bWasDrifting;
+	float DriftBoostTimer;
+	float DriftBoostDuration = 0.25f;
 };

@@ -7,6 +7,7 @@
 #include "KartBasicBoosterVFXComponent.h"
 #include "KartBoosterComponent.h"
 #include "KartBasicBoosterVFXComponent.h"
+#include "KartCameraComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
@@ -75,6 +76,7 @@ AKart::AKart()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
 	SpringArmComponent->bUsePawnControlRotation = false;
@@ -84,6 +86,10 @@ AKart::AKart()
 	SpringArmComponent->SocketOffset = {0, 0, 150.0f};
 	SpringArmComponent->bDoCollisionTest = false;
 	CameraComponent->SetRelativeRotation({-10, 0, 0});
+	
+	KartCameraComponent = CreateDefaultSubobject<UKartCameraComponent>(TEXT("KartCameraComponent"));
+	KartCameraComponent->SetNetAddressable();
+	KartCameraComponent->SetIsReplicated(true);
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -291,7 +297,7 @@ void AKart::Tick(float DeltaTime)
 		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
-			SteeringComponent->ProcessTorque();
+			SteeringComponent->ProcessTorque(bDrift);
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
