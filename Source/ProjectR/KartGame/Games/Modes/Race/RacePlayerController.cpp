@@ -106,6 +106,12 @@ void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 	UGameplayStatics::GetAllActorsOfClass(
 		GetWorld(), APlayerStart::StaticClass(), Actors);
 
+	// Player Start가 2개 이상 있는 곳은 트랙이라고 명시적으로 가정한다.
+	if (Actors.Num() >= 2)
+	{
+		GetPawn<AKart>()->SetbCanMove(false);
+	}
+	
 	for (AActor* Actor : Actors)
 	{
 		APlayerStart* PlayerStart = Cast<APlayerStart>(Actor);
