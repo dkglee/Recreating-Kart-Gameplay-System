@@ -10,6 +10,7 @@
 #include "KartFrictionComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDriftEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDriftKeyPressed, bool, bDriftInput);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartFrictionComponent : public UActorComponent
@@ -41,10 +42,15 @@ public:
 	GETTER(bool, bDrift);
 	GETTER_SETTER(float, InFrictionGripCoeff);
 #pragma endregion
-	
+
+	// 순부 판단용
 	UPROPERTY()
 	FOnDriftEnded OnDriftEnded;
+	UPROPERTY()
+	FOnDriftKeyPressed OnDriftKeyPressed;
 private:
+	void OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue);
+	void OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue);
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);
 	UFUNCTION(Server, Reliable)
 	void ApplyFrictionToKart(bool bInDrift);
@@ -103,7 +109,7 @@ private:
 	float InFrictionGripCoeff = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
-	float MinimumFrictionDelay = 0.6f;
+	float MinimumFrictionDelay = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	FTimerHandle FrictionDelayTimer;
 	float bForceDrfit = false; 

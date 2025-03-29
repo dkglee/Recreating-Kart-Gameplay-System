@@ -215,6 +215,8 @@ void UKartFrictionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UKartFrictionComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Completed, this, &UKartFrictionComponent::OnDriftInputDetected);
+	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Completed, this, &UKartFrictionComponent::OnBroadCastDriftKeyReleased);
+	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Started, this, &UKartFrictionComponent::OnBroadCastDriftKeyPressed);
 	PlayerInputComponent->BindAction(IA_Drift, ETriggerEvent::Triggered, this, &UKartFrictionComponent::OnDriftInputDetected);
 }
 
@@ -264,4 +266,15 @@ void UKartFrictionComponent::OnFrictionRollbackFinish()
 void UKartFrictionComponent::RollbackFriction()
 {
 	FrictionRollbackTimeline->PlayFromStart();
+}
+
+
+void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue)
+{
+	OnDriftKeyPressed.Broadcast(false);
+}
+
+void UKartFrictionComponent::OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue)
+{
+	OnDriftKeyPressed.Broadcast(true);
 }

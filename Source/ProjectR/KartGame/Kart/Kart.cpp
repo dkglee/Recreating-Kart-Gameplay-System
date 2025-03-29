@@ -6,7 +6,7 @@
 #include "KartAirBoostVFXComponent.h"
 #include "KartBasicBoosterVFXComponent.h"
 #include "KartBoosterComponent.h"
-#include "KartBasicBoosterVFXComponent.h"
+#include "KartCameraComponent.h"
 #include "KartCollisionComponent.h"
 #include "KartDraftComponent.h"
 #include "KartDriftSoundComponent.h"
@@ -31,9 +31,8 @@
 #include "KartGame/UIs/HUD/Aim/Aim.h"
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
-#include "KartInstantBoostVFXComponent.h"
 #include "KartPowerBoosterVFXComponent.h"
-#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
+#include "SpeedLineUI.h"
 
 // Sets default values
 AKart::AKart()
@@ -75,6 +74,7 @@ AKart::AKart()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+
 	SpringArmComponent->TargetArmLength = 600.0f;
 	SpringArmComponent->SocketOffset = {0, 0, 100.0f};
 	SpringArmComponent->bUsePawnControlRotation = false;
@@ -84,6 +84,10 @@ AKart::AKart()
 	SpringArmComponent->SocketOffset = {0, 0, 150.0f};
 	SpringArmComponent->bDoCollisionTest = false;
 	CameraComponent->SetRelativeRotation({-10, 0, 0});
+	
+	KartCameraComponent = CreateDefaultSubobject<UKartCameraComponent>(TEXT("KartCameraComponent"));
+	KartCameraComponent->SetNetAddressable();
+	KartCameraComponent->SetIsReplicated(true);
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
@@ -230,6 +234,13 @@ AKart::AKart()
 	AirBoost->SetupAttachment(KartSkeletalMeshComponent, FName("AirBoost"));
 	AirBoost->SetNetAddressable();
 	AirBoost->SetIsReplicated(true);
+
+	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
+	(TEXT("/Game/UIs/SpeedLine/WBP_SpeedLineAllUI.WBP_SpeedLineAllUI_C"));
+	if (WBP_SPEEDLINEUI.Succeeded())
+	{
+		SpeedLineUIClass = WBP_SPEEDLINEUI.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -252,6 +263,12 @@ void AKart::BeginPlay()
 	if (IsLocallyControlled())
 	{
 		RootBox->SetSimulatePhysics(true);
+		SpeedLineUI = CreateWidget<USpeedLineUI>(GetWorld(), SpeedLineUIClass);
+		if (SpeedLineUI)
+		{
+			SpeedLineUI->AddToViewport();
+			SpeedLineUI->Init();
+		}
 	}
 	else
 	{
@@ -291,7 +308,7 @@ void AKart::Tick(float DeltaTime)
 		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
-			SteeringComponent->ProcessTorque();
+			SteeringComponent->ProcessTorque(bDrift);
 			AccelerationComponent->ProcessAcceleration(bCanMove);
 			FrictionComponent->ProcessFriction();
 
@@ -355,4 +372,16 @@ void AKart::UpdateSpeedUI()
 void AKart::ClearAcceleration()
 {
 	AccelerationComponent->ClearAcceleration();
+}
+
+void AKart::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		if (SpeedLineUI)
+		{
+			SpeedLineUI->ClearTimer();
+		}
+	}
+	Super::EndPlay(EndPlayReason);
 }
