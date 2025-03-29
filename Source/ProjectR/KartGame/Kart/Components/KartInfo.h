@@ -16,4 +16,6 @@ struct PROJECTR_API FKartInfo
 	FVector Velocity = FVector::ZeroVector;
 	UPROPERTY()
 	FVector TorqueInDegrees = FVector::ZeroVector;
+	UPROPERTY()
+	float TimeStamp = 0.0f;
 };

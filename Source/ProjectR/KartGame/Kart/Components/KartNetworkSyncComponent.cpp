@@ -3,8 +3,10 @@
 
 #include "KartNetworkSyncComponent.h"
 
+#include "DeadReckoningStrategy.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -38,6 +40,9 @@ void UKartNetworkSyncComponent::InitializeComponent()
 	{
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 	}
+
+	DeadReckoningStrategy = NewObject<UDeadReckoningStrategy>(this, UDeadReckoningStrategy::StaticClass());
+	DeadReckoningStrategy->Initialize(Kart);
 }
 
 void UKartNetworkSyncComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -62,6 +67,8 @@ void UKartNetworkSyncComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		KartInfo.KartTransform = KartBody->GetComponentTransform();
 		KartInfo.Velocity = KartBody->GetPhysicsLinearVelocity();
 		KartInfo.TorqueInDegrees = KartBody->GetPhysicsAngularVelocityInDegrees();
+		KartInfo.TimeStamp = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
+		
 		Server_SendKartInfo(KartInfo);
 	}
 	else if (Kart->IsLocallyControlled() && Kart->HasAuthority())
@@ -71,8 +78,14 @@ void UKartNetworkSyncComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		InKartInfo.KartTransform = KartBody->GetComponentTransform();
 		InKartInfo.Velocity = KartBody->GetPhysicsLinearVelocity();
 		InKartInfo.TorqueInDegrees = KartBody->GetPhysicsAngularVelocityInDegrees();
+		InKartInfo.TimeStamp = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
 		
 		KartInfo = InKartInfo;
+	}
+
+	if (!Kart->IsLocallyControlled())
+	{
+		DeadReckoningStrategy->Update(DeltaTime);
 	}
 }
 
@@ -83,14 +96,16 @@ void UKartNetworkSyncComponent::OnRep_KartInfo()
 	if (!Kart->IsLocallyControlled())
 	{
 		// 서버로부터 받은 위치와 회전값을 적용한다.
-		KartBody->SetWorldTransform(KartInfo.KartTransform, true);
+		// KartBody->SetWorldTransform(KartInfo.KartTransform, true);
+		DeadReckoningStrategy->UpdateRemoteState(KartInfo);
 	}
 }
 
 void UKartNetworkSyncComponent::Server_SendKartInfo_Implementation(FKartInfo NewKartInfo)
 {
 	// OnRep_KartInfo();
-	KartBody->SetWorldTransform(NewKartInfo.KartTransform, true);
+	// KartBody->SetWorldTransform(NewKartInfo.KartTransform, true);
+	DeadReckoningStrategy->UpdateRemoteState(NewKartInfo);
 
 	KartInfo = NewKartInfo;
 }

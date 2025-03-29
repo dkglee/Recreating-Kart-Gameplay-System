@@ -49,4 +49,8 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void Server_SendKartInfo(FKartInfo NewKartInfo);
+
+	// Dead Reckoning : 클라이언트 예측 보간
+	UPROPERTY()
+	class UNetworkInterpolationStrategy* DeadReckoningStrategy = nullptr;
 };

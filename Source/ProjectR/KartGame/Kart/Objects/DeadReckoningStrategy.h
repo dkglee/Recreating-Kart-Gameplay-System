@@ -21,8 +21,13 @@ public:
 
 private:
 	UPROPERTY()
-	AKart* Kart = nullptr;
+	class AKart* Kart = nullptr;
+	UPROPERTY()
+	class UBoxComponent* KartBody = nullptr;
 
 	UPROPERTY()
 	FKartInfo LastUpdatedKartInfo;
+
+	FVector PredictedPosition;
+	FRotator PredictedRotation;
 };
