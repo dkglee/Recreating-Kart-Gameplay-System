@@ -38,6 +38,8 @@ public:
 	GETTER(float, MaxRotation);
 #pragma endregion
 private:
+	UFUNCTION()
+	void OnDriftKeyEdged(bool bDriftInput);
 	void OnSteeringInputDetected(const FInputActionValue& InputActionValue);
 	// Client, Server 둘 다 호출되어야 함. (클라이언트에서 호출)
 	UFUNCTION(Server, Reliable)
@@ -45,6 +47,7 @@ private:
 	// 서버에서 호출되어야 함. (클라이언트에서 호출)
 	UFUNCTION(Server, Reliable)
 	void ApplyTorqueToKartV2(float InSteering, bool bDrfit);
+	float CalculateNewTurnScale(bool bDrift);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -72,7 +75,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float TurnScaling = 350.0f;
 
-	bool bWasDrifting;
-	float DriftBoostTimer;
+	bool bWasDrifting = false;
+	float DriftBoostTimer = 0.0f;
 	float DriftBoostDuration = 0.25f;
+	bool bDriftKeyEdged = false;
 };
