@@ -22,6 +22,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	// Called every frame
@@ -167,5 +168,12 @@ private:
 #pragma region Camera
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class UKartCameraComponent* KartCameraComponent = nullptr;
+#pragma endregion
+
+#pragma region UI
+	UPROPERTY()
+	class USpeedLineUI* SpeedLineUI = nullptr;
+	UPROPERTY()
+	TSubclassOf<class USpeedLineUI> SpeedLineUIClass;
 #pragma endregion
 };
