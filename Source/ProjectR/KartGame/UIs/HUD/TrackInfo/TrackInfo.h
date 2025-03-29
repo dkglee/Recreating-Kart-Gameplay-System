@@ -19,6 +19,8 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
+	bool IsInitialized = false;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CurrentTrackInfo;
 	

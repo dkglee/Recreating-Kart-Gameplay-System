@@ -1,27 +1,65 @@
 ﻿#include "RacePlayerController.h"
 
-#include "Kart.h"
-#include "RaceGameState.h"
 #include "Blueprint/UserWidget.h"
-#include "GameFramework/PlayerStart.h"
+
+#include "Kart.h"
+#include "RaceGameMode.h"
+#include "RaceGameState.h"
 #include "KartGame/UIs/HUD/MainUI.h"
+#include "GameFramework/PlayerStart.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
+#include "KartGame/Games/Component/PingManagerComponent.h"
 #include "Kismet/GameplayStatics.h"
+
+ARacePlayerController::ARacePlayerController()
+{
+	PingManagerComponent = CreateDefaultSubobject<UPingManagerComponent>("Ping Manager Component");
+	PingManagerComponent->SetNetAddressable();
+	PingManagerComponent->SetIsReplicated(true);
+}
+
+void ARacePlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	PingManagerComponent->OnAllPingAccessNotified.AddDynamic(this, &ThisClass::StartGameToGameState);
+
+	CreateMainHUD();
+}
+
+void ARacePlayerController::CreateMainHUD()
+{
+	if (!IsLocalController())
+	{
+		return;
+	}
+
+	if (MainHUD)
+	{
+		return;
+	}
+	
+	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
+	MainHUD->AddToViewport();
+}
 
 void ARacePlayerController::SetHUDToStart()
 {
+	if (HasAuthority())
+	{
+		GetPawn<AKart>()->SetbCanMove(false);
+	}
+
 	if (IsLocalController())
     {
-		GetPawn<AKart>()->SetbCanMove(false);
+		CreateMainHUD();
 		
-    	MainHUD = CreateWidget<UMainUI>(this, MainHUDClass);
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
 		MainHUD->GetCountDownToEndWidget()->OnGameEndNotified.AddDynamic(this
 			, &ThisClass::EndGame);
-    	MainHUD->AddToViewport();
 		MainHUD->InitializeData();
+		MainHUD->StartGameUI();
     }
 }
 
@@ -68,6 +106,12 @@ void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 	UGameplayStatics::GetAllActorsOfClass(
 		GetWorld(), APlayerStart::StaticClass(), Actors);
 
+	// Player Start가 2개 이상 있는 곳은 트랙이라고 명시적으로 가정한다.
+	if (Actors.Num() >= 2)
+	{
+		GetPawn<AKart>()->SetbCanMove(false);
+	}
+	
 	for (AActor* Actor : Actors)
 	{
 		APlayerStart* PlayerStart = Cast<APlayerStart>(Actor);
@@ -78,4 +122,9 @@ void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 			return;
 		}
 	}
+}
+
+void ARacePlayerController::StartGameToGameState()
+{
+	GetWorld()->GetAuthGameMode<ARaceGameMode>()->StartGame();
 }

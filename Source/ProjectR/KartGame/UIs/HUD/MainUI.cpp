@@ -1,5 +1,6 @@
 ﻿#include "MainUI.h"
 
+#include "CountDown/CountDownToStart.h"
 #include "DashBoard/DashBoardUI.h"
 #include "ItemInventory/ItemInventory.h"
 #include "Ranking/RankingResultUI.h"
@@ -20,4 +21,9 @@ void UMainUI::ShowResult()
 
 	RankingResultUI->SetVisibility(ESlateVisibility::Visible);
 	RankingResultUI->InitializeRanking();
+}
+
+void UMainUI::StartGameUI()
+{
+	CountDownToStartWidget->StartCountDown();
 }

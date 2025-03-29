@@ -22,6 +22,7 @@ class PROJECTR_API UMainUI : public UUserWidget
 public:
 	void InitializeData();
 	void ShowResult();
+	void StartGameUI();
 	
 #pragma region GETTERSETTER
 	GETTER(TObjectPtr<UDashBoardUI>, WBP_DashBoardUI);
