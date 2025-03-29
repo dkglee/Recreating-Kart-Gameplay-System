@@ -2,9 +2,12 @@
 
 #include "Kart.h"
 #include "SessionGameMode.h"
+#include "SessionUtil.h"
+#include "OnlineSessionSettings.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "EnhancedInputSubsystems.h"
+#include "KartGame/Games/KartGameInstance.h"
 #include "KartGame/Games/Component/WidgetControlComponent.h"
 #include "KartGame/UIs/Session/ReadySession.h"
 #include "KartGame/UIs/_Common/Button/CommonButton.h"
@@ -53,6 +56,10 @@ void ASessionPlayerController::BeginPlay()
 
 void ASessionPlayerController::CheckAndStartGame()
 {
+	const uint8 MaxPlayerCount = FSessionUtil::GetCurrentSession()->SessionSettings.NumPublicConnections;
+	const uint8 RemainPlayerCount = FSessionUtil::GetCurrentSession()->NumOpenPublicConnections;
+	
+	GetWorld()->GetGameInstance<UKartGameInstance>()->SetInGamePlayerCount(MaxPlayerCount - RemainPlayerCount);
 	GetWorld()->GetAuthGameMode<ASessionGameMode>()->StartGameToPlay();
 }
 

@@ -23,10 +23,8 @@ void UCountDownToStart::OnCountDownAnimationEnd()
 	}
 }
 
-void UCountDownToStart::NativeOnInitialized()
+void UCountDownToStart::StartCountDown()
 {
-	Super::NativeOnInitialized();
-
 	OnCountEndNotified.Clear();
 	OnCountEndNotified.BindDynamic(this, &ThisClass::OnCountDownAnimationEnd);
 	BindToAnimationFinished(CountDownAnimation, OnCountEndNotified);

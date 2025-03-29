@@ -8,16 +8,15 @@ UCLASS()
 class PROJECTR_API ARaceGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
+public:
+	void StartGame();
+	
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void PostLogin(APlayerController* NewPlayer) override;
-
 private:
-	uint8 StartToPlayerCount;
-
 	FTimerHandle GameStartTimerHandle;
 
-	void StartGame();
+	UFUNCTION()
+	void SetReadyGame();
 };
