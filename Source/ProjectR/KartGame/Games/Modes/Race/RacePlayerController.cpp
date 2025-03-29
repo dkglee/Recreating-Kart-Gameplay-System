@@ -7,6 +7,7 @@
 #include "RaceGameState.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "GameFramework/PlayerStart.h"
+#include "KartGame/Games/Component/NetworkClockComponent.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToEnd.h"
 #include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
 #include "KartGame/Games/Component/PingManagerComponent.h"
@@ -17,6 +18,12 @@ ARacePlayerController::ARacePlayerController()
 	PingManagerComponent = CreateDefaultSubobject<UPingManagerComponent>("Ping Manager Component");
 	PingManagerComponent->SetNetAddressable();
 	PingManagerComponent->SetIsReplicated(true);
+
+#pragma region NetworkClock
+	NetworkClockComponent = CreateDefaultSubobject<UNetworkClockComponent>("Network Clock Component");
+	NetworkClockComponent->SetNetAddressable();
+	NetworkClockComponent->SetIsReplicated(true);
+#pragma endregion
 }
 
 void ARacePlayerController::BeginPlay()
@@ -128,3 +135,28 @@ void ARacePlayerController::StartGameToGameState()
 {
 	GetWorld()->GetAuthGameMode<ARaceGameMode>()->StartGame();
 }
+
+#pragma region NetworkClock
+
+// PlayerController가 서버로부터 생성되었을 때 호출되는 함수
+// 해당 함수에서 서버 시간을 요청한다.
+void ARacePlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+
+	if (NetworkClockComponent)
+	{
+		NetworkClockComponent->RequestServerTime(this);
+	}
+}
+
+float ARacePlayerController::GetServerTime() const
+{
+	if (NetworkClockComponent)
+	{
+		return NetworkClockComponent->GetServerTime();
+	}
+	return GetWorld()->GetTimeSeconds();
+}
+
+#pragma endregion

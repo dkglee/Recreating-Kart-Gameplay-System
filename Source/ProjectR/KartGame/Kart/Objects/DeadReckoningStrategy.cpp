@@ -24,5 +24,6 @@ void UDeadReckoningStrategy::UpdateRemoteState(const FKartInfo& NewKartInfo)
 	Super::UpdateRemoteState(NewKartInfo);
 
 	LastUpdatedKartInfo = NewKartInfo;
-	Kart->GetWorld()->GetFirstPlayerController()->
+	// TODO : Dead Reckoning을 위한 네트워크 시간을 만들자!
+	// Kart->GetWorld()->GetFirstPlayerController()->
 }
