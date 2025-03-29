@@ -11,6 +11,21 @@ void ARaceGameMode::BeginPlay()
 
 void ARaceGameMode::StartGame()
 {
+	for (int i = 0; i < GetGameState<ARaceGameState>()->PlayerArray.Num(); i++)
+	{
+		ARacePlayerController* PC = Cast<ARacePlayerController>(GetGameState<ARaceGameState>()->PlayerArray[i]->GetPlayerController());
+		if (PC->HasAuthority())
+		{
+			PC->SpawnKartWithCheckPoint(i + 1);
+		}
+	}
+	
+	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
+			&ThisClass::SetReadyGame, 3, false);
+}
+
+void ARaceGameMode::SetReadyGame()
+{
 	ARaceGameState* GS = GetGameState<ARaceGameState>();
 	
 	if (GS->GetRaceStatus() != ERaceStatus::Idle)
@@ -20,24 +35,4 @@ void ARaceGameMode::StartGame()
 	}
 	
 	GS->SetReadyForTheMatch();
-
-	for (int i = 0; i < GS->PlayerArray.Num(); i++)
-	{
-		ARacePlayerController* PC = Cast<ARacePlayerController>(
-			GS->PlayerArray[i]->GetPlayerController());
-		
-		if (!PC)
-		{
-			return;
-		}
-
-		if (PC->HasAuthority())
-		{
-			PC->SetHUDToStart();
-			PC->SpawnKartWithCheckPoint(i + 1);
-		} else
-		{
-			PC->Client_SetHUDToStart();
-		}
-	}
 }

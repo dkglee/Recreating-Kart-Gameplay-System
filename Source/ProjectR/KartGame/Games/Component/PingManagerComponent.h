@@ -5,6 +5,7 @@
 #include "PingManagerComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllPingAccessNotified);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLocalPingAccessNotified);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UPingManagerComponent : public UActorComponent
@@ -15,6 +16,7 @@ public:
 	UPingManagerComponent();
 
 	FOnAllPingAccessNotified OnAllPingAccessNotified;
+	FOnLocalPingAccessNotified OnLocalPingAccessNotified;
 	
 protected:
 	virtual void BeginPlay() override;

@@ -13,4 +13,10 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	FTimerHandle GameStartTimerHandle;
+
+	UFUNCTION()
+	void SetReadyGame();
 };

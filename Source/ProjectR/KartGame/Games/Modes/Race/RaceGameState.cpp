@@ -192,7 +192,7 @@ void ARaceGameState::SetReadyForTheMatch()
 			return;
 		}
 
-		if (PC->HasAuthority())
+		if (PC->IsLocalController())
 		{
 			PC->SetHUDToStart();
 		} else

@@ -50,6 +50,8 @@ void UPingManagerComponent::PingToServer()
 	IsPingReceived = true;
 	PrimaryComponentTick.bCanEverTick = false;
 
+	OnLocalPingAccessNotified.Broadcast();
+
 	// 같지않고 더 큰 경우는 중도 참여 즉 개발 환경에 대한 세팅이다.
 	// 실제로는 동일한 경우만이 비즈니스 로직 상 맞는 표현이다.
 	if (GetWorld()->GetGameInstance<UKartGameInstance>()->GetPingCount()

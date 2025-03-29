@@ -1,4 +1,5 @@
 ﻿#include "RacePlayerController.h"
+
 #include "Blueprint/UserWidget.h"
 
 #include "Kart.h"
@@ -51,13 +52,14 @@ void ARacePlayerController::SetHUDToStart()
 
 	if (IsLocalController())
     {
-		// 혹시 모를 방어코드드님
 		CreateMainHUD();
 		
 		MainHUD->GetCountDownToStartWidget()
 			->OnGameStartNotified.AddDynamic(this, &ThisClass::KartSetToMove);
 		MainHUD->GetCountDownToEndWidget()->OnGameEndNotified.AddDynamic(this
 			, &ThisClass::EndGame);
+		MainHUD->InitializeData();
+		MainHUD->StartGameUI();
     }
 }
 
