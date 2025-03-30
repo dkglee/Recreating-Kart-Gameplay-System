@@ -1,4 +1,6 @@
 #include "Kart.h"
+
+#include "BoosterGaugeUI.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
@@ -242,6 +244,13 @@ AKart::AKart()
 	{
 		SpeedLineUIClass = WBP_SPEEDLINEUI.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<UBoosterGaugeUI> WBP_BOOSTERGAUGEUI
+	(TEXT("/Game/UIs/HUD/BoosterGauge/WBP_BoosterGaugeUI.WBP_BoosterGaugeUI_C"));
+	if (WBP_BOOSTERGAUGEUI.Succeeded())
+	{
+		BoosterGaugeUIClass = WBP_BOOSTERGAUGEUI.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -269,6 +278,12 @@ void AKart::BeginPlay()
 		{
 			SpeedLineUI->AddToViewport();
 			SpeedLineUI->Init();
+		}
+		BoosterGaugeUI = CreateWidget<UBoosterGaugeUI>(GetWorld(), BoosterGaugeUIClass);
+		if (BoosterGaugeUI)
+		{
+			BoosterGaugeUI->AddToViewport();
+			BoosterGaugeUI->Init();
 		}
 	}
 	else

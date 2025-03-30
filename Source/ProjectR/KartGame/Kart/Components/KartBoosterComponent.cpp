@@ -42,7 +42,7 @@ void UKartBoosterComponent::InitializeComponent()
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 		AccelerationComponent = Kart->GetAccelerationComponent();
 
-		Kart->GetFrictionComponent()->OnDriftEnded.AddDynamic(this, &UKartBoosterComponent::EnableBoostWindow);
+		Kart->GetFrictionComponent()->OnInstantBoost.AddDynamic(this, &UKartBoosterComponent::EnableBoostWindow);
 		Kart->GetAccelerationComponent()->OnAccelerationStarted.AddDynamic(this, &UKartBoosterComponent::ProcessInstantBoost);
 	}
 }

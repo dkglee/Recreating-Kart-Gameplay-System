@@ -11,6 +11,10 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDriftEnded);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDriftKeyPressed, bool, bDriftInput);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDriftStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInstantBoost);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBoosterGaugeUpdated, float, DriftGauge, float, DriftGaugeMax);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoosterMade);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTR_API UKartFrictionComponent : public UActorComponent
@@ -48,6 +52,10 @@ public:
 	FOnDriftEnded OnDriftEnded;
 	UPROPERTY()
 	FOnDriftKeyPressed OnDriftKeyPressed;
+	UPROPERTY()
+	FOnDriftStarted OnDriftStarted;
+	UPROPERTY()
+	FOnInstantBoost OnInstantBoost;
 private:
 	void OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue);
 	void OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue);
@@ -112,5 +120,41 @@ private:
 	float MinimumFrictionDelay = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	FTimerHandle FrictionDelayTimer;
-	float bForceDrfit = false; 
+	float bForceDrfit = false;
+
+#pragma region BoosterGauage
+	UFUNCTION()
+	void UpdateBoosterGauge();
+	
+	UPROPERTY()
+	float DriftGauge = 0.0f;
+	UPROPERTY()
+	float DriftGaugeMax = 100.0f;
+	UPROPERTY()
+	float DriftGaugeSpeed = 50.0f;
+
+	UPROPERTY()
+	float DriftGaugeStart = 0.0f;
+	UPROPERTY()
+	float DriftGaugeOffset = 0.0f;
+	UPROPERTY()
+	float DriftGaugeThreshold = 10.0f;
+	UPROPERTY()
+	bool bDriftStartOnce = false;
+
+	UPROPERTY()
+	class UKartSuspensionComponent* WheelLR = nullptr;
+	UPROPERTY()
+	class UKartSuspensionComponent* WheelRR = nullptr;
+
+	UPROPERTY()
+	class UBoosterGaugeUI* BoosterGaugeUI = nullptr;
+
+public:
+	UPROPERTY()
+	FOnBoosterGaugeUpdated OnBoosterGaugeUpdated;
+	UPROPERTY()
+	FOnBoosterMade OnBoosterMade;
+private:
+#pragma endregion
 };
