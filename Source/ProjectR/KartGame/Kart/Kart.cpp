@@ -347,10 +347,6 @@ void AKart::Tick(float DeltaTime)
 		RightSkidMark->ProcessSkidMark(false);
 	}
 	UpdateSpeedUI();
-
-	// // 네트워크 시간 로그 찍어보기 : 예시 코드 ( 시간을 가져오는 방법 )
-	FString DebugStr = FString::Printf(TEXT("Network Time : %f"), GetWorld()->GetGameState()->GetServerWorldTimeSeconds());
-	DrawDebugString(GetWorld(), GetActorLocation(), DebugStr, nullptr, FColor::Cyan, 0.f);
 }
 
 // Called to bind functionality to input

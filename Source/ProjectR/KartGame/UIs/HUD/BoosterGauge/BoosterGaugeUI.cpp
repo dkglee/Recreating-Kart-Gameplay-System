@@ -29,6 +29,4 @@ void UBoosterGaugeUI::OnBoosterGaugeUpdated(float DriftGauge, float DriftGaugeMa
 	WidgetDriftGaugeMax = DriftGaugeMax;
 
 	WidgetDriftGauge = FMath::Clamp(WidgetDriftGauge, 0.0f, WidgetDriftGaugeMax);
-
-	// FFastLogger::LogConsole(TEXT("DriftGauge: %f, DriftGaugeMax: %f"), DriftGauge, DriftGaugeMax);
 }

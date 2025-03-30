@@ -77,9 +77,6 @@ void UKartFrictionComponent::ProcessFriction()
 	ApplyFrictionToKart_Implementation(bDrift);
 	BroadCastDriftEnd();
 	UpdateBoosterGauge();
-
-	// FString DebugString = FString::Printf(TEXT("Drift Gauge: %f"), DriftGauge);
-	// DrawDebugString(GetWorld(), Kart->GetActorLocation(), DebugString, nullptr, FColor::Red, 0.f);
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -192,7 +189,6 @@ void UKartFrictionComponent::BroadCastDriftEnd()
 	{
 		DriftGaugeOffset = DriftGauge - DriftGaugeStart;
 		// 드리프트 게이지가 일정 이상이면 인스턴트 부스트 드리프트 종료 이벤트를 브로드캐스트
-		FFastLogger::LogConsole(TEXT("DriftGaugeOffset: %f, DriftGauge: %f, DriftGaugeStart: %f"), DriftGaugeOffset, DriftGauge, DriftGaugeStart);
 		if (DriftGaugeOffset > DriftGaugeThreshold)
 		{
 			OnInstantBoost.Broadcast();
@@ -210,7 +206,6 @@ void UKartFrictionComponent::BroadCastDriftEnd()
 	{
 		bDriftStartOnce = true;
 		DriftGaugeStart = DriftGauge;
-		FFastLogger::LogConsole(TEXT("DriftGauge: %f, DriftGaugeStart: %f"), DriftGauge, DriftGaugeStart);
 		OnDriftStarted.Broadcast();
 	}
 	bPrevDrift = bDrift;

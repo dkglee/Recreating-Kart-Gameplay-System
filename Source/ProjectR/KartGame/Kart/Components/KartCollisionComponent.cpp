@@ -136,7 +136,6 @@ void UKartCollisionComponent::ClientRPC_OnCollisionKart_Implementation(FCollisio
 	// 쿨타임 체크
 	if (bCoolTime)
 	{
-		//FFastLogger::LogConsole(TEXT("Kart Collision Component CoolTime!"));
 		return;
 	}
 
