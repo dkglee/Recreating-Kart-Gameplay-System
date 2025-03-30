@@ -3,6 +3,7 @@
 
 #include "ItemBox.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Components/ItemInventoryComponent.h"
@@ -19,6 +20,22 @@ AItemBox::AItemBox()
 void AItemBox::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	if (Items)
+	{
+		TArray<FName> RowNames = Items->GetRowNames();
+
+		for (const FName& RowName : RowNames)
+		{
+			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
+			if (Row != nullptr)
+			{
+				TotalWeight += Row->ItemWeight;
+				ItemMap.Add(Row->ItemID,*Row);
+			}
+		}
+	}
 	
 	Root->OnComponentBeginOverlap.AddDynamic(this,&AItemBox::ItemBoxBeginOverlap);
 }
@@ -45,22 +62,6 @@ void AItemBox::InitComponents()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
-
-	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
-	if (Items)
-	{
-		TArray<FName> RowNames = Items->GetRowNames();
-
-		for (const FName& RowName : RowNames)
-		{
-			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
-			if (Row != nullptr)
-			{
-				TotalWeight += Row->ItemWeight;
-				ItemMap.Add(Row->ItemID,*Row);
-			}
-		}
-	}
 }
 
 void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -81,18 +82,59 @@ void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryCompon
 
 void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
 {
-	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
+	// int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
+	// FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
+	//
+	// int32 CurrentWeight = 0;
+	//
+	// for (const auto& Item : ItemMap)
+	// {
+	// 	CurrentWeight += Item.Value.ItemWeight;
+	// 	FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
+	// 	if (RandomValue < CurrentWeight)
+	// 	{
+	// 		NetMultiCast_MakeRandomItem(ItemInventoryComponent, Item.Value);
+	// 		return;	
+	// 	}
+	// }
+
+	if (TotalWeight <= 0 || ItemMap.Num() == 0)
+	{
+		FFastLogger::LogConsole(TEXT("아이템을 선택할 수 없습니다."));
+		return;
+	}
+
+	int32 RandomValue = FMath::RandRange(0, TotalWeight - 1);
+	FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
+
+	// 누적 가중치 배열 생성 (이진 탐색을 위한 사전 준비)
+	TArray<int32> CumulativeWeights;
+	TArray<FItemTable> ItemsArray;
+
 	int32 CurrentWeight = 0;
-	
 	for (const auto& Item : ItemMap)
 	{
 		CurrentWeight += Item.Value.ItemWeight;
-		if (RandomValue < CurrentWeight)
+		CumulativeWeights.Add(CurrentWeight);
+		ItemsArray.Add(Item.Value);
+	}
+
+	// 이진 탐색으로 빠르게 아이템 찾기
+	int32 Left = 0, Right = CumulativeWeights.Num() - 1;
+	while (Left < Right)
+	{
+		int32 Mid = (Left + Right) / 2;
+		if (RandomValue < CumulativeWeights[Mid])
 		{
-			NetMultiCast_MakeRandomItem(ItemInventoryComponent, Item.Value);
-			return;	
+			Right = Mid; // 범위를 왼쪽으로 좁힘
+		}
+		else
+		{
+			Left = Mid + 1; // 범위를 오른쪽으로 좁힘
 		}
 	}
+
+	NetMultiCast_MakeRandomItem(ItemInventoryComponent, ItemsArray[Left]);
 }
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)

@@ -6,7 +6,6 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
-#include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 #include "KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
