@@ -29,7 +29,7 @@ void UDeadReckoningStrategy::Update(float DeltaTime)
 	PredictedRotation = FMath::RInterpTo(KartBody->GetComponentRotation(), LastUpdatedKartInfo.KartTransform.GetRotation().Rotator(), DeltaTime, 5.0f);
 
 	FVector NewLocation = FMath::VInterpTo(Kart->GetActorLocation(), PredictedPosition, DeltaTime, 5.0f);
-	Kart->SetActorLocationAndRotation(NewLocation, PredictedRotation);
+	Kart->SetActorLocationAndRotation(NewLocation, PredictedRotation, true);
 }
 
 void UDeadReckoningStrategy::UpdateRemoteState(const FKartInfo& NewKartInfo)
