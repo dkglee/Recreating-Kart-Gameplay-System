@@ -6,6 +6,9 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
+#include "KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 
 
@@ -34,6 +37,7 @@ void AWaterBomb::Tick(float DeltaTime)
 	if (bArriveEndPos == false)
 	{
 		MoveToEstimateLocation(DeltaTime);
+		DrawDebugBox(GetWorld(), EndPos, FVector(50), FColor::Red);
 	}
 	else
 	{
@@ -69,11 +73,26 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 void AWaterBomb::MoveToEstimateLocation(float DeltaTime)
 {
 	if (HasAuthority() == false) return;
-	
-	if (StartPos == FVector::ZeroVector && EndPos == FVector::ZeroVector)
+
+	auto* ps = Cast<ARiderPlayerState>(GetOwningPlayer()->GetPlayerState());
+	if (ps)
 	{
-		StartPos = GetOwningPlayer()->GetActorLocation();
-		EndPos = StartPos + GetOwningPlayer()->GetActorForwardVector() * ThrowingDistance;
+		if (StartPos == FVector::ZeroVector && EndPos == FVector::ZeroVector)
+		{
+			StartPos = GetOwningPlayer()->GetActorLocation();
+			float dist = FVector::Dist(ps->GetNextNearCheckPoint()->GetActorLocation(), StartPos);
+			if (dist >= ThrowingDistance)
+			{
+				FVector direction = (ps->GetNextNearCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
+				EndPos = StartPos + direction * ThrowingDistance;
+			}
+			else
+			{
+				FVector direction = (ps->GetNextOverNextCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
+				EndPos = StartPos + direction * ThrowingDistance;
+			}
+			
+		}
 	}
 	
 	MoveElapsedTime += DeltaTime;

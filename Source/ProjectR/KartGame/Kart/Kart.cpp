@@ -289,10 +289,10 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
-	FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
-	FVector temp = GetActorLocation();
-	temp.Z += 100.f;
+	// FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
+	// FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
+	// FVector temp = GetActorLocation();
+	// temp.Z += 100.f;
 
 	bool flag = true;
 	// 로컬의 위치만 업데이트 됨
