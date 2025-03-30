@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
@@ -49,6 +50,7 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		case EInteractionType::Water:
 			{
 				WaterBombInteraction_Move(DeltaTime);
+				Server_AddWaterBombDecreaseTime();
 				break;
 			}
 		default:
@@ -69,6 +71,8 @@ void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UItemInteractionComponent, bIsInteraction);
+	DOREPLIFETIME(UItemInteractionComponent, WaterBombDecreaseTime);
+	
 }
 
 void UItemInteractionComponent::Interaction(EInteractionType interactionType)
@@ -153,6 +157,12 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
 }
 
+void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
+{
+	Kart->SetActorRotation(resultQuat);
+	Kart->SetActorLocation(resultPos);
+}
+
 void UItemInteractionComponent::WaterBombHitInteraction()
 {
 	InitialPos = Kart->GetActorLocation();
@@ -163,13 +173,24 @@ void UItemInteractionComponent::WaterBombHitInteraction()
 
 void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 {
-	if (Kart->HasAuthority() == false) return;
+	if (Kart->HasAuthority() == false)
+	{
+		return;
+	}
 
 	WaterBombInteractionElapsedTime += DeltaTime;
+	FFastLogger::LogConsole(TEXT("현재 시간 : %f"), WaterBombInteractionElapsedTime);
+	FFastLogger::LogConsole(TEXT("스티어링 : %f"), Kart->GetSteeringComponent()->GetTargetSteering());
+
+	if (Kart->GetSteeringComponent()->GetTargetSteering() != 0)
+	{
+		WaterBombDecreaseTime += 1.f;
+		FFastLogger::LogConsole(TEXT("남은시간 : %f"), WaterBombInteractionTime - WaterBombDecreaseTime);
+	}
 
 	// 1초안에 공중으로 뜬다
 	// Ease-out 곡선을 통해 처음엔 빠르게 이후엔 천천히 올라감 (1초라 티가 안남)
-	float alpha = WaterBombInteractionElapsedTime / 1.0f;
+	float alpha = WaterBombInteractionElapsedTime / 0.7f;
 	float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
 	float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + WaterBombInteractionHeight, easedAlpha);
 	FVector resultPos;
@@ -186,11 +207,12 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 	float PitchOffset = FMath::Sin(WaterBombInteractionElapsedTime * RotateSpeed * 1.2f) * MaxPitch;
 	FRotator resultRot = InitialRot + FRotator(PitchOffset, 0.f, RollOffset);
 
-	if (WaterBombInteractionElapsedTime >= WaterBombInteractionTime)
+	if (WaterBombInteractionElapsedTime >= WaterBombInteractionTime - WaterBombDecreaseTime)
 	{
 		bIsInteraction = false;
 		CurrentType = EInteractionType::None;
 		WaterBombInteractionElapsedTime = 0.f;
+		WaterBombDecreaseTime = 0.f;
 		resultRot = InitialRot;	
 		Client_ChangePhysics(true);
 	}
@@ -204,10 +226,10 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implement
 	Kart->SetActorRotation(resultRot);
 }
 
-void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
+void UItemInteractionComponent::Server_AddWaterBombDecreaseTime_Implementation()
 {
-	Kart->SetActorRotation(resultQuat);
-	Kart->SetActorLocation(resultPos);
+	if (Kart->IsLocallyControlled() == false) return;
+	FFastLogger::LogConsole(TEXT("스티어링 : %f"), Kart->GetSteeringComponent()->GetSteeringInput());
 }
 
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)

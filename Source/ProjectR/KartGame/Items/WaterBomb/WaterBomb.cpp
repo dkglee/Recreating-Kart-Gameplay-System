@@ -33,7 +33,7 @@ void AWaterBomb::BeginPlay()
 void AWaterBomb::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bArriveEndPos == false)
 	{
 		MoveToEstimateLocation(DeltaTime);
@@ -51,11 +51,11 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	if (HasAuthority() == false) return;
 	
 	auto* Kart = Cast<AKart>(OtherActor);
-	if (Kart == GetOwningPlayer())
-	{
-		FFastLogger::LogConsole(TEXT("Hit Kart is itemOwner"));
-		return;
-	}
+	// if (Kart == GetOwningPlayer())
+	// {
+	// 	FFastLogger::LogConsole(TEXT("Hit Kart is itemOwner"));
+	// 	return;
+	// }
 	
 	if (Kart)
 	{

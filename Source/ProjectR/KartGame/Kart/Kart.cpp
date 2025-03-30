@@ -298,6 +298,7 @@ void AKart::Tick(float DeltaTime)
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->GetbIsInteraction() == false && IsLocallyControlled())
 	{
+		
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
 		flag &= LR_Wheel->ProcessSuspension(LineTraceLocations[0]);

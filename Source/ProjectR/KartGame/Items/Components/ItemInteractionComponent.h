@@ -61,6 +61,9 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_WaterBombInteraction_Move(FVector resultPos, FRotator resultRot);
+
+	UFUNCTION(Server, Reliable)
+	void Server_AddWaterBombDecreaseTime();
 #pragma endregion 
 
 #pragma region ShieldFunction
@@ -111,8 +114,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float WaterBombInteractionTime = 5.f;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Interaction")
 	float WaterBombInteractionElapsedTime = 0.f;
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "Interaction")
+	float WaterBombDecreaseTime = 0.f;
 	
 	UPROPERTY()
 	float WaterBombInteractionHeight = 350.f;
