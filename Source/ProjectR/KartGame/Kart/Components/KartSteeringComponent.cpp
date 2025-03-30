@@ -59,6 +59,12 @@ void UKartSteeringComponent::InitializeComponent()
 	}
 }
 
+void UKartSteeringComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UKartSteeringComponent, SteeringInput);
+}
+
 void UKartSteeringComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Steering, ETriggerEvent::Triggered, this, &UKartSteeringComponent::OnSteeringInputDetected);
@@ -187,6 +193,6 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 
 void UKartSteeringComponent::Server_GetInputSteering_Implementation(float value)
 {
-	if (Kart->IsLocallyControlled() == false) return;
+	//if (Kart->IsLocallyControlled() == false) return;
 	SteeringInput = value;
 }

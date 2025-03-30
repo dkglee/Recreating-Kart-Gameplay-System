@@ -31,7 +31,8 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	void Interaction(EInteractionType interactionType);
 
@@ -61,9 +62,6 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_WaterBombInteraction_Move(FVector resultPos, FRotator resultRot);
-
-	UFUNCTION(Server, Reliable)
-	void Server_AddWaterBombDecreaseTime();
 #pragma endregion 
 
 #pragma region ShieldFunction
@@ -131,6 +129,12 @@ public:
 	
 	UPROPERTY()
 	float RotateSpeed = 3.f;
+
+	UPROPERTY()
+	FTimerHandle WaterInteractionTimerHandle;
+
+	UPROPERTY()
+	bool WaterInteractionEnabled = false;
 #pragma endregion
 	
 	// 쉴드 변수

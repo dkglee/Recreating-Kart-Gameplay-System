@@ -21,6 +21,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	UFUNCTION()
 	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
 
@@ -76,7 +77,7 @@ private:
 	float MaxRotation = 25.0f;
 
 	// 장진혁 추가
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float SteeringInput = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))

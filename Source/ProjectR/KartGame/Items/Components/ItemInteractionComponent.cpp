@@ -50,7 +50,6 @@ void UItemInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 		case EInteractionType::Water:
 			{
 				WaterBombInteraction_Move(DeltaTime);
-				Server_AddWaterBombDecreaseTime();
 				break;
 			}
 		default:
@@ -73,6 +72,13 @@ void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 	DOREPLIFETIME(UItemInteractionComponent, bIsInteraction);
 	DOREPLIFETIME(UItemInteractionComponent, WaterBombDecreaseTime);
 	
+}
+
+void UItemInteractionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(WaterInteractionTimerHandle);
 }
 
 void UItemInteractionComponent::Interaction(EInteractionType interactionType)
@@ -179,13 +185,29 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 	}
 
 	WaterBombInteractionElapsedTime += DeltaTime;
-	FFastLogger::LogConsole(TEXT("현재 시간 : %f"), WaterBombInteractionElapsedTime);
-	FFastLogger::LogConsole(TEXT("스티어링 : %f"), Kart->GetSteeringComponent()->GetTargetSteering());
 
-	if (Kart->GetSteeringComponent()->GetTargetSteering() != 0)
+	if (Kart->GetSteeringComponent()->GetSteeringInput() != 0)
 	{
-		WaterBombDecreaseTime += 1.f;
-		FFastLogger::LogConsole(TEXT("남은시간 : %f"), WaterBombInteractionTime - WaterBombDecreaseTime);
+		if (WaterInteractionEnabled)
+		{
+			WaterBombDecreaseTime += 1.f;
+			//FFastLogger::LogConsole(TEXT("남은시간 : %f"), WaterBombInteractionTime - WaterBombDecreaseTime);
+			WaterInteractionEnabled = false;
+		}
+		else
+		{
+			if (GetWorld()->GetTimerManager().IsTimerActive(WaterInteractionTimerHandle) == false)
+			{
+				TWeakObjectPtr<UItemInteractionComponent> WeakThis = this;
+				GetWorld()->GetTimerManager().SetTimer(WaterInteractionTimerHandle, [WeakThis]()
+				{
+					if (WeakThis.IsValid())
+					{
+						WeakThis->WaterInteractionEnabled = true;
+					}
+				}, 0.5f, false);
+			}
+		}
 	}
 
 	// 1초안에 공중으로 뜬다
@@ -224,12 +246,6 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implement
 {
 	Kart->SetActorLocation(resultPos);
 	Kart->SetActorRotation(resultRot);
-}
-
-void UItemInteractionComponent::Server_AddWaterBombDecreaseTime_Implementation()
-{
-	if (Kart->IsLocallyControlled() == false) return;
-	FFastLogger::LogConsole(TEXT("스티어링 : %f"), Kart->GetSteeringComponent()->GetSteeringInput());
 }
 
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
