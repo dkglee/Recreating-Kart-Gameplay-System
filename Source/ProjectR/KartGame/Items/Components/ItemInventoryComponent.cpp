@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartFrictionComponent.h"
 #include "Components/Image.h"
 #include "Components/WidgetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
@@ -48,6 +49,21 @@ void UItemInventoryComponent::BeginPlay()
 		}
 		IgnoredActors.Add(*ActorItr);
 	}
+
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	if (Items)
+	{
+		TArray<FName> RowNames = Items->GetRowNames();
+
+		for (const FName& RowName : RowNames)
+		{
+			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
+			if (Row != nullptr)
+			{
+				ItemMap.Add(Row->ItemID, *Row);
+			}
+		}
+	}
 }
 
 void UItemInventoryComponent::InitializeComponent()
@@ -58,6 +74,7 @@ void UItemInventoryComponent::InitializeComponent()
 	if (Kart)
 	{
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UItemInventoryComponent::SetupInputBinding);
+		Kart->GetFrictionComponent()->OnBoosterMade.AddDynamic(this, &UItemInventoryComponent::GetBoosterItem);
 	}
 }
 
@@ -120,8 +137,19 @@ void UItemInventoryComponent::NetMulticast_GetItem_Implementation(const FItemTab
 	}
 }
 
+void UItemInventoryComponent::GetBoosterItem()
+{
+	FFastLogger::LogConsole(TEXT("부스터 얻기"));
+	NetMulticast_GetItem(ItemMap[1]);
+}
+
 void UItemInventoryComponent::UseItem()
 {
+	if (Kart->GetbCanMove())
+	{
+		return;
+	}
+	
 	if (Inventory.Num() == 0)
 	{
 		return;
@@ -131,6 +159,7 @@ void UItemInventoryComponent::UseItem()
 	{
 		return;
 	}
+
 
 	Server_UseItem();
 }

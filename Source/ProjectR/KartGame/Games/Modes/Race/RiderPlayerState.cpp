@@ -56,6 +56,24 @@ TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextNearCheckPoint() const
 				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
 }
 
+// 장진혁
+TObjectPtr<ACheckPoint> ARiderPlayerState::GetNextOverNextCheckPoint() const
+{
+	const ACheckPoint* CurrentCheckPointPin = GetWorld()->GetGameState<ARaceGameState>()
+				->GetCheckPointData().FindRef(CurrentKartCheckPoint);
+
+	const ACheckPoint* NextCheckPointPin = GetWorld()->GetGameState<ARaceGameState>()
+				->GetCheckPointData().FindRef(CurrentCheckPointPin->GetNextCheckPoint());
+
+	if (!IsValid(CurrentCheckPointPin))
+	{
+		return nullptr;
+	}
+	
+	return GetWorld()->GetGameState<ARaceGameState>()
+				->GetCheckPointData().FindRef(NextCheckPointPin->GetNextCheckPoint());
+}
+
 void ARiderPlayerState::GoNextLap()
 {
 	CurrentLap += 1;

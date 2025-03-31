@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
@@ -69,6 +70,15 @@ void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UItemInteractionComponent, bIsInteraction);
+	DOREPLIFETIME(UItemInteractionComponent, WaterBombDecreaseTime);
+	
+}
+
+void UItemInteractionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(WaterInteractionTimerHandle);
 }
 
 void UItemInteractionComponent::Interaction(EInteractionType interactionType)
@@ -153,6 +163,12 @@ void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
 	NetMulticast_MissileInteraction_Move(resultQuat, resultPos);
 }
 
+void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
+{
+	Kart->SetActorRotation(resultQuat);
+	Kart->SetActorLocation(resultPos);
+}
+
 void UItemInteractionComponent::WaterBombHitInteraction()
 {
 	InitialPos = Kart->GetActorLocation();
@@ -163,13 +179,40 @@ void UItemInteractionComponent::WaterBombHitInteraction()
 
 void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 {
-	if (Kart->HasAuthority() == false) return;
+	if (Kart->HasAuthority() == false)
+	{
+		return;
+	}
 
 	WaterBombInteractionElapsedTime += DeltaTime;
 
+	if (Kart->GetSteeringComponent()->GetSteeringInput() != 0)
+	{
+		if (WaterInteractionEnabled)
+		{
+			WaterBombDecreaseTime += 1.f;
+			//FFastLogger::LogConsole(TEXT("남은시간 : %f"), WaterBombInteractionTime - WaterBombDecreaseTime);
+			WaterInteractionEnabled = false;
+		}
+		else
+		{
+			if (GetWorld()->GetTimerManager().IsTimerActive(WaterInteractionTimerHandle) == false)
+			{
+				TWeakObjectPtr<UItemInteractionComponent> WeakThis = this;
+				GetWorld()->GetTimerManager().SetTimer(WaterInteractionTimerHandle, [WeakThis]()
+				{
+					if (WeakThis.IsValid())
+					{
+						WeakThis->WaterInteractionEnabled = true;
+					}
+				}, 0.5f, false);
+			}
+		}
+	}
+
 	// 1초안에 공중으로 뜬다
 	// Ease-out 곡선을 통해 처음엔 빠르게 이후엔 천천히 올라감 (1초라 티가 안남)
-	float alpha = WaterBombInteractionElapsedTime / 1.0f;
+	float alpha = WaterBombInteractionElapsedTime / 0.7f;
 	float easedAlpha = FMath::Sin(alpha * PI * 0.5f);
 	float newZ = FMath::Lerp(InitialPos.Z, InitialPos.Z + WaterBombInteractionHeight, easedAlpha);
 	FVector resultPos;
@@ -186,11 +229,12 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 	float PitchOffset = FMath::Sin(WaterBombInteractionElapsedTime * RotateSpeed * 1.2f) * MaxPitch;
 	FRotator resultRot = InitialRot + FRotator(PitchOffset, 0.f, RollOffset);
 
-	if (WaterBombInteractionElapsedTime >= WaterBombInteractionTime)
+	if (WaterBombInteractionElapsedTime >= WaterBombInteractionTime - WaterBombDecreaseTime)
 	{
 		bIsInteraction = false;
 		CurrentType = EInteractionType::None;
 		WaterBombInteractionElapsedTime = 0.f;
+		WaterBombDecreaseTime = 0.f;
 		resultRot = InitialRot;	
 		Client_ChangePhysics(true);
 	}
@@ -202,12 +246,6 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implement
 {
 	Kart->SetActorLocation(resultPos);
 	Kart->SetActorRotation(resultRot);
-}
-
-void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementation(FQuat resultQuat, FVector resultPos)
-{
-	Kart->SetActorRotation(resultQuat);
-	Kart->SetActorLocation(resultPos);
 }
 
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
