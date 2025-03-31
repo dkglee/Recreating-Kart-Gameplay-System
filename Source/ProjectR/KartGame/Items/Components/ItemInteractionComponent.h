@@ -35,7 +35,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	void Interaction(EInteractionType interactionType);
-
+	void ShieldEffect(bool value);
 #pragma region GETTER
 	GETTER(bool, bIsInteraction);
 

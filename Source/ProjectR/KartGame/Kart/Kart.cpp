@@ -35,6 +35,7 @@
 #include "Net/UnrealNetwork.h"
 #include "KartPowerBoosterVFXComponent.h"
 #include "KartSparkleVFXComponent.h"
+#include "KartShieldVFXComponent.h"
 #include "SpeedLineUI.h"
 #include "GameFramework/GameStateBase.h"
 
@@ -249,6 +250,11 @@ AKart::AKart()
 	RightSparkleVFX->SetNetAddressable();
 	RightSparkleVFX->SetIsReplicated(true);
 	
+	Shield = CreateDefaultSubobject<UKartShieldVFXComponent>(TEXT("Shield"));
+	Shield->SetupAttachment(KartSkeletalMeshComponent);
+	Shield->SetNetAddressable();
+	Shield->SetIsReplicated(true);
+
 	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
 	(TEXT("/Game/UIs/SpeedLine/WBP_SpeedLineAllUI.WBP_SpeedLineAllUI_C"));
 	if (WBP_SPEEDLINEUI.Succeeded())

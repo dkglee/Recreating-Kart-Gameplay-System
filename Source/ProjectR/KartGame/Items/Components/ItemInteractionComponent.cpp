@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartShieldVFXComponent.h"
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
@@ -258,24 +259,33 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 
 void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()
 {
-	NetMulticast_ShieldEffect(true);
 	ShieldElapsedTime += GetWorld()->GetDeltaSeconds();
 	if (ShieldElapsedTime >= ShieldTime)
 	{
-		NetMulticast_ShieldEffect(false);
+		ShieldEffect(false);
 		bShieldOn = false;
 		ShieldElapsedTime = 0.f;
 	}
+}
+
+void UItemInteractionComponent::ShieldEffect(bool value)
+{
+	NetMulticast_ShieldEffect(value);
 }
 
 void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool value)
 {
 	if (Kart->IsLocallyControlled() == false) return;
 	
-	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
-	if (pc)
+	if (value)
 	{
-		pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(value);
+		Kart->GetShield()->SetVisibility(true);
+		Kart->GetShield()->Activate(true);
+	}
+	else
+	{
+		Kart->GetShield()->SetVisibility(value);
+		Kart->GetShield()->Deactivate();
 	}
 }
 
