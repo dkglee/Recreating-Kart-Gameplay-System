@@ -163,7 +163,7 @@ void UKartFrictionComponent::DetermineDriftState()
 		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
 		float TotalVelocity = LinearVelocity.Size();
 
-		constexpr float SlipAngleThreshold = 27.0f; // degree
+		constexpr float SlipAngleThreshold = 30.0f; // degree
 		constexpr float LateralRatioThreshold = 0.7f; // 20% 이상 미끄러지는 경우
 
 		FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
