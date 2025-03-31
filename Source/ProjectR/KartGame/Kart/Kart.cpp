@@ -37,7 +37,6 @@
 #include "KartSparkleVFXComponent.h"
 #include "KartShieldVFXComponent.h"
 #include "SpeedLineUI.h"
-#include "GameFramework/GameStateBase.h"
 
 // Sets default values
 AKart::AKart()
@@ -59,7 +58,7 @@ AKart::AKart()
 
 	RootBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	SetRootComponent(RootBox);
-	RootBox->SetBoxExtent({103.000000, 52.000000, 29.728109});
+	RootBox->SetBoxExtent({103.000000, 52.000000, 25});
 
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
