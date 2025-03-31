@@ -285,14 +285,11 @@ void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool va
 
 	if (value)
 	{
-		FFastLogger::LogConsole(TEXT("on"));
 		Kart->GetShield()->SetVisibility(true);
 		Kart->GetShield()->Activate(true);
 	}
 	else
 	{
-		FFastLogger::LogConsole(TEXT("off"));
-
 		Kart->GetShield()->SetVisibility(value);
 		Kart->GetShield()->Deactivate();
 	}
