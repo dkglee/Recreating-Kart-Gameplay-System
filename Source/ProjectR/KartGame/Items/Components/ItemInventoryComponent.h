@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "ProjectR/KartGame/Items/DataTable/ItemTable.h"
 #include "ItemInventoryComponent.generated.h"
@@ -97,10 +98,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
-
-	UPROPERTY()
-	TMap<int, FItemTable> ItemMap;
-
+	
 	// 아이템 변수
 #pragma region ItemVariance
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
@@ -129,6 +127,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim", meta = (AllowPrivateAccess = "true"))
 	float InitialBoxSizeOffset = 7.0f;
-#pragma endregion 
+#pragma endregion
+
+public:
+	UPROPERTY()
+	TMap<int32, FItemTable> ItemMap;
 
 };
