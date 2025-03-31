@@ -16,6 +16,8 @@ class PROJECTR_API URealTimeRankingHUDBoard : public UUserWidget
 public:
 	void InitializeData();
 
+	void InitializeRanking();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Options|List", meta = (AllowPrivateAccess = true))
 	TSubclassOf<URealTimeRankingHUDItem> RankItemClass;
@@ -25,4 +27,6 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> RankListOverlay;
+
+	FTimerHandle InitializeLoopTimer;
 };
