@@ -178,8 +178,6 @@ void UKartFrictionComponent::DetermineDriftState()
 		// float SlipAngle = FMath::Atan2(ForwardVelocity, RightVelocity) - SteeringAngle;
 		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
 
-		FString Log = FString::Printf(TEXT("SlipAngle: %f, LateralRatio: %f, Steering Angle: %f"), FMath::RadiansToDegrees(SlipAngle), LateralRatio, FMath::RadiansToDegrees(SteeringAngle));
-		FFastLogger::LogConsole(TEXT("%s"), *Log);
 		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold)
 				|| (LateralRatio > LateralRatioThreshold)
 				|| (bDriftInput && bSteering)

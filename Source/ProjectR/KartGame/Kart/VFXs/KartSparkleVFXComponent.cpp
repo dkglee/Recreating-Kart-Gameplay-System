@@ -3,6 +3,7 @@
 
 #include "KartSparkleVFXComponent.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
 
@@ -18,8 +19,9 @@ UKartSparkleVFXComponent::UKartSparkleVFXComponent()
 	Super::SetAutoActivate(false);
 	// ...
 
-	SetRelativeLocation({40, 0, -25});
-	SetRelativeRotation({90, 0, 0});
+	SetRelativeLocation({-20, 0, -25});
+	SetRelativeRotation({-90, 0, 0});
+	SetRelativeScale3D({0.1, 0.1, 0.2});
 }
 
 
@@ -44,7 +46,7 @@ void UKartSparkleVFXComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	// SetForceSolo(true);
+	SetForceSolo(true);
 	
 	Kart = Cast<AKart>(GetOwner());
 	if (Kart)
@@ -78,6 +80,7 @@ void UKartSparkleVFXComponent::DeactivateSparkleVFX()
 
 void UKartSparkleVFXComponent::ServerRPC_ActivateSparkleVFX_Implementation()
 {
+	FFastLogger::LogConsole(TEXT("ServerRPC_ActivateSparkleVFX_Implementation"));
 	Deactivate();
 	Activate();
 	SetVisibility(true);

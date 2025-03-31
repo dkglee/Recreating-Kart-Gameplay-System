@@ -49,7 +49,7 @@ bool UKartSuspensionComponent::ProcessSuspension(FVector& LineLocation)
 	ActorsToIgnore.Add(Kart);
 
 	// UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
-	UKismetSystemLibrary::SphereTraceSingle(GetWorld(),	Start, End, 3.0f, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);
+	UKismetSystemLibrary::SphereTraceSingle(GetWorld(),	Start, End, 3.0f, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, HitResult, true);
 	if (HitResult.bBlockingHit)
 	{
 		LineLocation = HitResult.Location;
