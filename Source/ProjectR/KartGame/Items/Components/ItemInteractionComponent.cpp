@@ -277,12 +277,6 @@ void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool va
 {
 	if (Kart->IsLocallyControlled() == false) return;
 	
-	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
-	if (pc)
-	{
-		pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetShieldTextVisible(value);
-	}
-
 	if (value)
 	{
 		Kart->GetShield()->SetVisibility(true);
