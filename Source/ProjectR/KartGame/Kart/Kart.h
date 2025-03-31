@@ -54,6 +54,7 @@ public:
 	GETTER_SETTER(bool, bUsingBooster);
 	GETTER(class USpringArmComponent*, SpringArmComponent);
 	GETTER(class UCameraComponent*, CameraComponent);
+	GETTER(class UBoosterGaugeUI*, BoosterGaugeUI);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -175,5 +176,9 @@ private:
 	class USpeedLineUI* SpeedLineUI = nullptr;
 	UPROPERTY()
 	TSubclassOf<class USpeedLineUI> SpeedLineUIClass;
+	UPROPERTY()
+	class UBoosterGaugeUI* BoosterGaugeUI = nullptr;
+	UPROPERTY()
+	TSubclassOf<class UBoosterGaugeUI> BoosterGaugeUIClass;
 #pragma endregion
 };

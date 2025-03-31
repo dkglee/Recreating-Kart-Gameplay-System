@@ -4,6 +4,7 @@
 #include "KartFrictionComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "Components/BoxComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
@@ -75,6 +76,7 @@ void UKartFrictionComponent::ProcessFriction()
 	SetAngularDampling();
 	ApplyFrictionToKart_Implementation(bDrift);
 	BroadCastDriftEnd();
+	UpdateBoosterGauge();
 }
 
 void UKartFrictionComponent::OnDriftInputDetected(const FInputActionValue& InputActionValue)
@@ -185,7 +187,26 @@ void UKartFrictionComponent::BroadCastDriftEnd()
 {
 	if (bPrevDrift && !bDrift)
 	{
+		DriftGaugeOffset = DriftGauge - DriftGaugeStart;
+		// 드리프트 게이지가 일정 이상이면 인스턴트 부스트 드리프트 종료 이벤트를 브로드캐스트
+		if (DriftGaugeOffset > DriftGaugeThreshold)
+		{
+			OnInstantBoost.Broadcast();
+		}
+		if (DriftGauge >= DriftGaugeMax)
+		{
+			DriftGauge = 0.0f;
+			OnBoosterMade.Broadcast();
+			OnBoosterGaugeUpdated.Broadcast(DriftGauge, DriftGaugeMax);
+		}
 		OnDriftEnded.Broadcast();
+		bDriftStartOnce = false;
+	}
+	else if (bPrevDrift && bDrift && !bDriftStartOnce)
+	{
+		bDriftStartOnce = true;
+		DriftGaugeStart = DriftGauge;
+		OnDriftStarted.Broadcast();
 	}
 	bPrevDrift = bDrift;
 }
@@ -199,6 +220,8 @@ void UKartFrictionComponent::InitializeComponent()
 	{
 		Kart->OnInputBindingDelegate.AddDynamic(this, &UKartFrictionComponent::SetupInputBinding);
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
+		WheelLR = Kart->GetLR_Wheel();
+		WheelRR = Kart->GetRR_Wheel();
 	}
 }
 
@@ -277,4 +300,23 @@ void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue
 void UKartFrictionComponent::OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue)
 {
 	OnDriftKeyPressed.Broadcast(true);
+}
+
+void UKartFrictionComponent::UpdateBoosterGauge()
+{
+	if (!bDrift) return;
+
+	// 드리프트 게이지를 증가 시킨다.
+	// 근데 Lateral Force가 얼마나 작용하는지에 따라 게이지가 증가하는 속도가 달라진다.
+	FVector RightVector = KartBody->GetRightVector();
+	FVector BackwardPosition = (WheelLR->GetComponentLocation() + WheelRR->GetComponentLocation()) / 2.0f;
+
+	FVector VelocityAtBackward = KartBody->GetPhysicsLinearVelocityAtPoint(BackwardPosition);
+	
+	float LateralForce = FMath::Abs(FVector::DotProduct(RightVector, VelocityAtBackward));
+	// Lateral Force를 정규화 해야 하는데
+	float NormalizedLateralForce = LateralForce / Kart->GetMaxSpeed();
+	DriftGauge += DriftGaugeSpeed * NormalizedLateralForce * GetWorld()->GetDeltaSeconds();
+
+	OnBoosterGaugeUpdated.Broadcast(DriftGauge, DriftGaugeMax);
 }
