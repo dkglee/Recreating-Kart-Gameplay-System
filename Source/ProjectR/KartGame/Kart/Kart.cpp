@@ -34,6 +34,7 @@
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
 #include "KartPowerBoosterVFXComponent.h"
+#include "KartSparkleVFXComponent.h"
 #include "SpeedLineUI.h"
 #include "GameFramework/GameStateBase.h"
 
@@ -238,6 +239,16 @@ AKart::AKart()
 	AirBoost->SetNetAddressable();
 	AirBoost->SetIsReplicated(true);
 
+	LeftSparkleVFX = CreateDefaultSubobject<UKartSparkleVFXComponent>(TEXT("LeftSparkleVFX"));
+	LeftSparkleVFX->SetupAttachment(LR_Wheel);
+	LeftSparkleVFX->SetNetAddressable();
+	LeftSparkleVFX->SetIsReplicated(true);
+
+	RightSparkleVFX = CreateDefaultSubobject<UKartSparkleVFXComponent>(TEXT("RightSparkleVFX"));
+	RightSparkleVFX->SetupAttachment(RR_Wheel);
+	RightSparkleVFX->SetNetAddressable();
+	RightSparkleVFX->SetIsReplicated(true);
+	
 	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
 	(TEXT("/Game/UIs/SpeedLine/WBP_SpeedLineAllUI.WBP_SpeedLineAllUI_C"));
 	if (WBP_SPEEDLINEUI.Succeeded())
