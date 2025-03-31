@@ -258,6 +258,7 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 		}
 		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 		Kart->GetAccelerationComponent()->ResetAcceleration();
+		FFastLogger::LogConsole(TEXT("상호작용 끝"));
 	}
 }
 

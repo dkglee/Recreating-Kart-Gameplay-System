@@ -21,22 +21,6 @@ AItemBox::AItemBox()
 void AItemBox::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
-	if (Items)
-	{
-		TArray<FName> RowNames = Items->GetRowNames();
-
-		for (const FName& RowName : RowNames)
-		{
-			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
-			if (Row != nullptr)
-			{
-				TotalWeight += Row->ItemWeight;
-				ItemMap.Add(Row->ItemID,*Row);
-			}
-		}
-	}
 	
 	Root->OnComponentBeginOverlap.AddDynamic(this,&AItemBox::ItemBoxBeginOverlap);
 }
@@ -83,12 +67,18 @@ void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryCompon
 
 void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player)
 {
+	TMap<int32, FItemTable> itemMap = ItemInventoryComponent->ItemMap;
+	for (const auto& item : itemMap)
+	{
+		TotalWeight += item.Value.ItemWeight;
+	}
+	
 	int32 RandomValue = FMath::RandRange(1,TotalWeight - 1);
 	FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
 	int32 CurrentWeight = 0;
 	FItemTable RandomItem = {};
 	
-	for (const auto& Item : ItemMap)
+	for (const auto& Item : itemMap)
 	{
 		CurrentWeight += Item.Value.ItemWeight;
 		FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
@@ -112,7 +102,7 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 				FFastLogger::LogConsole(TEXT("(부스터여서 다시뽑기)RandomWeight : %d"), RandomValue);
 				CurrentWeight = 0;
 				
-				for (const auto& Item : ItemMap)
+				for (const auto& Item : itemMap)
 				{
 					CurrentWeight += Item.Value.ItemWeight;
 					if (RandomValue < CurrentWeight)

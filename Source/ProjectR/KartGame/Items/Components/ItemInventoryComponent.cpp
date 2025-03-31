@@ -140,12 +140,12 @@ void UItemInventoryComponent::NetMulticast_GetItem_Implementation(const FItemTab
 void UItemInventoryComponent::GetBoosterItem()
 {
 	FFastLogger::LogConsole(TEXT("부스터 얻기"));
-	NetMulticast_GetItem(ItemMap[1]);
+	GetItem(ItemMap[1]);
 }
 
 void UItemInventoryComponent::UseItem()
 {
-	if (Kart->GetbCanMove())
+	if (!Kart->GetbCanMove())
 	{
 		return;
 	}

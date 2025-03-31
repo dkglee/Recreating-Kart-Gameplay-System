@@ -40,8 +40,6 @@ public:
 	void RotateBody();
 	
 private:
-	UPROPERTY()
-	TMap<int, FItemTable> ItemMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	int32 TotalWeight = 0;

@@ -34,7 +34,7 @@ public:
 	};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	int ItemID = 0;
+	int32 ItemID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
 	EItemName ItemName;
