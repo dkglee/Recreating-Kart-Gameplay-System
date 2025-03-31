@@ -29,10 +29,10 @@ protected:
 
 public:
 	UFUNCTION()
-	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
+	void MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player);
 
 	UFUNCTION(Server, Reliable)
-	void Server_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent);
+	void Server_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMultiCast_MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item);
@@ -48,7 +48,6 @@ private:
 
 	UPROPERTY()
 	FTimerHandle ItemBoxRespawnTimerHandle;
-	
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")

@@ -3,9 +3,11 @@
 
 #include "ItemBox.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Components/ItemInventoryComponent.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 AItemBox::AItemBox()
 {
@@ -19,6 +21,22 @@ AItemBox::AItemBox()
 void AItemBox::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	if (Items)
+	{
+		TArray<FName> RowNames = Items->GetRowNames();
+
+		for (const FName& RowName : RowNames)
+		{
+			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
+			if (Row != nullptr)
+			{
+				TotalWeight += Row->ItemWeight;
+				ItemMap.Add(Row->ItemID,*Row);
+			}
+		}
+	}
 	
 	Root->OnComponentBeginOverlap.AddDynamic(this,&AItemBox::ItemBoxBeginOverlap);
 }
@@ -45,22 +63,6 @@ void AItemBox::InitComponents()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
-
-	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
-	if (Items)
-	{
-		TArray<FName> RowNames = Items->GetRowNames();
-
-		for (const FName& RowName : RowNames)
-		{
-			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
-			if (Row != nullptr)
-			{
-				TotalWeight += Row->ItemWeight;
-				ItemMap.Add(Row->ItemID,*Row);
-			}
-		}
-	}
 }
 
 void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -70,29 +72,61 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	auto* player = Cast<AKart>(OtherActor);
 	if (player)
 	{
-		MakeRandomItem(player->GetItemInventoryComponent());
+		MakeRandomItem(player->GetItemInventoryComponent(), player);
 	}
 }
 
-void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
+void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player)
 {
-	Server_MakeRandomItem(ItemInventoryComponent);
+	Server_MakeRandomItem(ItemInventoryComponent, player);
 }
 
-void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
+void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player)
 {
-	int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
+	int32 RandomValue = FMath::RandRange(1,TotalWeight - 1);
+	FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
 	int32 CurrentWeight = 0;
+	FItemTable RandomItem = {};
 	
 	for (const auto& Item : ItemMap)
 	{
 		CurrentWeight += Item.Value.ItemWeight;
+		FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
 		if (RandomValue < CurrentWeight)
 		{
-			NetMultiCast_MakeRandomItem(ItemInventoryComponent, Item.Value);
-			return;	
+			RandomItem = Item.Value;
+			break;
 		}
 	}
+	
+	auto* ps = Cast<ARiderPlayerState>(player->GetPlayerState());
+	if (ps)
+	{
+		FFastLogger::LogConsole(TEXT("Ranking : %d"), ps->GetRanking());
+
+		if (ps->GetRanking() == 1)
+		{
+			while (RandomItem.ItemID < 10)
+			{
+				RandomValue = FMath::RandRange(1,TotalWeight - 1);
+				FFastLogger::LogConsole(TEXT("(부스터여서 다시뽑기)RandomWeight : %d"), RandomValue);
+				CurrentWeight = 0;
+				
+				for (const auto& Item : ItemMap)
+				{
+					CurrentWeight += Item.Value.ItemWeight;
+					if (RandomValue < CurrentWeight)
+					{
+						RandomItem = Item.Value;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	NetMultiCast_MakeRandomItem(ItemInventoryComponent, RandomItem);
+
 }
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)

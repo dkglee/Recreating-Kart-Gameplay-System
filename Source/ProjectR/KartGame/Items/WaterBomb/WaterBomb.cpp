@@ -6,6 +6,8 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "Components/BoxComponent.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
+#include "KartGame/Games/Objects/CheckPoint.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 
 
@@ -30,10 +32,11 @@ void AWaterBomb::BeginPlay()
 void AWaterBomb::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bArriveEndPos == false)
 	{
 		MoveToEstimateLocation(DeltaTime);
+		DrawDebugBox(GetWorld(), EndPos, FVector(50), FColor::Red);
 	}
 	else
 	{
@@ -47,11 +50,11 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	if (HasAuthority() == false) return;
 	
 	auto* Kart = Cast<AKart>(OtherActor);
-	if (Kart == GetOwningPlayer())
-	{
-		FFastLogger::LogConsole(TEXT("Hit Kart is itemOwner"));
-		return;
-	}
+	// if (Kart == GetOwningPlayer())
+	// {
+	// 	FFastLogger::LogConsole(TEXT("Hit Kart is itemOwner"));
+	// 	return;
+	// }
 	
 	if (Kart)
 	{
@@ -69,11 +72,28 @@ void AWaterBomb::OnWaterBombBeginOverlap(UPrimitiveComponent* OverlappedComponen
 void AWaterBomb::MoveToEstimateLocation(float DeltaTime)
 {
 	if (HasAuthority() == false) return;
-	
-	if (StartPos == FVector::ZeroVector && EndPos == FVector::ZeroVector)
+
+	auto* ps = Cast<ARiderPlayerState>(GetOwningPlayer()->GetPlayerState());
+	if (ps)
 	{
-		StartPos = GetOwningPlayer()->GetActorLocation();
-		EndPos = StartPos + GetOwningPlayer()->GetActorForwardVector() * ThrowingDistance;
+		if (StartPos == FVector::ZeroVector && EndPos == FVector::ZeroVector)
+		{
+			StartPos = GetOwningPlayer()->GetActorLocation();
+			float dist = FVector::Dist(ps->GetNextNearCheckPoint()->GetActorLocation(), StartPos);
+			if (dist >= ThrowingDistance)
+			{
+				FFastLogger::LogConsole(TEXT("다음 체크포인트 : %s"), *ps->GetNextNearCheckPoint()->GetCurrentCheckPoint());
+				FVector direction = (ps->GetNextNearCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
+				EndPos = StartPos + direction * ThrowingDistance;
+			}
+			else
+			{
+				FFastLogger::LogConsole(TEXT("다다음 체크포인트 : %s"), *ps->GetNextOverNextCheckPoint()->GetCurrentCheckPoint());
+				FVector direction = (ps->GetNextOverNextCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
+				EndPos = StartPos + direction * ThrowingDistance;
+			}
+			
+		}
 	}
 	
 	MoveElapsedTime += DeltaTime;

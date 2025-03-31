@@ -39,6 +39,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_GetItem(const FItemTable itemData);
+
+	UFUNCTION()
+	void GetBoosterItem();
 #pragma endregion 
 	// 아이템 사용
 #pragma region ItemUseFunc
@@ -94,6 +97,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
+
+	UPROPERTY()
+	TMap<int, FItemTable> ItemMap;
 
 	// 아이템 변수
 #pragma region ItemVariance

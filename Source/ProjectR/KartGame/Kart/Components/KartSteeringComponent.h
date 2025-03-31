@@ -21,6 +21,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	UFUNCTION()
 	void SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent);
 
@@ -36,6 +37,8 @@ public:
 	GETTER(float, AccelerationIntensity);
 	GETTER(float, TargetSteering);
 	GETTER(float, MaxRotation);
+	//장진혁 추가
+	GETTER(float, SteeringInput);
 #pragma endregion
 private:
 	UFUNCTION()
@@ -48,6 +51,9 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ApplyTorqueToKartV2(float InSteering, bool bDrfit);
 	float CalculateNewTurnScale(bool bDrift);
+	// 장진혁 추가
+	UFUNCTION(Server, Reliable)
+	void Server_GetInputSteering(float value);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
@@ -69,6 +75,10 @@ private:
 	float TargetSteering = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float MaxRotation = 25.0f;
+
+	// 장진혁 추가
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
+	float SteeringInput = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	class UCurveFloat* SteeringCurve = nullptr;

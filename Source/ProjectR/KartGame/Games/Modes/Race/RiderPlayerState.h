@@ -25,6 +25,8 @@ public:
 	
 	uint16 GetCurrentMainCheckPoint() const;
 	TObjectPtr<ACheckPoint> GetNextNearCheckPoint() const;
+	// 장진혁
+	TObjectPtr<ACheckPoint> GetNextOverNextCheckPoint() const;
 
 	GETTER_SETTER(uint8, Ranking);
 	GETTER_SETTER(FDateTime, RaceEndTime);

@@ -9,6 +9,7 @@
 #include "KartSystemLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Curves/CurveFloat.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UKartSteeringComponent::UKartSteeringComponent()
@@ -58,6 +59,12 @@ void UKartSteeringComponent::InitializeComponent()
 	}
 }
 
+void UKartSteeringComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UKartSteeringComponent, SteeringInput);
+}
+
 void UKartSteeringComponent::SetupInputBinding(class UEnhancedInputComponent* PlayerInputComponent)
 {
 	PlayerInputComponent->BindAction(IA_Steering, ETriggerEvent::Triggered, this, &UKartSteeringComponent::OnSteeringInputDetected);
@@ -89,6 +96,8 @@ void UKartSteeringComponent::OnDriftKeyEdged(bool bDriftInput)
 void UKartSteeringComponent::OnSteeringInputDetected(const FInputActionValue& InputActionValue)
 {
 	TargetSteering = InputActionValue.Get<float>();
+
+	Server_GetInputSteering(InputActionValue.Get<float>());
 }
 
 float UKartSteeringComponent::CalculateNewTurnScale(bool bDrift)
@@ -180,4 +189,10 @@ void UKartSteeringComponent::ApplyTorqueToKartV2_Implementation(float InSteering
 
 	// KartBody에 Torque 적용
 	KartBody->AddTorqueInDegrees(Torque, NAME_None, true);
+}
+
+void UKartSteeringComponent::Server_GetInputSteering_Implementation(float value)
+{
+	//if (Kart->IsLocallyControlled() == false) return;
+	SteeringInput = value;
 }

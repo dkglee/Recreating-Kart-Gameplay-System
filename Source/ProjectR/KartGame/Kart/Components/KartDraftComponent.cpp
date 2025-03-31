@@ -165,7 +165,7 @@ void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 	float KartSpeedKm = forwardSpeed * 0.036;
 	int32 DashBoardSpeed = FMath::RoundToInt(KartSpeedKm * 2);
 	
-	FFastLogger::LogConsole(TEXT("속도 : %d"), DashBoardSpeed);
+	//FFastLogger::LogConsole(TEXT("속도 : %d"), DashBoardSpeed);
 
 	if (DashBoardSpeed < 100.f)
 	{

@@ -31,7 +31,8 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	void Interaction(EInteractionType interactionType);
 
@@ -111,8 +112,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float WaterBombInteractionTime = 5.f;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Interaction")
 	float WaterBombInteractionElapsedTime = 0.f;
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "Interaction")
+	float WaterBombDecreaseTime = 0.f;
 	
 	UPROPERTY()
 	float WaterBombInteractionHeight = 350.f;
@@ -125,6 +129,12 @@ public:
 	
 	UPROPERTY()
 	float RotateSpeed = 3.f;
+
+	UPROPERTY()
+	FTimerHandle WaterInteractionTimerHandle;
+
+	UPROPERTY()
+	bool WaterInteractionEnabled = false;
 #pragma endregion
 	
 	// 쉴드 변수
