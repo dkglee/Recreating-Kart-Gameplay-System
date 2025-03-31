@@ -8,7 +8,16 @@
 
 void URealTimeRankingHUDBoard::InitializeData()
 {
-	UE_LOG(LogTemp, Display, TEXT("Value: %d"), GetWorld()->GetGameState<ARaceGameState>()->PlayerArray.Num())
+	GetWorld()->GetTimerManager().SetTimer(InitializeLoopTimer, this,
+		&ThisClass::InitializeRanking, 0.2f, true);
+}
+
+void URealTimeRankingHUDBoard::InitializeRanking()
+{
+	if (!GetWorld()->GetGameState<ARaceGameState>())
+	{
+		return;
+	}
 	
 	for (TObjectPtr<APlayerState> PlayerState :
 		GetWorld()->GetGameState<ARaceGameState>()->PlayerArray)
@@ -23,4 +32,6 @@ void URealTimeRankingHUDBoard::InitializeData()
 
 		RankListItem.Add(NewRankBoard);
 	}
+
+	GetWorld()->GetTimerManager().ClearTimer(InitializeLoopTimer);
 }
