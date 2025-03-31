@@ -46,7 +46,7 @@ int32 USpeedLineUI::CalculateSpeedLineUICount()
 	{
 		Result = MaxSpeedLineCount;
 	}
-	else if (NormalizedSpeed > 0.1f)
+	else if (NormalizedSpeed > 0.5f)
 	{
 		Result = DefaultSpeedLineCount;
 	}

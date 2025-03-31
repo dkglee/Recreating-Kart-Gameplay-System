@@ -8,6 +8,7 @@
 #include "KartFrictionComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/ProgressBar.h"
 
 void UBoosterGaugeUI::Init()
 {
@@ -29,4 +30,6 @@ void UBoosterGaugeUI::OnBoosterGaugeUpdated(float DriftGauge, float DriftGaugeMa
 	WidgetDriftGaugeMax = DriftGaugeMax;
 
 	WidgetDriftGauge = FMath::Clamp(WidgetDriftGauge, 0.0f, WidgetDriftGaugeMax);
+
+	BoosterGauge->SetPercent(WidgetDriftGauge / WidgetDriftGaugeMax);
 }

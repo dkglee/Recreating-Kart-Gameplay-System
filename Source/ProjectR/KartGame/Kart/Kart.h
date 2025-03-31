@@ -153,6 +153,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartShieldVFXComponent* Shield;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartSparkleVFXComponent* LeftSparkleVFX;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartSparkleVFXComponent* RightSparkleVFX;
 #pragma endregion
 	
 #pragma region UI

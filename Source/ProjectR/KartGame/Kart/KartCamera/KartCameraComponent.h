@@ -47,7 +47,7 @@ private:
 	UPROPERTY()
 	float DefaultSpringArmLength = 0.0f;
 	UPROPERTY()
-	float BoosterTargetSpringArmLegnth = 700.0f;
+	float BoosterTargetSpringArmLegnth = 750.0f;
 	UPROPERTY()
 	float InstantTargetSpringArmLength = 600.0f;
 	UPROPERTY()

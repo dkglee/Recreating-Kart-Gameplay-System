@@ -13,6 +13,8 @@ UKartBasicBoosterVFXComponent::UKartBasicBoosterVFXComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicatedByDefault(true);
+	
+	Super::SetAutoActivate(false);
 }
 
 
@@ -23,7 +25,6 @@ void UKartBasicBoosterVFXComponent::BeginPlay()
 
 	// ...
 	SetForceSolo(true);
-	Super::SetAutoActivate(false);
 }
 
 void UKartBasicBoosterVFXComponent::InitializeComponent()

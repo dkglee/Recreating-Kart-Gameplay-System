@@ -131,14 +131,14 @@ private:
 	UPROPERTY()
 	float DriftGaugeMax = 100.0f;
 	UPROPERTY()
-	float DriftGaugeSpeed = 50.0f;
+	float DriftGaugeSpeed = 80.0f;
 
 	UPROPERTY()
 	float DriftGaugeStart = 0.0f;
 	UPROPERTY()
 	float DriftGaugeOffset = 0.0f;
 	UPROPERTY()
-	float DriftGaugeThreshold = 10.0f;
+	float DriftGaugeThreshold = 13.0f;
 	UPROPERTY()
 	bool bDriftStartOnce = false;
 

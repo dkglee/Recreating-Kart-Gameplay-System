@@ -29,4 +29,7 @@ private:
 
 	float WidgetDriftGauge = 0.0f;
 	float WidgetDriftGaugeMax = 100.0f;
+
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar* BoosterGauge;
 };
