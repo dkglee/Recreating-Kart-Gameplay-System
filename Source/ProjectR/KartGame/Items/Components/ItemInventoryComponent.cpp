@@ -145,7 +145,7 @@ void UItemInventoryComponent::GetBoosterItem()
 
 void UItemInventoryComponent::UseItem()
 {
-	if (Kart->GetbCanMove())
+	if (!Kart->GetbCanMove())
 	{
 		return;
 	}

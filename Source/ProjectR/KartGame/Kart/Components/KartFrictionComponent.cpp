@@ -157,12 +157,14 @@ void UKartFrictionComponent::DetermineDriftState()
 	if (bDrift)
 	{
 		FVector RightVector = KartBody->GetRightVector();
-		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocity();
+		FVector Point = Kart->GetLR_Wheel()->GetComponentLocation() + Kart->GetRR_Wheel()->GetComponentLocation();
+		Point /= 2.0f;
+		FVector LinearVelocity = KartBody->GetPhysicsLinearVelocityAtPoint(Point);
 		float Velocity = FVector::DotProduct(RightVector, LinearVelocity);
 		float TotalVelocity = LinearVelocity.Size();
 
-		constexpr float SlipAngleThreshold = 32.0f; // degree
-		constexpr float LateralRatioThreshold = 0.60f; // 20% 이상 미끄러지는 경우
+		constexpr float SlipAngleThreshold = 27.0f; // degree
+		constexpr float LateralRatioThreshold = 0.7f; // 20% 이상 미끄러지는 경우
 
 		FVector WheelForwardVector = Kart->GetLF_Wheel()->GetForwardVector();
 		float WheelForwardVelocity = FVector::DotProduct(WheelForwardVector, LinearVelocity);
@@ -176,8 +178,11 @@ void UKartFrictionComponent::DetermineDriftState()
 		// float SlipAngle = FMath::Atan2(ForwardVelocity, RightVelocity) - SteeringAngle;
 		float LateralRatio = TotalVelocity > KINDA_SMALL_NUMBER ? FMath::Abs(Velocity) / TotalVelocity : 0.0f;
 
-		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold) 
-				|| (LateralRatio > LateralRatioThreshold) ||(bDriftInput && bSteering)
+		FString Log = FString::Printf(TEXT("SlipAngle: %f, LateralRatio: %f, Steering Angle: %f"), FMath::RadiansToDegrees(SlipAngle), LateralRatio, FMath::RadiansToDegrees(SteeringAngle));
+		FFastLogger::LogConsole(TEXT("%s"), *Log);
+		bDrift = (FMath::Abs(FMath::RadiansToDegrees(SlipAngle)) > SlipAngleThreshold)
+				|| (LateralRatio > LateralRatioThreshold)
+				|| (bDriftInput && bSteering)
 				|| bForceDrfit;
 		bDrift = bDrift && bFlag;
 	}
@@ -316,6 +321,7 @@ void UKartFrictionComponent::UpdateBoosterGauge()
 	float LateralForce = FMath::Abs(FVector::DotProduct(RightVector, VelocityAtBackward));
 	// Lateral Force를 정규화 해야 하는데
 	float NormalizedLateralForce = LateralForce / Kart->GetMaxSpeed();
+	NormalizedLateralForce = FMath::Clamp(NormalizedLateralForce, 0.2f, NormalizedLateralForce);
 	DriftGauge += DriftGaugeSpeed * NormalizedLateralForce * GetWorld()->GetDeltaSeconds();
 
 	OnBoosterGaugeUpdated.Broadcast(DriftGauge, DriftGaugeMax);
