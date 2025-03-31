@@ -73,7 +73,7 @@ private:
 	bool bIsScaleBigger = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
-	float ScaleDuration = 5.0f;
+	float ScaleDuration = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	FVector BigScale = FVector(10.f);

@@ -250,16 +250,10 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implement
 
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
 {
-	if (Kart)
-	{
-		if (GetOwnerRole() == ROLE_Authority)
-		{
-			return;
-		}
-		Kart->GetRootBox()->SetSimulatePhysics(bEnable);
-		Kart->GetAccelerationComponent()->ResetAcceleration();
-		FFastLogger::LogConsole(TEXT("상호작용 끝"));
-	}
+	if (Kart->IsLocallyControlled() == false) return;
+	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
+	Kart->GetAccelerationComponent()->ResetAcceleration();
+	FFastLogger::LogConsole(TEXT("상호작용 끝"));
 }
 
 void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()

@@ -157,14 +157,20 @@ void AItemBox::ApplyRankBasedWeightAdjustments(TMap<int32, FItemTable>& ItemMapT
 	
 	float NormalizedRank = (float)PlayerRank / MaxPlayers;
 
+	// 꼴등일 때 가장 높게 나오고 1등일 때 가장 낮게 나옴
 	float BoosterBoostFactor = FMath::Clamp(NormalizedRank, 0.0f, 1.0f);
+	
+	// 포물선을 적용해서 중간 순위일 때 많이 나오고 1등이나 꼴등일때 최솟값
 	float AttackBoostFactor = 1.0f - 4.0f * FMath::Pow(NormalizedRank - 0.5f, 2);
+	
+	// 1등일 때 가장 높게 나오고 꼴등일 때 가장 낮게 나옴
+	// (PlayerRank - 1) / (Maxplayers - 1) 를 해야 최대값 1.0 최소값 0.0 이 나온다.
+	// 해당 값을 1에서 빼면 1등일 때 많이 나오고 꼴등일 때 적게 나온다.
 	float DefenseBoostFactor = FMath::Clamp(1.0f - ((float)PlayerRank - 1) / (MaxPlayers - 1), 0.f, 1.f);
 
 	for (auto& Item : ItemMapToAdjust)
 	{
 		int32 ItemID = Item.Value.ItemID;
-		// 기본 가중치
 		float WeightMultiplier = 1.0f;
 
 		if (ItemID >= AttackItemMinID && ItemID <= AttackItemMaxID)
