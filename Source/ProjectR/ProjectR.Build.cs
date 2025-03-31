@@ -33,6 +33,7 @@ public class ProjectR : ModuleRules
 			"ProjectR/KartGame/Kart/VFXs/",
 			"ProjectR/KartGame/Kart/KartCamera/",
 			"ProjectR/KartGame/UIs/SpeedLine/",
+			"ProjectR/KartGame/UIs/HUD/BoosterGauge/",
 		});
 	}
 }
