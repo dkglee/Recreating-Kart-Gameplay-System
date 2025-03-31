@@ -8,11 +8,6 @@ void UTrackInfo::InitializeData()
 {
 	MaxTrackInfo->SetText(FText::FromString(
 			FString::FromInt(GetWorld()->GetGameState<ARaceGameState>()->GetMaxLaps())));
-
-	GetOwningPlayerState<ARiderPlayerState>()->
-		OnGoNextLapNotified.AddDynamic(this, &ThisClass::UpdateCurrentTrack);
-
-	IsInitialized = true;
 }
 
 void UTrackInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -21,6 +16,15 @@ void UTrackInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	if (!IsInitialized)
 	{
+		if (!GetOwningPlayerState<ARiderPlayerState>())
+		{
+			return;
+		}
+		
+		GetOwningPlayerState<ARiderPlayerState>()->
+		OnGoNextLapNotified.AddDynamic(this, &ThisClass::UpdateCurrentTrack);
+
+		IsInitialized = true;
 		return;
 	}
 	
