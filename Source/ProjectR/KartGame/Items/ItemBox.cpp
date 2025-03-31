@@ -7,6 +7,7 @@
 #include "Kart.h"
 #include "Components/BoxComponent.h"
 #include "Components/ItemInventoryComponent.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 
 AItemBox::AItemBox()
 {
@@ -71,70 +72,61 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	auto* player = Cast<AKart>(OtherActor);
 	if (player)
 	{
-		MakeRandomItem(player->GetItemInventoryComponent());
+		MakeRandomItem(player->GetItemInventoryComponent(), player);
 	}
 }
 
-void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent)
+void AItemBox::MakeRandomItem(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player)
 {
-	Server_MakeRandomItem(ItemInventoryComponent);
+	Server_MakeRandomItem(ItemInventoryComponent, player);
 }
 
-void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent)
+void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, class AKart* player)
 {
-	// int32 RandomValue = FMath::RandRange(1,TotalWeight-1);
-	// FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
-	//
-	// int32 CurrentWeight = 0;
-	//
-	// for (const auto& Item : ItemMap)
-	// {
-	// 	CurrentWeight += Item.Value.ItemWeight;
-	// 	FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
-	// 	if (RandomValue < CurrentWeight)
-	// 	{
-	// 		NetMultiCast_MakeRandomItem(ItemInventoryComponent, Item.Value);
-	// 		return;	
-	// 	}
-	// }
-
-	if (TotalWeight <= 0 || ItemMap.Num() == 0)
-	{
-		FFastLogger::LogConsole(TEXT("아이템을 선택할 수 없습니다."));
-		return;
-	}
-
-	int32 RandomValue = FMath::RandRange(0, TotalWeight - 1);
+	int32 RandomValue = FMath::RandRange(1,TotalWeight - 1);
 	FFastLogger::LogConsole(TEXT("RandomWeight : %d"), RandomValue);
-
-	// 누적 가중치 배열 생성 (이진 탐색을 위한 사전 준비)
-	TArray<int32> CumulativeWeights;
-	TArray<FItemTable> ItemsArray;
-
 	int32 CurrentWeight = 0;
+	FItemTable RandomItem = {};
+	
 	for (const auto& Item : ItemMap)
 	{
 		CurrentWeight += Item.Value.ItemWeight;
-		CumulativeWeights.Add(CurrentWeight);
-		ItemsArray.Add(Item.Value);
+		FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
+		if (RandomValue < CurrentWeight)
+		{
+			RandomItem = Item.Value;
+			break;
+		}
 	}
-
-	// 이진 탐색으로 빠르게 아이템 찾기
-	int32 Left = 0, Right = CumulativeWeights.Num() - 1;
-	while (Left < Right)
+	
+	auto* ps = Cast<ARiderPlayerState>(player->GetPlayerState());
+	if (ps)
 	{
-		int32 Mid = (Left + Right) / 2;
-		if (RandomValue < CumulativeWeights[Mid])
+		FFastLogger::LogConsole(TEXT("Ranking : %d"), ps->GetRanking());
+
+		if (ps->GetRanking() == 1)
 		{
-			Right = Mid; // 범위를 왼쪽으로 좁힘
-		}
-		else
-		{
-			Left = Mid + 1; // 범위를 오른쪽으로 좁힘
+			while (RandomItem.ItemID < 10)
+			{
+				RandomValue = FMath::RandRange(1,TotalWeight - 1);
+				FFastLogger::LogConsole(TEXT("(부스터여서 다시뽑기)RandomWeight : %d"), RandomValue);
+				CurrentWeight = 0;
+				
+				for (const auto& Item : ItemMap)
+				{
+					CurrentWeight += Item.Value.ItemWeight;
+					if (RandomValue < CurrentWeight)
+					{
+						RandomItem = Item.Value;
+						break;
+					}
+				}
+			}
 		}
 	}
+	
+	NetMultiCast_MakeRandomItem(ItemInventoryComponent, RandomItem);
 
-	NetMultiCast_MakeRandomItem(ItemInventoryComponent, ItemsArray[Left]);
 }
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)

@@ -82,11 +82,13 @@ void AWaterBomb::MoveToEstimateLocation(float DeltaTime)
 			float dist = FVector::Dist(ps->GetNextNearCheckPoint()->GetActorLocation(), StartPos);
 			if (dist >= ThrowingDistance)
 			{
+				FFastLogger::LogConsole(TEXT("다음 체크포인트 : %s"), *ps->GetNextNearCheckPoint()->GetCurrentCheckPoint());
 				FVector direction = (ps->GetNextNearCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
 				EndPos = StartPos + direction * ThrowingDistance;
 			}
 			else
 			{
+				FFastLogger::LogConsole(TEXT("다다음 체크포인트 : %s"), *ps->GetNextOverNextCheckPoint()->GetCurrentCheckPoint());
 				FVector direction = (ps->GetNextOverNextCheckPoint()->GetActorLocation() - StartPos).GetSafeNormal();
 				EndPos = StartPos + direction * ThrowingDistance;
 			}
