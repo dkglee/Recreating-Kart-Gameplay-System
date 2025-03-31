@@ -55,6 +55,7 @@ public:
 	GETTER(class USpringArmComponent*, SpringArmComponent);
 	GETTER(class UCameraComponent*, CameraComponent);
 	GETTER(class UBoosterGaugeUI*, BoosterGaugeUI);
+	GETTER(class UKartShieldVFXComponent*, Shield);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -147,8 +148,11 @@ private:
 	class UKartBasicBoosterVFXComponent* LeftBoost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartBasicBoosterVFXComponent* RightBoost;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
 	class UKartBasicBoosterVFXComponent* AirBoost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Niagara", meta = (AllowPrivateAccess = "true"))
+	class UKartShieldVFXComponent* Shield;
+
 #pragma endregion
 	
 #pragma region UI

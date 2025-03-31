@@ -18,6 +18,8 @@ AMissile::AMissile()
 	PrimaryActorTick.bCanEverTick = true;
 	Super::SetReplicateMovement(true);
 	Root->SetGenerateOverlapEvents(true);
+
+	Mesh->SetRelativeScale3D(FVector(0.150000,0.300000,0.300000));
 }
 
 // Called when the game starts or when spawned

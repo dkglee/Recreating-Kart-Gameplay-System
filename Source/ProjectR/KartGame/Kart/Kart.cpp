@@ -34,6 +34,7 @@
 #include "KartGame/UIs/HUD/DashBoard/DashBoardUI.h"
 #include "Net/UnrealNetwork.h"
 #include "KartPowerBoosterVFXComponent.h"
+#include "KartShieldVFXComponent.h"
 #include "SpeedLineUI.h"
 #include "GameFramework/GameStateBase.h"
 
@@ -237,6 +238,11 @@ AKart::AKart()
 	AirBoost->SetupAttachment(KartSkeletalMeshComponent, FName("AirBoost"));
 	AirBoost->SetNetAddressable();
 	AirBoost->SetIsReplicated(true);
+
+	Shield = CreateDefaultSubobject<UKartShieldVFXComponent>(TEXT("Shield"));
+	Shield->SetupAttachment(KartSkeletalMeshComponent);
+	Shield->SetNetAddressable();
+	Shield->SetIsReplicated(true);
 
 	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
 	(TEXT("/Game/UIs/SpeedLine/WBP_SpeedLineAllUI.WBP_SpeedLineAllUI_C"));

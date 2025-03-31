@@ -5,6 +5,7 @@
 
 #include "FastLogger.h"
 #include "Kart.h"
+#include "KartShieldVFXComponent.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 
 
@@ -32,6 +33,7 @@ void AShield::Tick(float DeltaTime)
 	if (Kart)
 	{
 		Kart->GetItemInteractionComponent()->bShieldOn = true;
+		Kart->GetItemInteractionComponent()->ShieldEffect(true);
 		FFastLogger::LogConsole(TEXT("shield on"));
 		this->Destroy();
 	}

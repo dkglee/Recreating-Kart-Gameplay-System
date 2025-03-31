@@ -41,9 +41,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
 	int32 ItemWeight;
-	
+
+	// true = 조준형 , false = 즉발형
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
-	bool ItemType; // true = 조준형 , false = 즉발형
+	bool ItemType; 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Item)
 	TSubclassOf<AActor> ItemClass;
