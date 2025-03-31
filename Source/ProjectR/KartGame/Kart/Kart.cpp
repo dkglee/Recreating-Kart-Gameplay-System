@@ -57,7 +57,7 @@ AKart::AKart()
 
 	RootBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	SetRootComponent(RootBox);
-	RootBox->SetBoxExtent({103, 52, 12});
+	RootBox->SetBoxExtent({103.000000, 52.000000, 29.728109});
 
 	RootBox->SetSimulatePhysics(true);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -94,25 +94,25 @@ AKart::AKart()
 
 	LF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LF_Wheel"));
 	LF_Wheel->SetupAttachment(RootBox);
-	LF_Wheel->SetRelativeLocation({100, -50, 0});
+	LF_Wheel->SetRelativeLocation({100, -50, -5});
 	LF_Wheel->SetNetAddressable();
 	LF_Wheel->SetIsReplicated(true);
 	
 	RF_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RF_Wheel"));
 	RF_Wheel->SetupAttachment(RootBox);
-	RF_Wheel->SetRelativeLocation({100, 50, 0});
+	RF_Wheel->SetRelativeLocation({100, 50, -5});
 	RF_Wheel->SetNetAddressable();
 	RF_Wheel->SetIsReplicated(true);
 	
 	LR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("LR_Wheel"));
 	LR_Wheel->SetupAttachment(RootBox);
-	LR_Wheel->SetRelativeLocation({-100, -50, 0});
+	LR_Wheel->SetRelativeLocation({-100, -50, -5});
 	LR_Wheel->SetNetAddressable();
 	LR_Wheel->SetIsReplicated(true);
 	
 	RR_Wheel = CreateDefaultSubobject<UKartSuspensionComponent>(TEXT("RR_Wheel"));
 	RR_Wheel->SetupAttachment(RootBox);
-	RR_Wheel->SetRelativeLocation({-100, 50, 0});
+	RR_Wheel->SetRelativeLocation({-100, 50, -5});
 	RR_Wheel->SetNetAddressable();
 	RR_Wheel->SetIsReplicated(true);
 
@@ -144,13 +144,13 @@ AKart::AKart()
 	LeftSkidMark->SetupAttachment(LR_Wheel);
 	LeftSkidMark->SetNetAddressable();
 	LeftSkidMark->SetIsReplicated(true);
-	LeftSkidMark->SetRelativeLocation(FVector{25.000000, 10.000000, -5.000000});
+	LeftSkidMark->SetRelativeLocation(FVector{40.000000, 10.000000, -15.000000});
 
 	RightSkidMark = CreateDefaultSubobject<UKartSkidMarkComponent>(TEXT("RightSkidMark"));
 	RightSkidMark->SetupAttachment(RR_Wheel);
 	RightSkidMark->SetNetAddressable();
 	RightSkidMark->SetIsReplicated(true);
-	RightSkidMark->SetRelativeLocation(FVector{25.000000, -10.000000, -5.000000});
+	RightSkidMark->SetRelativeLocation(FVector{40.000000, -10.000000, -15.000000});
 
 	EngineSoundComponent = CreateDefaultSubobject<UKartEngineSoundComponent>(TEXT("EngineSoundComponent"));
 	EngineSoundComponent->SetupAttachment(RootBox);

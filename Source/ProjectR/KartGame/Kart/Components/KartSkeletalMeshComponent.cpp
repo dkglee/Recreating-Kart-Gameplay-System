@@ -29,7 +29,7 @@ UKartSkeletalMeshComponent::UKartSkeletalMeshComponent()
 		Super::SetAnimInstanceClass(KartAnimInstanceClass);
 	}
 	
-	SetRelativeLocation({0, 0, 20});
+	SetRelativeLocation({0, 0, 5});
 	SetRelativeRotation(FRotator(0, -90, 0));
 	SetRelativeScale3D(FVector(90.0f));
 	Super::SetAllMassScale(0.01);
