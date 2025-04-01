@@ -1,5 +1,6 @@
 ﻿#include "CountDownToStart.h"
 
+#include "FastLogger.h"
 #include "Animation/WidgetAnimationEvents.h"
 #include "Components/TextBlock.h"
 
@@ -8,6 +9,16 @@ void UCountDownToStart::NativePreConstruct()
 	Super::NativePreConstruct();
 
 	UpdateCountDownText();
+}
+
+void UCountDownToStart::OnCountDownAnimationStart()
+{
+	if (CountDownNum == 0)
+	{
+		PlaySound(GameStartSound);
+		return;
+	}
+	PlaySound(CountDownSound);
 }
 
 void UCountDownToStart::OnCountDownAnimationEnd()
@@ -25,9 +36,15 @@ void UCountDownToStart::OnCountDownAnimationEnd()
 
 void UCountDownToStart::StartCountDown()
 {
+	OnCountStartNotified.Clear();
+	OnCountStartNotified.BindDynamic(this, &ThisClass::OnCountDownAnimationStart);
+	
 	OnCountEndNotified.Clear();
 	OnCountEndNotified.BindDynamic(this, &ThisClass::OnCountDownAnimationEnd);
+	
+	BindToAnimationStarted(CountDownAnimation, OnCountStartNotified);
 	BindToAnimationFinished(CountDownAnimation, OnCountEndNotified);
+	
 	PlayAnimation(CountDownAnimation);
 }
 
