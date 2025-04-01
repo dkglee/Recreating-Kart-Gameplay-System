@@ -52,6 +52,17 @@ void UKartPowerBoosterVFXComponent::ServerRPC_ActivateBoosterVFX_Implementation(
 	SetFloatParameter(TEXT("LifeTime"), BoosterTime);
 	Activate();
 	SetVisibility(true);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TWeakObjectPtr<UKartPowerBoosterVFXComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartPowerBoosterVFXComponent* StrongThis = WeakThis.Get();
+			StrongThis->Deactivate();
+			StrongThis->SetVisibility(false);
+		}
+	}), BoosterTime, false);
 	
 	Super::MulticastRPC_ActivateBoosterVFX(BoosterTime);
 }

@@ -30,9 +30,9 @@ void UDeadReckoningStrategy::Update(float DeltaTime)
 
 	FVector NewLocation = FMath::VInterpTo(Kart->GetActorLocation(), PredictedPosition, DeltaTime, 5.0f);
 
-	if (FVector::Dist(Kart->GetActorLocation(), NewLocation) > 100.0f)
+	if (FVector::Dist(Kart->GetActorLocation(), NewLocation) > 10.0f)
 	{
-		Kart->SetActorTransform(LastUpdatedKartInfo.KartTransform);
+		Kart->SetActorLocationAndRotation(NewLocation, PredictedRotation, false);
 	}
 	else
 	{

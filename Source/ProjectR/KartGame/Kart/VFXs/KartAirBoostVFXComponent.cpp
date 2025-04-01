@@ -58,6 +58,16 @@ void UKartAirBoostVFXComponent::InitializeComponent()
 	}
 }
 
+void UKartAirBoostVFXComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void UKartAirBoostVFXComponent::ServerRPC_ActivateBoosterVFX_Implementation(float BoosterTime)
 {
 	Super::ServerRPC_ActivateBoosterVFX_Implementation(BoosterTime);
@@ -66,6 +76,16 @@ void UKartAirBoostVFXComponent::ServerRPC_ActivateBoosterVFX_Implementation(floa
 	SetFloatParameter(TEXT("LifeTimeBoost"), BoosterTime);
 	Activate();
 	SetVisibility(true);
+	TWeakObjectPtr<UKartAirBoostVFXComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartAirBoostVFXComponent* StrongThis = WeakThis.Get();
+			StrongThis->Deactivate();
+			StrongThis->SetVisibility(false);
+		}
+	}), BoosterTime, false);
 	
 	Super::MulticastRPC_ActivateBoosterVFX(BoosterTime);
 }
@@ -80,6 +100,8 @@ void UKartAirBoostVFXComponent::MulticastRPC_ActivateBoosterVFX_Implementation(f
 		SetFloatParameter(TEXT("LifeTimeBoost"), BoosterTime);
 		Activate();
 		SetVisibility(true);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UKartAirBoostVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementation, BoosterTime, false);
 	}
 }
 
@@ -99,6 +121,7 @@ void UKartAirBoostVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementation
 
 	if (!Kart->IsLocallyControlled())
 	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		Deactivate();
 		SetVisibility(false);
 	}
