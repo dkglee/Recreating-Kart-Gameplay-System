@@ -23,6 +23,7 @@
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
 #include "KartFrictionComponent.h"
 #include "KartInstantBoostVFXComponent.h"
+#include "KartItemSoundComponent.h"
 #include "KartNetworkSyncComponent.h"
 #include "KartResetComponent.h"
 #include "KartSkeletalMeshComponent.h"
@@ -162,8 +163,10 @@ AKart::AKart()
 	DriftSoundComponent->SetupAttachment(RootBox);
 	DriftSoundComponent->SetIsReplicated(false);
 
-	// Aim UI Widget Component 추가
-	// 장진혁
+	ItemSoundComponent = CreateDefaultSubobject<UKartItemSoundComponent>(TEXT("ItemSoundComponent"));
+	ItemSoundComponent->SetupAttachment(RootBox);
+	ItemSoundComponent->SetIsReplicated(false);
+
 	TargetAimSocketComponent = CreateDefaultSubobject<USceneComponent>(TEXT("TargetAimSocketComponent"));
 	TargetAimSocketComponent->SetupAttachment(RootComponent);
 	TargetAimSocketComponent->SetRelativeLocation(FVector(-50.f, 0.f, 50.f));

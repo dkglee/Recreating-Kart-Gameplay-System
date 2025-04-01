@@ -5,6 +5,7 @@
 
 #include "FastLogger.h"
 #include "Kart.h"
+#include "WaterBombSoundComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 #include "KartGame/Games/Objects/CheckPoint.h"
@@ -18,6 +19,8 @@ AWaterBomb::AWaterBomb()
 	PrimaryActorTick.bCanEverTick = true;
 	Super::SetReplicateMovement(true);
 	Root->SetGenerateOverlapEvents(true);
+
+	soundComponent = CreateDefaultSubobject<UWaterBombSoundComponent>(TEXT("SoundComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -107,6 +110,7 @@ void AWaterBomb::MoveToEstimateLocation(float DeltaTime)
 	if (alpha == 1.0f)
 	{
 		bArriveEndPos = true;
+		NetMulticast_PlayWaterBombExplosionSound();
 		return;
 	}
 	NetMulticast_MoveToEstimateLocation(LinearPos);	
@@ -158,4 +162,9 @@ void AWaterBomb::SetWaterBombScale(float DeltaTime)
 void AWaterBomb::NetMulticast_SetWaterBombScale_Implementation(FVector resultScale)
 {
 	SetActorScale3D(resultScale);
+}
+
+void AWaterBomb::NetMulticast_PlayWaterBombExplosionSound_Implementation()
+{
+	soundComponent->PlayWaterBombExplosionSound();
 }

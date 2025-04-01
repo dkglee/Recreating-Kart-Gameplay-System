@@ -17,6 +17,7 @@ enum class EItemName : uint8
 	Missile,
 	WaterBomb,
 	Shield,
+	ItemBox,
 };
 USTRUCT(BlueprintType)
 struct PROJECTR_API FItemTable : public FTableRowBase

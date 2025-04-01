@@ -57,6 +57,7 @@ void AItemBox::ItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	if (player)
 	{
 		MakeRandomItem(player->GetItemInventoryComponent(), player);
+		player->GetItemInventoryComponent()->PlayItemSound(EItemName::ItemBox);
 	}
 }
 

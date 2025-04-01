@@ -56,6 +56,7 @@ public:
 	GETTER(class UCameraComponent*, CameraComponent);
 	GETTER(class UBoosterGaugeUI*, BoosterGaugeUI);
 	GETTER(class UKartShieldVFXComponent*, Shield);
+	GETTER(class UKartItemSoundComponent*, ItemSoundComponent);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -170,6 +171,8 @@ private:
 	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UBoosterSoundComponent* BoostSoundComponent = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	class UKartItemSoundComponent* ItemSoundComponent = nullptr;
 #pragma endregion
 
 #pragma region Etc
