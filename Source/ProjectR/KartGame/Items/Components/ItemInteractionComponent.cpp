@@ -10,8 +10,9 @@
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
+#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 #include "KartGame/UIs/HUD/MainUI.h"
-#include "KartGame/UIs/NotificationTextUI/NotificationTextUI.h"
+#include "KartGame/UIs/NotificationUI/NotificationUI.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -176,6 +177,7 @@ void UItemInteractionComponent::WaterBombHitInteraction()
 	InitialQuat = Kart->GetActorQuat();
 	InitialRot = Kart->GetActorRotation();
 	Client_ChangePhysics(false);
+	NetMulticast_WaterBombInteraction_VisibleUI(true);
 }
 
 void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
@@ -192,7 +194,6 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 		if (WaterInteractionEnabled)
 		{
 			WaterBombDecreaseTime += 1.f;
-			//FFastLogger::LogConsole(TEXT("남은시간 : %f"), WaterBombInteractionTime - WaterBombDecreaseTime);
 			WaterInteractionEnabled = false;
 		}
 		else
@@ -238,6 +239,7 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 		WaterBombDecreaseTime = 0.f;
 		resultRot = InitialRot;	
 		Client_ChangePhysics(true);
+		NetMulticast_WaterBombInteraction_VisibleUI(false);
 	}
 	
 	NetMulticast_WaterBombInteraction_Move(resultPos, resultRot);
@@ -249,9 +251,21 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_Move_Implement
 	Kart->SetActorRotation(resultRot);
 }
 
+void UItemInteractionComponent::NetMulticast_WaterBombInteraction_VisibleUI_Implementation(bool value)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+	
+	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
+	if (pc)
+	{
+		pc->GetMainHUD()->GetWBP_NotificationUI()->SetWaterBombInteractionUIVisible(value);
+	}
+}
+
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
 {
 	if (Kart->IsLocallyControlled() == false) return;
+	
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
 	FFastLogger::LogConsole(TEXT("상호작용 끝"));

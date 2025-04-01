@@ -3,7 +3,7 @@
 
 #include "KartDraftComponent.h"
 
-#include <KartGame/UIs/NotificationTextUI/NotificationTextUI.h>
+#include <KartGame/UIs/NotificationUI/NotificationUI.h>
 
 #include "EngineUtils.h"
 #include "FastLogger.h"
@@ -12,6 +12,7 @@
 #include "KartNetworkSyncComponent.h"
 #include "KartSuspensionComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/RadialSlider.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -46,6 +47,7 @@ void UKartDraftComponent::InitializeComponent()
 	Super::InitializeComponent();
 
 	Kart = Cast<AKart>(GetOwner());
+	PC = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UKartDraftComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -53,7 +55,7 @@ void UKartDraftComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (Kart->IsLocallyControlled() == false) return;
-	
+
 	if (bDraftStart == false)
 	{
 		FVector start = Kart->GetRootComponent()->GetComponentLocation();
@@ -84,7 +86,7 @@ void UKartDraftComponent::DrawTraceLineBox_Implementation(FVector start, FVector
 	FColor boxColor)
 {
 	// 서버만 보이도록 설정
-	//if (Kart->HasAuthority() == false) return;
+	if (Kart->HasAuthority() == false) return;
 	
 	int NumSteps = 10;
 	for (int i = 0; i <= NumSteps; i++)
@@ -122,7 +124,6 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
-
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget && PotentialTarget != FinalTarget)
 			{
@@ -155,8 +156,13 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		boxColor = FColor::Red;
 		Server_CheckTraceTime();
 	}
+	else
+	{
+		ElapsedTime = 0.0f;
+		NetMulticast_SetDraftProgressBarValueAndOpacity(0.0f, 1.0f);
+	}
 
-	 //DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	 DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::Server_CheckTraceTime_Implementation()
@@ -164,25 +170,23 @@ void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 	float forwardSpeed = UKismetMathLibrary::Dot_VectorVector(Kart->GetRootBox()->GetForwardVector(),Kart->GetNetworkSyncComponent()->GetKartInfo().Velocity);
 	float KartSpeedKm = forwardSpeed * 0.036;
 	int32 DashBoardSpeed = FMath::RoundToInt(KartSpeedKm * 2);
-	
-	//FFastLogger::LogConsole(TEXT("속도 : %d"), DashBoardSpeed);
 
-	if (DashBoardSpeed < 100.f)
-	{
-		//FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
-		ElapsedTime = 0.f;
-		return;
-	}
-	
+	// if (DashBoardSpeed < 100.f)
+	// {
+	// 	//FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+	// 	ElapsedTime = 0.f;
+	// 	return;
+	// }
+
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
-	//FFastLogger::LogConsole(TEXT("draft time : %f"), ElapsedTime);
 	
 	if (ElapsedTime >= DraftStartTime && bDraftStart == false)
 	{
 		bDraftStart = true;
 		NetMulticast_DraftEffect(true);
-	
 		ElapsedTime = 0.f;
+
+		
 		GetWorld()->GetTimerManager().ClearTimer(DraftTimerHandle);
 		TWeakObjectPtr<UKartDraftComponent> WeakThis = this;
 		GetWorld()->GetTimerManager().SetTimer(DraftTimerHandle, [WeakThis]()
@@ -192,13 +196,19 @@ void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 				WeakThis->NetMulticast_DraftEffect(false);
 				WeakThis->bDraftStart = false;
 				WeakThis->FinalTarget = nullptr;
+				WeakThis->NetMulticast_SetDraftProgressBarValueAndOpacity(0.0f, 1.0f);
 			}
 		}, DraftDuration, false);
+	}
+	else if (ElapsedTime < DraftStartTime)
+	{
+		NetMulticast_SetDraftProgressBarValueAndOpacity(ElapsedTime / DraftStartTime, 1.0f);
 	}
 }
 
 void UKartDraftComponent::AddDraftForce()
 {
+	NetMulticast_SetDraftProgressBarValueAndOpacity(1.0f, 1.0f);
 	auto* KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 	auto* AccelerationComponent = Cast<UKartAccelerationComponent>(Kart->GetAccelerationComponent());
 	
@@ -218,6 +228,18 @@ void UKartDraftComponent::NetMulticast_DraftEffect_Implementation(bool value)
 	auto* pc = Cast<ARacePlayerController>(GetWorld()->GetFirstPlayerController());
 	if (pc)
 	{
-		pc->GetMainHUD()->GetWBP_NotificationTextUI()->SetDraftTextVisible(value);
+		pc->GetMainHUD()->GetWBP_NotificationUI()->SetDraftVisibleUI(value);
+	}
+}
+
+void UKartDraftComponent::NetMulticast_SetDraftProgressBarValueAndOpacity_Implementation(float progBarValue, float opacityValue)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+	
+	PC->GetMainHUD()->GetWBP_NotificationUI()->SetDraftProgressBar(progBarValue);
+
+	if (!bDraftStart)
+	{
+		PC->GetMainHUD()->GetWBP_NotificationUI()->DraftProgressBar->SetRenderOpacity(opacityValue);
 	}
 }
