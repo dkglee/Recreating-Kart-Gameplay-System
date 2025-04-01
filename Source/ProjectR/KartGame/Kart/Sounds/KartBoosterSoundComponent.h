@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Components/AudioComponent.h"
-#include "BoosterSoundComponent.generated.h"
+#include "KartBoosterSoundComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTR_API UBoosterSoundComponent : public UAudioComponent
+class PROJECTR_API UKartBoosterSoundComponent : public UAudioComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UBoosterSoundComponent();
+	UKartBoosterSoundComponent();
 
 protected:
 	// Called when the game starts

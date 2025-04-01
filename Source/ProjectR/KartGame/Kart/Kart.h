@@ -170,7 +170,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UKartDriftSoundComponent* DriftSoundComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
-	class UBoosterSoundComponent* BoostSoundComponent = nullptr;
+	class UKartBoosterSoundComponent* BoostSoundComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	class UKartItemSoundComponent* ItemSoundComponent = nullptr;
 #pragma endregion
