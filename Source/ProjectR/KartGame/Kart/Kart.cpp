@@ -337,7 +337,7 @@ void AKart::Tick(float DeltaTime)
 	bool flag = true;
 	bool bDrift = FrictionComponent->GetbDrift();
 	// 로컬의 위치만 업데이트 됨
-	if(ItemInteractionComponent->GetbIsInteraction() == false)
+	if(ItemInteractionComponent->GetbIsInteraction() == false && RootBox->IsSimulatingPhysics())
 	{
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
@@ -365,6 +365,7 @@ void AKart::Tick(float DeltaTime)
 	}
 	else
 	{
+		flag = false;
 		LeftSkidMark->ProcessSkidMark(false);
 		RightSkidMark->ProcessSkidMark(false);
 	}

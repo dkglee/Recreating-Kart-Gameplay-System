@@ -304,6 +304,8 @@ void UKartFrictionComponent::OnItemInteraction()
 	// 계속해서 유지되는 판정이 되려나?
 	bDrift = false;
 	bDriftInput = false;
+	// 중복 호출되기는 하는데 문제가 될 게 있나?
+	OnDriftEnded.Broadcast();
 	FFastLogger::LogConsole(TEXT("Drift End"));
 }
 
