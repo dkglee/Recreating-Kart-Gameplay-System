@@ -44,6 +44,9 @@ private:
 	TSubclassOf<UMainUI> MainHUDClass;
 #pragma endregion
 
+	UPROPERTY(EditDefaultsOnly, Category = "Options|Pawn", meta = (AllowPrivateAccess = true))
+	TSubclassOf<AKart> KartBodyClass;
+	
 	UPROPERTY()
 	TObjectPtr<UPingManagerComponent> PingManagerComponent;
 	
@@ -60,6 +63,8 @@ private:
 
 	UFUNCTION()
 	void StartGameToGameState();
+
+	void SpawnKartToTransform(const FTransform& Transform);
 
 #pragma region NetworkClock
 

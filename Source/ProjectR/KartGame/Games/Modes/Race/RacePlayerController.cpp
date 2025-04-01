@@ -110,25 +110,19 @@ void ARacePlayerController::EndGame()
 void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 {
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(
-		GetWorld(), APlayerStart::StaticClass(), Actors);
-
-	// Player Start가 2개 이상 있는 곳은 트랙이라고 명시적으로 가정한다.
-	if (Actors.Num() >= 2)
-	{
-		GetPawn<AKart>()->SetbCanMove(false);
-	}
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(FString::Printf(TEXT("Player_Start_%d"), Index)), Actors);
 	
 	for (AActor* Actor : Actors)
 	{
-		APlayerStart* PlayerStart = Cast<APlayerStart>(Actor);
-
-		if (PlayerStart->PlayerStartTag == FName(FString::Printf(TEXT("Player_Start_%d"), Index)))
-		{
-			GetPawn()->SetActorTransform(PlayerStart->GetTransform());
-			return;
-		}
+		SpawnKartToTransform(Actor->GetTransform());
+		return;
 	}
+}
+
+void ARacePlayerController::SpawnKartToTransform(const FTransform& Transform)
+{
+	AKart* Kart = GetWorld()->SpawnActor<AKart>(KartBodyClass, Transform);
+	Possess(Kart);
 }
 
 void ARacePlayerController::StartGameToGameState()
