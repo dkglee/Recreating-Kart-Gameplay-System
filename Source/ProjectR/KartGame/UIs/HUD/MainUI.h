@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainUI.generated.h"
 
+class UCountDownLaps;
 class UTrackInfo;
 class URankingResultUI;
 class UCountDownToEnd;
@@ -56,4 +57,7 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTrackInfo> TrackInfoUI;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCountDownLaps> CountDownLapsUI;
 };

@@ -3,11 +3,8 @@
 
 #include "BoosterGaugeUI.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
-#include "KartSuspensionComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/ProgressBar.h"
 
 void UBoosterGaugeUI::Init()
