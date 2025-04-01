@@ -167,7 +167,7 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
-	NetMulticast_StopSound();
+	//NetMulticast_StopSound();
 	Server_UseItem();
 }
 
@@ -228,7 +228,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 	itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 1000.0f);
 	itemTransform.SetRotation(Kart->GetActorRotation().Quaternion());
 	itemTransform.SetScale3D(FVector(1.0f));
-
+	NetMulticast_PlayItemSound(itemData.ItemName);
 	switch (itemData.ItemName)
 	{
 	case EItemName::Missile:
@@ -238,7 +238,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 				itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
 				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
 				missile->SetLockOnPlayer(LockedTarget);
-				NetMulticast_PlayItemSound(itemData.ItemName);
 				missile->SetOwningPlayer(Kart);
 				LockedTarget = nullptr;
 			}
@@ -255,7 +254,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			if (waterBomb)
 			{
 				waterBomb->SetOwningPlayer(Kart);
-				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 			break;
 		}
@@ -266,7 +264,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			{
 				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 				booster->SetOwningPlayer(Kart);
-				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 			break;
 		}
@@ -276,7 +273,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			if (shield)
 			{
 				shield->SetOwningPlayer(Kart);
-				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 		}
 	default:
@@ -547,7 +543,14 @@ void UItemInventoryComponent::NetMulticast_PlayItemSound_Implementation(EItemNam
 		}
 	case EItemName::Missile:
 		{
-			itemSoundComponent->PlayMissileMoveSound();
+			if (LockedTarget != nullptr)
+			{
+				itemSoundComponent->PlayMissileMoveSound();
+			}
+			else
+			{
+				itemSoundComponent->PlayAimMissSound();
+			}
 			break;
 		}
 	default:

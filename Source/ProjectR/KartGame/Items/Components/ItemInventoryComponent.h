@@ -71,7 +71,6 @@ public:
 	void NetMulticast_TakeAim(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
-
 #pragma endregion
 	// 에임 UI 함수
 #pragma region AimUIFunc
@@ -100,6 +99,9 @@ public:
 #pragma endregion 
 	
 private:
+
+	// 기타 클래스 변수
+#pragma region ETC
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 
@@ -111,7 +113,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* IA_UseItem = nullptr;
-	
+#pragma endregion 
 	// 아이템 변수
 #pragma region ItemVariance
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))

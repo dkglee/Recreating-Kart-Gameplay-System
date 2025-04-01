@@ -28,6 +28,7 @@ public:
 	void PlayMissileHitSound();
 	void PlayMissileFindTargetSound();
 	void PlayMissileLockOnSound();
+	void PlayAimMissSound();
 
 	GETTER(USoundBase*, MissileLockOnSoundSource);
 	GETTER(USoundBase*, MissileFindTargetSoundSource);
@@ -47,4 +48,6 @@ private:
 	class USoundBase* MissileLockOnSoundSource;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Sound", meta = (AllowPrivateAccess = "true"))
 	class USoundBase* MissileFindTargetSoundSource;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Sound", meta = (AllowPrivateAccess = "true"))
+	class USoundBase* AimMissSoundSource;
 };

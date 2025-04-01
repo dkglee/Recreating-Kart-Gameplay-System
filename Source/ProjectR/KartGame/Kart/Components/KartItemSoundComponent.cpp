@@ -54,6 +54,11 @@ UKartItemSoundComponent::UKartItemSoundComponent()
 		MissileFindTargetSoundSource = missileFindTargetSound.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<USoundBase> aimMissSound (TEXT("'/Game/Items/Sounds/AimMissSound.AimMissSound'"));
+	if (aimMissSound.Succeeded())
+	{
+		AimMissSoundSource = aimMissSound.Object;
+	}
 
 	
 }
@@ -106,5 +111,11 @@ void UKartItemSoundComponent::PlayMissileFindTargetSound()
 void UKartItemSoundComponent::PlayMissileLockOnSound()
 {
 	SetSound(MissileLockOnSoundSource);
+	Play();
+}
+
+void UKartItemSoundComponent::PlayAimMissSound()
+{
+	SetSound(AimMissSoundSource);
 	Play();
 }
