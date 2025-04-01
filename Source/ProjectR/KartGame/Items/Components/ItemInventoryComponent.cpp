@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "FastLogger.h"
+#include "ItemInteractionComponent.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
 #include "Components/Image.h"
@@ -160,6 +161,10 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
+	if (Kart->GetItemInteractionComponent()->bShieldOn == true && Inventory[0].ItemName == EItemName::Shield)
+	{
+		return;
+	}
 
 	Server_UseItem();
 }
@@ -326,7 +331,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 
 	// 박스의 scale y 보간
 	float MinYScale = 0.5f;
-	float MaxYScale = 2.0f;
+	float MaxYScale = 4.0f;
 	float DistanceScale = MaxYScale;
 
 	if (FinalTarget)
@@ -378,7 +383,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{

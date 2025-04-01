@@ -12,7 +12,7 @@ class UDashBoardUI;
 class UItemInventory;
 class URealTimeRankingHUDBoard;
 class UCountDownToStart;
-class UNotificationTextUI;
+class UNotificationUI;
 
 UCLASS()
 class PROJECTR_API UMainUI : public UUserWidget
@@ -29,7 +29,7 @@ public:
 	GETTER(TObjectPtr<UItemInventory>, WBP_ItemInventory);
 	GETTER(TObjectPtr<UCountDownToStart>, CountDownToStartWidget);
 	GETTER(TObjectPtr<UCountDownToEnd>, CountDownToEndWidget);
-	GETTER(TObjectPtr<UNotificationTextUI>, WBP_NotificationTextUI);
+	GETTER(TObjectPtr<UNotificationUI>, WBP_NotificationUI);
 #pragma endregion
 	
 private:
@@ -52,7 +52,7 @@ private:
 	TObjectPtr<URankingResultUI> RankingResultUI;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UNotificationTextUI> WBP_NotificationTextUI;
+	TObjectPtr<UNotificationUI> WBP_NotificationUI;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTrackInfo> TrackInfoUI;
