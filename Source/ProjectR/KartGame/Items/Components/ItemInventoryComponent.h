@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUtil.h"
 #include "Components/ActorComponent.h"
 #include "ProjectR/KartGame/Items/DataTable/ItemTable.h"
 #include "ItemInventoryComponent.generated.h"
@@ -145,6 +144,8 @@ private:
 #pragma endregion
 
 public:
+	
+	
 	UPROPERTY()
 	TMap<int32, FItemTable> ItemMap;
 

@@ -11,7 +11,6 @@
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
-#include "KartGame/Games/Modes/Race/RiderPlayerState.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/NotificationUI/NotificationUI.h"
 #include "Net/UnrealNetwork.h"
