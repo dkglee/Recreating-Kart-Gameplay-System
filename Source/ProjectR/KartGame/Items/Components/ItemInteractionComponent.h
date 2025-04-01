@@ -40,6 +40,8 @@ public:
 	GETTER(bool, bIsInteraction);
 
 	GETTER(EInteractionType, CurrentType);
+
+	GETTER(bool, bShieldOn);
 #pragma endregion
 	
 private:
@@ -62,6 +64,9 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_WaterBombInteraction_Move(FVector resultPos, FRotator resultRot);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_WaterBombInteraction_VisibleUI(bool value);
 #pragma endregion 
 
 #pragma region ShieldFunction

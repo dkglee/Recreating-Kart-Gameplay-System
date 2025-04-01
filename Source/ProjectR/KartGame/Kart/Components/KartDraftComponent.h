@@ -42,12 +42,17 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_DraftEffect(bool value);
 	
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_SetDraftProgressBarValueAndOpacity(float progBarValue, float opacityValue);
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	class AKart* FinalTarget = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
+	class ARacePlayerController* PC = nullptr;
 
 	UPROPERTY(Replicated)
 	float ElapsedTime = 0.f;
@@ -59,7 +64,7 @@ private:
 	float DraftStartTime = 3.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
-	float DraftDuration = 1.5f;
+	float DraftDuration = 2.3f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	float DraftDistance = 1000.f;
@@ -75,6 +80,4 @@ private:
 
 	UPROPERTY()
 	TArray<AActor*> IgnoredActors;
-
-	
 };
