@@ -121,8 +121,22 @@ void ARacePlayerController::SpawnKartWithCheckPoint(const uint8 Index)
 
 void ARacePlayerController::SpawnKartToTransform(const FTransform& Transform)
 {
-	AKart* Kart = GetWorld()->SpawnActor<AKart>(KartBodyClass, Transform);
+	if (GetPawn())
+	{
+		return;
+	}
+	
+	AKart* Kart = GetWorld()->SpawnActor<AKart>(KartBodyClass);
 	Possess(Kart);
+	Kart->SetbCanMove(false);
+	
+	if (IsLocalController())
+	{
+		Kart->SetActorTransform(Transform);
+	} else
+	{
+		Kart->Client_SetActorTransform(Transform);
+	}
 }
 
 void ARacePlayerController::StartGameToGameState()

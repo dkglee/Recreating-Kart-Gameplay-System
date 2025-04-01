@@ -387,6 +387,11 @@ void AKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void AKart::Client_SetActorTransform_Implementation(const FTransform& Transform)
+{
+	SetActorTransform(Transform);
+}
+
 void AKart::UpdateSpeedUI()
 {
 	FVector LinearVelocity = RootBox->GetPhysicsLinearVelocity();

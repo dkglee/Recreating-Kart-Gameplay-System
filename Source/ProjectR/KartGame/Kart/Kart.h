@@ -31,6 +31,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Client, Reliable)
+	void Client_SetActorTransform(const FTransform& Transform);
+	
 #pragma region GetterSetter
 	GETTER(class UItemInventoryComponent*, ItemInventoryComponent);
 	GETTER(class UItemInteractionComponent*, ItemInteractionComponent);
