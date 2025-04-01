@@ -57,6 +57,8 @@ public:
 	UPROPERTY()
 	FOnInstantBoost OnInstantBoost;
 private:
+	UFUNCTION()
+	void OnItemInteraction();
 	void OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue);
 	void OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue);
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);

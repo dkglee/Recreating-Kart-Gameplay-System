@@ -44,6 +44,7 @@ void UKartDriftSoundComponent::BeginPlay()
 	if (Kart->IsLocallyControlled())
 	{
 		Play();
+		SetVolumeMultiplier(0.5f);
 	}
 }
 
