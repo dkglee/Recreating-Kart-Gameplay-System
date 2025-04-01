@@ -4,7 +4,6 @@
 #include "KartFrictionComponent.h"
 
 #include "EnhancedInputComponent.h"
-#include "FastLogger.h"
 #include "Components/BoxComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
@@ -294,6 +293,14 @@ void UKartFrictionComponent::RollbackFriction()
 	FrictionRollbackTimeline->PlayFromStart();
 }
 
+
+void UKartFrictionComponent::OnItemInteraction()
+{
+	// 이 변수를 수정하면 자연스럽게 업데이트가 될 듯 : 드리프트가 눌린 상태에서 맞고 입력이 들어오면 드리프트가
+	// 계속해서 유지되는 판정이 되려나?
+	bDrift = false;
+	bDriftInput = false;
+}
 
 void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue)
 {

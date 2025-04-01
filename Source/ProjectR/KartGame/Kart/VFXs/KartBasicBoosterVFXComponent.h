@@ -20,6 +20,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 protected:
 	UPROPERTY()
@@ -39,4 +40,7 @@ protected:
 	virtual void OnBoosterActivated(float BoosterTime);
 	UFUNCTION()
 	virtual void OnBoosterDeactivated();
+
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 };

@@ -1,6 +1,7 @@
 #include "Kart.h"
 
 #include "BoosterGaugeUI.h"
+#include "BoosterSoundComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
@@ -256,6 +257,10 @@ AKart::AKart()
 	Shield->SetupAttachment(KartSkeletalMeshComponent);
 	Shield->SetNetAddressable();
 	Shield->SetIsReplicated(true);
+
+	BoostSoundComponent = CreateDefaultSubobject<UBoosterSoundComponent>(TEXT("BoostSoundComponent"));
+	BoostSoundComponent->SetNetAddressable();
+	BoostSoundComponent->SetIsReplicated(false);
 
 	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
 	(TEXT("/Game/UIs/SpeedLine/WBP_SpeedLineAllUI.WBP_SpeedLineAllUI_C"));

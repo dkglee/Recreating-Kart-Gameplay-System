@@ -3,6 +3,7 @@
 
 #include "KartInstantBoostVFXComponent.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "KartBoosterComponent.h"
 #include "NiagaraSystem.h"
@@ -61,6 +62,16 @@ void UKartInstantBoostVFXComponent::ServerRPC_ActivateBoosterVFX_Implementation(
 	SetFloatParameter(TEXT("LifeTime"), BoosterTime);
 	Activate();
 	SetVisibility(true);
+	TWeakObjectPtr<UKartInstantBoostVFXComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartInstantBoostVFXComponent* StrongThis = WeakThis.Get();
+			StrongThis->Deactivate();
+			StrongThis->SetVisibility(false);
+		}
+	}), BoosterTime, false);
 	
 	Super::MulticastRPC_ActivateBoosterVFX(BoosterTime);
 }
@@ -75,6 +86,8 @@ void UKartInstantBoostVFXComponent::MulticastRPC_ActivateBoosterVFX_Implementati
 		SetFloatParameter(TEXT("LifeTime"), BoosterTime);
 		Activate();
 		SetVisibility(true);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UKartInstantBoostVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementation, BoosterTime, false);
 	}
 }
 
@@ -94,6 +107,7 @@ void UKartInstantBoostVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementa
 
 	if (!Kart->IsLocallyControlled())
 	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		Deactivate();
 		SetVisibility(false);
 	}

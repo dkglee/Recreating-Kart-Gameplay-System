@@ -32,6 +32,16 @@ void UKartBasicBoosterVFXComponent::InitializeComponent()
 	Super::InitializeComponent();
 }
 
+void UKartBasicBoosterVFXComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void UKartBasicBoosterVFXComponent::OnBoosterActivated(float BoosterTimer)
 {
 	// // 서버고 자기 자신이면 부스터 쓰고 Multicast

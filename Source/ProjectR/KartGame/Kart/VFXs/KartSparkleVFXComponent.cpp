@@ -80,7 +80,6 @@ void UKartSparkleVFXComponent::DeactivateSparkleVFX()
 
 void UKartSparkleVFXComponent::ServerRPC_ActivateSparkleVFX_Implementation()
 {
-	FFastLogger::LogConsole(TEXT("ServerRPC_ActivateSparkleVFX_Implementation"));
 	Deactivate();
 	Activate();
 	SetVisibility(true);

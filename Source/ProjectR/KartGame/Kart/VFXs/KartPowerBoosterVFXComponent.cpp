@@ -52,6 +52,17 @@ void UKartPowerBoosterVFXComponent::ServerRPC_ActivateBoosterVFX_Implementation(
 	SetFloatParameter(TEXT("LifeTime"), BoosterTime);
 	Activate();
 	SetVisibility(true);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TWeakObjectPtr<UKartPowerBoosterVFXComponent> WeakThis = this;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+	{
+		if (WeakThis.IsValid())
+		{
+			UKartPowerBoosterVFXComponent* StrongThis = WeakThis.Get();
+			StrongThis->Deactivate();
+			StrongThis->SetVisibility(false);
+		}
+	}), BoosterTime, false);
 	
 	Super::MulticastRPC_ActivateBoosterVFX(BoosterTime);
 }
@@ -66,6 +77,8 @@ void UKartPowerBoosterVFXComponent::MulticastRPC_ActivateBoosterVFX_Implementati
 		SetFloatParameter(TEXT("LifeTime"), BoosterTime);
 		Activate();
 		SetVisibility(true);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UKartPowerBoosterVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementation, BoosterTime, false);
 	}
 }
 
@@ -85,6 +98,7 @@ void UKartPowerBoosterVFXComponent::MulticastRPC_DeactivateBoosterVFX_Implementa
 
 	if (!Kart->IsLocallyControlled())
 	{
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		Deactivate();
 		SetVisibility(false);
 	}
