@@ -38,6 +38,7 @@ private:
 #pragma endregion
 	
 private:
+
 	// 이동 변수
 #pragma region MovementVariance
 	UPROPERTY()

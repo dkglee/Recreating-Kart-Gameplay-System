@@ -7,6 +7,8 @@
 #include "Components/ActorComponent.h"
 #include "ItemInteractionComponent.generated.h"
 
+DECLARE_DELEGATE_OneParam(FInteraction, bool);
+
 UENUM(BlueprintType)
 enum class EInteractionType : uint8
 {
@@ -76,6 +78,9 @@ private:
 	void NetMulticast_ShieldEffect(bool value);
 
 #pragma endregion
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_PlayInteractionSound(EInteractionType interactionType);
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
@@ -88,6 +93,8 @@ private:
 	bool bIsInteraction = false;
 	
 public:
+	FInteraction InteractionDelegate;
+	
 	UPROPERTY()
 	FRotator InitialRot;
 	
@@ -153,5 +160,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	float ShieldTime = 3.f;
 #pragma endregion
+	
 	
 };

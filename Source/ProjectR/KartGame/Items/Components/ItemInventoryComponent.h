@@ -85,6 +85,19 @@ public:
 
 	void ChangeAimColor(bool bIsLockOn);
 #pragma endregion
+	// 사운드 함수
+#pragma region Sound
+	void PlayItemSound(EItemName item);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_PlayItemSound(EItemName item);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_PlayMissileAimSound(bool bIsLockOn);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_StopSound();
+#pragma endregion 
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
