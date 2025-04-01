@@ -3,10 +3,8 @@
 
 #include "KartBoosterSoundComponent.h"
 
-#include "FastLogger.h"
 #include "Kart.h"
 #include "KartBoosterComponent.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Sound/SoundCue.h"
 
 UKartBoosterSoundComponent::UKartBoosterSoundComponent()
