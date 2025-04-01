@@ -167,7 +167,7 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
-	NetMulticast_StopSound();
+	//NetMulticast_StopSound();
 	Server_UseItem();
 }
 

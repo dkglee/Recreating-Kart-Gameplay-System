@@ -71,7 +71,6 @@ public:
 	void NetMulticast_TakeAim(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
 
 	void DrawAimLineBox(FVector start, FVector end, FVector boxHalfSize, FColor BoxColor);
-
 #pragma endregion
 	// 에임 UI 함수
 #pragma region AimUIFunc
