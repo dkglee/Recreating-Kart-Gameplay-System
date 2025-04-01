@@ -19,7 +19,7 @@ UKartSparkleVFXComponent::UKartSparkleVFXComponent()
 	Super::SetAutoActivate(false);
 	// ...
 
-	SetRelativeLocation({-20, 0, -25});
+	SetRelativeLocation({10, 0, -25});
 	SetRelativeRotation({-90, 0, 0});
 	SetRelativeScale3D({0.1, 0.1, 0.2});
 }
