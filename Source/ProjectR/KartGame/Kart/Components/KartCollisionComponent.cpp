@@ -72,7 +72,17 @@ void UKartCollisionComponent::InitializeComponent()
 		// 서버에서만 충돌을 감지할 예정
 		if (KartBody && Kart->HasAuthority())
 		{
-			KartBody->OnComponentHit.AddDynamic(this, &UKartCollisionComponent::OnCollisionKart);
+			FTimerHandle TimerHandle;
+			
+			TWeakObjectPtr<UKartCollisionComponent> WeakThis = this;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([WeakThis]()
+			{
+				if (WeakThis.IsValid())
+				{
+					UKartCollisionComponent* StrongThis = WeakThis.Get();
+					StrongThis->KartBody->OnComponentHit.AddDynamic(StrongThis, &UKartCollisionComponent::OnCollisionKart);
+				}
+			}), 10.0f, false);
 			// KartBody->OnComponentBeginOverlap.AddDynamic(this, &UKartCollisionComponent::OnOverlapKart);
 		}
 	}
