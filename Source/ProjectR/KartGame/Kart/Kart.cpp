@@ -1,7 +1,7 @@
 #include "Kart.h"
 
 #include "BoosterGaugeUI.h"
-#include "BoosterSoundComponent.h"
+#include "KartBoosterSoundComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
@@ -258,8 +258,8 @@ AKart::AKart()
 	Shield->SetNetAddressable();
 	Shield->SetIsReplicated(true);
 
-	BoostSoundComponent = CreateDefaultSubobject<UBoosterSoundComponent>(TEXT("BoostSoundComponent"));
-	BoostSoundComponent->SetNetAddressable();
+	BoostSoundComponent = CreateDefaultSubobject<UKartBoosterSoundComponent>(TEXT("BoostSoundComponent"));
+	BoostSoundComponent->SetupAttachment(RootBox);
 	BoostSoundComponent->SetIsReplicated(false);
 
 	static ConstructorHelpers::FClassFinder<USpeedLineUI> WBP_SPEEDLINEUI
@@ -332,12 +332,13 @@ void AKart::Tick(float DeltaTime)
 	// FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
 	// FVector temp = GetActorLocation();
 	// temp.Z += 100.f;
+	if (!IsLocallyControlled()) return ;
 
 	bool flag = true;
+	bool bDrift = FrictionComponent->GetbDrift();
 	// 로컬의 위치만 업데이트 됨
-	if(ItemInteractionComponent->GetbIsInteraction() == false && IsLocallyControlled())
+	if(ItemInteractionComponent->GetbIsInteraction() == false)
 	{
-		
 		UKartSystemLibrary::CalculateNormalizedSpeedWithBox(RootBox, MaxSpeed);
 		
 		flag &= LR_Wheel->ProcessSuspension(LineTraceLocations[0]);
@@ -346,7 +347,6 @@ void AKart::Tick(float DeltaTime)
 		flag &= RF_Wheel->ProcessSuspension(LineTraceLocations[3]);
 		
 		SteeringComponent->ProcessSteering();
-		bool bDrift = FrictionComponent->GetbDrift();
 		if (flag)
 		{
 			SteeringComponent->ProcessTorque(bDrift);
@@ -362,15 +362,16 @@ void AKart::Tick(float DeltaTime)
 			RightSkidMark->ProcessSkidMark(false);
 		}
 		BoosterComponent->ProcessBooster(bUsingBooster);
-
-		EngineSoundComponent->PlayKartEngineSound();
-		DriftSoundComponent->PlayDriftSound(bDrift && flag);
 	}
 	else
 	{
 		LeftSkidMark->ProcessSkidMark(false);
 		RightSkidMark->ProcessSkidMark(false);
 	}
+	
+	EngineSoundComponent->PlayKartEngineSound();
+	DriftSoundComponent->PlayDriftSound(bDrift && flag);
+
 	UpdateSpeedUI();
 }
 

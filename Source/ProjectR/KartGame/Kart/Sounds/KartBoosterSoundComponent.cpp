@@ -1,14 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BoosterSoundComponent.h"
+#include "KartBoosterSoundComponent.h"
 
+#include "FastLogger.h"
 #include "Kart.h"
 #include "KartBoosterComponent.h"
 #include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Sound/SoundCue.h"
 
-UBoosterSoundComponent::UBoosterSoundComponent()
+UKartBoosterSoundComponent::UKartBoosterSoundComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	bWantsInitializeComponent = true;
@@ -29,38 +30,38 @@ UBoosterSoundComponent::UBoosterSoundComponent()
 	}
 }
 
-void UBoosterSoundComponent::BeginPlay()
+void UKartBoosterSoundComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void UBoosterSoundComponent::InitializeComponent()
+void UKartBoosterSoundComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
 	Kart = Cast<AKart>(GetOwner());
-	if (Kart && Kart->IsLocallyControlled())
+	if (Kart)
 	{
-		Kart->GetBoosterComponent()->OnBoosterActivated.AddDynamic(this, &UBoosterSoundComponent::OnBoosterActivated);
-		Kart->GetBoosterComponent()->OnInstantBoosterActivated.AddDynamic(this, &UBoosterSoundComponent::OnInstantBoosterActivated);
-		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UBoosterSoundComponent::OnBoostersDeactivated);
-		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UBoosterSoundComponent::OnBoostersDeactivated);
+		Kart->GetBoosterComponent()->OnBoosterActivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoosterActivated);
+		Kart->GetBoosterComponent()->OnInstantBoosterActivated.AddDynamic(this, &UKartBoosterSoundComponent::OnInstantBoosterActivated);
+		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoostersDeactivated);
+		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoostersDeactivated);
 	}
 }
 
-void UBoosterSoundComponent::OnBoosterActivated(float BoosterTime)
+void UKartBoosterSoundComponent::OnBoosterActivated(float BoosterTime)
 {
 	SetSound(BoosterSound);
 	Play();
 }
 
-void UBoosterSoundComponent::OnInstantBoosterActivated(float BoosterTime)
+void UKartBoosterSoundComponent::OnInstantBoosterActivated(float BoosterTime)
 {
 	SetSound(InstantBoosterSound);
 	Play();
 }
 
-void UBoosterSoundComponent::OnBoostersDeactivated()
+void UKartBoosterSoundComponent::OnBoostersDeactivated()
 {
 	// 모든 부스터 끄기
 	Deactivate();
