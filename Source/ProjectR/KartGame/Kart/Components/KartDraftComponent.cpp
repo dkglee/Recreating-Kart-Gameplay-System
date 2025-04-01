@@ -162,7 +162,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		NetMulticast_SetDraftProgressBarValueAndOpacity(0.0f, 1.0f);
 	}
 
-	 DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	//DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::Server_CheckTraceTime_Implementation()
@@ -171,12 +171,12 @@ void UKartDraftComponent::Server_CheckTraceTime_Implementation()
 	float KartSpeedKm = forwardSpeed * 0.036;
 	int32 DashBoardSpeed = FMath::RoundToInt(KartSpeedKm * 2);
 
-	// if (DashBoardSpeed < 100.f)
-	// {
-	// 	//FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
-	// 	ElapsedTime = 0.f;
-	// 	return;
-	// }
+	if (DashBoardSpeed < 100.f)
+	{
+		//FFastLogger::LogConsole(TEXT("속도가 100보다 작습니다."));
+		ElapsedTime = 0.f;
+		return;
+	}
 
 	ElapsedTime += GetWorld()->GetDeltaSeconds();
 	

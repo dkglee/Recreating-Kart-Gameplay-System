@@ -6,6 +6,7 @@
 #include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
+#include "KartItemSoundComponent.h"
 #include "KartShieldVFXComponent.h"
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
@@ -105,6 +106,7 @@ void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 
 	bIsInteraction = true;
 	CurrentType = interactionType;
+	InteractionDelegate.Broadcast();
 
 	switch (CurrentType)
 	{
@@ -303,3 +305,22 @@ void UItemInteractionComponent::NetMulticast_ShieldEffect_Implementation(bool va
 	}
 }
 
+void UItemInteractionComponent::NetMulticast_PlayInteractionSound_Implementation(EInteractionType interactionType)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+	auto* ItemSoundComponent = Kart->GetItemSoundComponent();
+	
+	switch (interactionType)
+	{
+	case EInteractionType::Explosion:
+		{
+			ItemSoundComponent->PlayMissileHitSound();
+			break;
+		}
+	default:
+		{
+			break;
+		}
+	}
+}

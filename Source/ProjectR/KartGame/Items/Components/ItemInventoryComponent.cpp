@@ -9,6 +9,7 @@
 #include "ItemInteractionComponent.h"
 #include "Kart.h"
 #include "KartFrictionComponent.h"
+#include "KartItemSoundComponent.h"
 #include "Components/Image.h"
 #include "Components/WidgetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
@@ -166,6 +167,7 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
+	NetMulticast_StopSound();
 	Server_UseItem();
 }
 
@@ -236,6 +238,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 				itemTransform.SetLocation(Kart->GetActorLocation() + Kart->GetActorForwardVector() * 100.0f);
 				auto* missile = GetWorld()->SpawnActor<AMissile>(itemData.ItemClass, itemTransform);
 				missile->SetLockOnPlayer(LockedTarget);
+				NetMulticast_PlayItemSound(itemData.ItemName);
 				missile->SetOwningPlayer(Kart);
 				LockedTarget = nullptr;
 			}
@@ -252,6 +255,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			if (waterBomb)
 			{
 				waterBomb->SetOwningPlayer(Kart);
+				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 			break;
 		}
@@ -262,6 +266,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			{
 				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 				booster->SetOwningPlayer(Kart);
+				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 			break;
 		}
@@ -271,6 +276,7 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			if (shield)
 			{
 				shield->SetOwningPlayer(Kart);
+				NetMulticast_PlayItemSound(itemData.ItemName);
 			}
 		}
 	default:
@@ -376,7 +382,15 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		BoxColor = FColor::Green;
 		LockedTarget = nullptr;
 	}
-	
+
+	if (LockedTarget != nullptr)
+	{
+		NetMulticast_PlayMissileAimSound(true);
+	}
+	else
+	{
+		NetMulticast_PlayMissileAimSound(false);
+	}
 	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
 
@@ -501,5 +515,76 @@ void UItemInventoryComponent::ChangeAimColor(bool bIsLockOn)
 				aimClass->AimImage->SetBrushFromTexture(aimClass->GreenAim);
 			}
 		}
+	}
+}
+
+void UItemInventoryComponent::PlayItemSound(EItemName item)
+{
+	NetMulticast_PlayItemSound(item);
+}
+
+void UItemInventoryComponent::NetMulticast_PlayItemSound_Implementation(EItemName item)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+	auto* itemSoundComponent = Kart->GetItemSoundComponent();
+	switch (item)
+	{
+	case EItemName::Shield:
+		{
+			itemSoundComponent->PlayShieldSound();
+			break;
+		}
+	case EItemName::WaterBomb:
+		{
+			itemSoundComponent->PlayWaterBombThrowSound();
+			break;
+		}
+	case EItemName::ItemBox:
+		{
+			itemSoundComponent->PlayGetItemSound();
+			break;
+		}
+	case EItemName::Missile:
+		{
+			itemSoundComponent->PlayMissileMoveSound();
+			break;
+		}
+	default:
+		{
+			break;
+		}
+	}
+}
+
+void UItemInventoryComponent::NetMulticast_PlayMissileAimSound_Implementation(bool bIsLockOn)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+
+	auto* ItemSoundComponent = Kart->GetItemSoundComponent();
+	if (bIsLockOn)
+	{
+		if (ItemSoundComponent->GetSound() == ItemSoundComponent->GetMissileLockOnSoundSource())
+		{
+			return;
+		}
+		ItemSoundComponent->PlayMissileLockOnSound();
+	}
+	else
+	{
+		if (ItemSoundComponent->GetSound() == ItemSoundComponent->GetMissileFindTargetSoundSource())
+		{
+			return;
+		}
+		ItemSoundComponent->PlayMissileFindTargetSound();
+	}
+}
+
+void UItemInventoryComponent::NetMulticast_StopSound_Implementation()
+{
+	if (Kart->IsLocallyControlled())
+	{
+		Kart->GetItemSoundComponent()->Stop();
 	}
 }
