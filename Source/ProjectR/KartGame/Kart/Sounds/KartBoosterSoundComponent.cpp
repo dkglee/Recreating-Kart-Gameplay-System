@@ -43,7 +43,7 @@ void UKartBoosterSoundComponent::InitializeComponent()
 		Kart->GetBoosterComponent()->OnBoosterActivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoosterActivated);
 		Kart->GetBoosterComponent()->OnInstantBoosterActivated.AddDynamic(this, &UKartBoosterSoundComponent::OnInstantBoosterActivated);
 		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoostersDeactivated);
-		Kart->GetBoosterComponent()->OnBoosterDeactivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoostersDeactivated);
+		Kart->GetBoosterComponent()->OnInstantBoosterDeactivated.AddDynamic(this, &UKartBoosterSoundComponent::OnBoostersDeactivated);
 	}
 }
 
