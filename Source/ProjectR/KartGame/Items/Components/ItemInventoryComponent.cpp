@@ -34,6 +34,22 @@ UItemInventoryComponent::UItemInventoryComponent()
 	{
 		IA_UseItem = ia_useitem.Object;
 	}
+
+	
+	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	if (Items)
+	{
+		TArray<FName> RowNames = Items->GetRowNames();
+
+		for (const FName& RowName : RowNames)
+		{
+			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
+			if (Row != nullptr)
+			{
+				ItemMap.Add(Row->ItemID, *Row);
+			}
+		}
+	}
 }
 
 void UItemInventoryComponent::BeginPlay()
@@ -52,20 +68,6 @@ void UItemInventoryComponent::BeginPlay()
 		IgnoredActors.Add(*ActorItr);
 	}
 
-	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
-	if (Items)
-	{
-		TArray<FName> RowNames = Items->GetRowNames();
-
-		for (const FName& RowName : RowNames)
-		{
-			FItemTable* Row = Items->FindRow<FItemTable>(RowName, TEXT(""));
-			if (Row != nullptr)
-			{
-				ItemMap.Add(Row->ItemID, *Row);
-			}
-		}
-	}
 }
 
 void UItemInventoryComponent::InitializeComponent()

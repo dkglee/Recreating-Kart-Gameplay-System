@@ -3,10 +3,7 @@
 
 #include "KartDraftComponent.h"
 
-#include <KartGame/UIs/NotificationUI/NotificationUI.h>
-
 #include "EngineUtils.h"
-#include "FastLogger.h"
 #include "Kart.h"
 #include "KartAccelerationComponent.h"
 #include "KartNetworkSyncComponent.h"
@@ -15,6 +12,7 @@
 #include "Components/RadialSlider.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/NotificationUI/NotificationUI.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
