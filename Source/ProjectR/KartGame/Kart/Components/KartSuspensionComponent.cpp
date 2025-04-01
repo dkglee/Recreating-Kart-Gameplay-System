@@ -45,7 +45,7 @@ bool UKartSuspensionComponent::ProcessSuspension(FVector& LineLocation)
 
 	FHitResult HitResult;
 
-	TArray<AActor*> ActorsToIgnore;
+	TArray<AActor*> ActorsToIgnore;	
 	ActorsToIgnore.Add(Kart);
 
 	// UKismetSystemLibrary::LineTraceSingle(GetWorld(), Start, End, TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForOneFrame, HitResult, true);

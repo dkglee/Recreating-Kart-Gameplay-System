@@ -39,4 +39,7 @@ protected:
 	virtual void OnBoosterActivated(float BoosterTime);
 	UFUNCTION()
 	virtual void OnBoosterDeactivated();
+
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 };
