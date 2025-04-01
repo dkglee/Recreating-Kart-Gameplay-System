@@ -4,12 +4,14 @@
 #include "KartFrictionComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "Components/BoxComponent.h"
 #include "InputAction.h"
 #include "Kart.h"
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartSystemLibrary.h"
+#include "KartGame/Items/Components/ItemInteractionComponent.h"
 
 
 // Sets default values for this component's properties
@@ -224,6 +226,8 @@ void UKartFrictionComponent::InitializeComponent()
 		KartBody = Cast<UBoxComponent>(Kart->GetRootComponent());
 		WheelLR = Kart->GetLR_Wheel();
 		WheelRR = Kart->GetRR_Wheel();
+
+		Kart->GetItemInteractionComponent()->InteractionDelegate.AddDynamic(this, &UKartFrictionComponent::OnItemInteraction);
 	}
 }
 
@@ -300,6 +304,7 @@ void UKartFrictionComponent::OnItemInteraction()
 	// 계속해서 유지되는 판정이 되려나?
 	bDrift = false;
 	bDriftInput = false;
+	FFastLogger::LogConsole(TEXT("Drift End"));
 }
 
 void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue)
