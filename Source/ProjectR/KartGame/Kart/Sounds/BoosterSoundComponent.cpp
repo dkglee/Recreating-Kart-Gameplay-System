@@ -39,7 +39,7 @@ void UBoosterSoundComponent::InitializeComponent()
 	Super::InitializeComponent();
 
 	Kart = Cast<AKart>(GetOwner());
-	if (Kart)
+	if (Kart && Kart->IsLocallyControlled())
 	{
 		Kart->GetBoosterComponent()->OnBoosterActivated.AddDynamic(this, &UBoosterSoundComponent::OnBoosterActivated);
 		Kart->GetBoosterComponent()->OnInstantBoosterActivated.AddDynamic(this, &UBoosterSoundComponent::OnInstantBoosterActivated);
