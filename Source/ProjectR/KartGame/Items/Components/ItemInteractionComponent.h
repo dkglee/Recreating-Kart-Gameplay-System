@@ -7,7 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "ItemInteractionComponent.generated.h"
 
-DECLARE_DELEGATE_OneParam(FInteraction, bool);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteraction);
 
 UENUM(BlueprintType)
 enum class EInteractionType : uint8

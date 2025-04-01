@@ -565,7 +565,7 @@ void UItemInventoryComponent::NetMulticast_PlayMissileAimSound_Implementation(bo
 	auto* ItemSoundComponent = Kart->GetItemSoundComponent();
 	if (bIsLockOn)
 	{
-		if (ItemSoundComponent->GetSound() == ItemSoundComponent->MissileLockOnSoundSource)
+		if (ItemSoundComponent->GetSound() == ItemSoundComponent->GetMissileLockOnSoundSource())
 		{
 			return;
 		}
@@ -573,7 +573,7 @@ void UItemInventoryComponent::NetMulticast_PlayMissileAimSound_Implementation(bo
 	}
 	else
 	{
-		if (ItemSoundComponent->GetSound() == ItemSoundComponent->MissileFindTargetSoundSource)
+		if (ItemSoundComponent->GetSound() == ItemSoundComponent->GetMissileFindTargetSoundSource())
 		{
 			return;
 		}

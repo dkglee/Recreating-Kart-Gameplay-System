@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonUtil.h"
 #include "Components/AudioComponent.h"
 #include "KartItemSoundComponent.generated.h"
 
@@ -28,7 +29,10 @@ public:
 	void PlayMissileFindTargetSound();
 	void PlayMissileLockOnSound();
 
-public:
+	GETTER(USoundBase*, MissileLockOnSoundSource);
+	GETTER(USoundBase*, MissileFindTargetSoundSource);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Sound", meta = (AllowPrivateAccess = "true"))
 	class USoundBase* ShieldSoundSource;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Sound", meta = (AllowPrivateAccess = "true"))

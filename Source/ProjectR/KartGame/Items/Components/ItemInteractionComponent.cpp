@@ -106,6 +106,7 @@ void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 
 	bIsInteraction = true;
 	CurrentType = interactionType;
+	InteractionDelegate.Broadcast();
 
 	switch (CurrentType)
 	{

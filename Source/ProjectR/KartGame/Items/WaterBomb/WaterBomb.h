@@ -36,9 +36,13 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_SetWaterBombScale(FVector resultScale);
 #pragma endregion
-	
-private:
 
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_PlayWaterBombExplosionSound();
+private:
+	UPROPERTY()
+	class UWaterBombSoundComponent* soundComponent;
+	
 	// 이동 변수
 #pragma region MovementVariance
 	UPROPERTY()
