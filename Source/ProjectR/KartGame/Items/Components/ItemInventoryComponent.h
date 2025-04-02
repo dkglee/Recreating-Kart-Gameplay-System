@@ -145,6 +145,8 @@ private:
 
 public:
 	UPROPERTY()
+	UDataTable* Items;
+	UPROPERTY()
 	TMap<int32, FItemTable> ItemMap;
 
 };

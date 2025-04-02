@@ -38,7 +38,7 @@ UItemInventoryComponent::UItemInventoryComponent()
 	}
 
 	
-	UDataTable* Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
+	Items = LoadObject<UDataTable>(nullptr, TEXT("'/Game/Items/DataTable/ItemTable.ItemTable'"));
 	if (Items)
 	{
 		TArray<FName> RowNames = Items->GetRowNames();
