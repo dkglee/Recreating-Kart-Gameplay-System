@@ -4,6 +4,7 @@
 #include "KartBoosterSoundComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "FastLogger.h"
 #include "InputMappingContext.h"
 #include "KartAccelerationComponent.h"
 #include "KartAirBoostVFXComponent.h"
@@ -277,25 +278,11 @@ AKart::AKart()
 	}
 }
 
-// Called when the game starts or when spawned
-void AKart::BeginPlay()
+void AKart::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
-	Super::BeginPlay();
-	
-	// Kart Input Binding
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	
-	if (PC)
-	{
-		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
-		if (SubSystem)
-		{
-			SubSystem->AddMappingContext(Imc_Kart, 0);
-		}
-	}
-
 	if (IsLocallyControlled())
 	{
+		FFastLogger::LogConsole(TEXT("Kart BeginPlay"));
 		RootBox->SetSimulatePhysics(true);
 		SpeedLineUI = CreateWidget<USpeedLineUI>(GetWorld(), SpeedLineUIClass);
 		if (SpeedLineUI)
@@ -312,8 +299,29 @@ void AKart::BeginPlay()
 	}
 	else
 	{
+		FFastLogger::LogConsole(TEXT("Kart BeginPlay!!!!!!!"));
 		RootBox->SetSimulatePhysics(false);
 	}
+}
+
+// Called when the game starts or when spawned
+void AKart::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Kart Input Binding
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC)
+	{
+		UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
+		if (SubSystem)
+		{
+			SubSystem->AddMappingContext(Imc_Kart, 0);
+		}
+	}
+
+	PC->OnPossessedPawnChanged.AddDynamic(this, &AKart::OnPossessedPawnChanged);
+	
 }
 
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -336,6 +344,12 @@ void AKart::Tick(float DeltaTime)
 
 	bool flag = true;
 	bool bDrift = FrictionComponent->GetbDrift();
+
+	if (RootBox->IsSimulatingPhysics() == false)
+	{
+		// RootBox->SetSimulatePhysics(true);
+		FFastLogger::LogScreen(FColor::Red, TEXT("RootBox is not simulating physics"));
+	}
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->GetbIsInteraction() == false && RootBox->IsSimulatingPhysics())
 	{
