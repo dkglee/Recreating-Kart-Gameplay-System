@@ -34,7 +34,7 @@ void ARacePlayerController::BeginPlay()
 
 	CreateMainHUD();
 
-	OnPossessedPawnChanged.AddDynamic(this, &ThisClass::OnPossessedPlayer);
+	// OnPossessedPawnChanged.AddDynamic(this, &ThisClass::OnPossessedPlayer);
 }
 
 void ARacePlayerController::CreateMainHUD()
@@ -128,8 +128,10 @@ void ARacePlayerController::SpawnKartToTransform(const FTransform& Transform)
 	{
 		return;
 	}
-	
-	AKart* Kart = GetWorld()->SpawnActor<AKart>(KartBodyClass);
+
+	FTransform NewTransform;
+	NewTransform.SetLocation(FVector(1000, 1000, 1000));
+	AKart* Kart = GetWorld()->SpawnActor<AKart>(KartBodyClass, NewTransform);
 	Possess(Kart);
 	Kart->SetbCanMove(false);
 	
@@ -165,57 +167,57 @@ void ARacePlayerController::OnRep_Pawn()
 {
 	Super::OnRep_Pawn();
 	//
-	// AKart* Kart = Cast<AKart>(GetPawn());
-	// if (Kart)
-	// {
-	// 	Kart->OnPossessedPawnChanged(nullptr, nullptr);
-	// }
-	//
-	// if (HasAuthority())
-	// {
-	// 	FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
-	// }
-	// else
-	// {
-	// 	FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
-	// }
+	AKart* Kart = Cast<AKart>(GetPawn());
+	if (Kart)
+	{
+		Kart->OnPossessedPawnChanged(nullptr, nullptr);
+	}
+	
+	if (HasAuthority())
+	{
+		FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
+	}
+	else
+	{
+		FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
+	}
 }
 
 void ARacePlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	// AKart* Kart = Cast<AKart>(GetPawn());
-	// if (Kart)
-	// {
-	// 	Kart->OnPossessedPawnChanged(nullptr, nullptr);
-	// }
-	//
-	// if (HasAuthority())
-	// {
-	// 	FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
-	// }
-	// else
-	// {
-	// 	FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
-	// }
+	AKart* Kart = Cast<AKart>(GetPawn());
+	if (Kart)
+	{
+		Kart->OnPossessedPawnChanged(nullptr, nullptr);
+	}
+	
+	if (HasAuthority())
+	{
+		FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
+	}
+	else
+	{
+		FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
+	}
 }
 
 void ARacePlayerController::OnPossessedPlayer(APawn* InOldPawn, APawn* InNewPawn)
 {
-	AKart* Kart = Cast<AKart>(InNewPawn);
-	if (Kart)
-	{
-		Kart->OnPossessedPawnChanged(nullptr, nullptr);
-		if (HasAuthority())
-		{
-			FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
-		}
-		else
-		{
-			FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
-		}
-	}
+	// AKart* Kart = Cast<AKart>(InNewPawn);
+	// if (Kart)
+	// {
+	// // 	Kart->OnPossessedPawnChanged(nullptr, nullptr);
+	// 	if (HasAuthority())
+	// 	{
+	// 		FFastLogger::LogScreen(FColor::Red, TEXT("Server Rep Pawn"));
+	// 	}
+	// 	else
+	// 	{
+	// 		FFastLogger::LogScreen(FColor::Red, TEXT("Client Rep Pawn"));
+	// 	}
+	// }
 
 }
 
