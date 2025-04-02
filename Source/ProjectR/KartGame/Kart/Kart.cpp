@@ -259,6 +259,26 @@ AKart::AKart()
 	Shield->SetNetAddressable();
 	Shield->SetIsReplicated(true);
 
+	Bubble = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bubble"));
+	Bubble->SetupAttachment(RootBox);
+	Bubble->SetCollisionProfileName(TEXT("NoCollision"));
+	Bubble->SetGenerateOverlapEvents(false);
+	Bubble->SetRelativeScale3D(FVector(2.5f));
+	Bubble->SetVisibility(false);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> sphereMesh (TEXT("'/Engine/BasicShapes/Sphere.Sphere'"));
+	if (sphereMesh.Succeeded())
+	{
+		Bubble->SetStaticMesh(sphereMesh.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> sphereMat (TEXT("'/Game/Items/VFX/Material/M_Bubble.M_Bubble'"));
+	if (sphereMat.Succeeded())
+	{
+		Bubble->SetMaterial(0, sphereMat.Object);
+	}
+
+		
 	BoostSoundComponent = CreateDefaultSubobject<UKartBoosterSoundComponent>(TEXT("BoostSoundComponent"));
 	BoostSoundComponent->SetupAttachment(RootBox);
 	BoostSoundComponent->SetIsReplicated(false);

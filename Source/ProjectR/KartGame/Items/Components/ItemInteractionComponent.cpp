@@ -178,6 +178,7 @@ void UItemInteractionComponent::WaterBombHitInteraction()
 	InitialQuat = Kart->GetActorQuat();
 	InitialRot = Kart->GetActorRotation();
 	Client_ChangePhysics(false);
+	Client_StuckInBubble(true);
 	NetMulticast_WaterBombInteraction_VisibleUI(true);
 }
 
@@ -240,6 +241,7 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 		WaterBombDecreaseTime = 0.f;
 		resultRot = InitialRot;	
 		Client_ChangePhysics(true);
+		Client_StuckInBubble(false);
 		NetMulticast_WaterBombInteraction_VisibleUI(false);
 	}
 	
@@ -270,6 +272,13 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
 	FFastLogger::LogConsole(TEXT("상호작용 끝"));
+}
+
+void UItemInteractionComponent::Client_StuckInBubble_Implementation(bool value)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+	Kart->GetBubble()->SetVisibility(value);
 }
 
 void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()

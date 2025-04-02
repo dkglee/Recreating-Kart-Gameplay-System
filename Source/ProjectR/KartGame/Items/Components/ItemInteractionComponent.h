@@ -69,6 +69,9 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_WaterBombInteraction_VisibleUI(bool value);
+
+	UFUNCTION(Client, Reliable)
+	void Client_StuckInBubble(bool value);
 #pragma endregion 
 
 #pragma region ShieldFunction
