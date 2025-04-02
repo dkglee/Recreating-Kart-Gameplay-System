@@ -63,7 +63,7 @@ AKart::AKart()
 	SetRootComponent(RootBox);
 	RootBox->SetBoxExtent({103.000000, 52.000000, 25});
 
-	RootBox->SetSimulatePhysics(true);
+	RootBox->SetSimulatePhysics(false);
 	RootBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	RootBox->SetCollisionResponseToAllChannels(ECR_Block);
 	// Rootbox의 Simulation Generate Hit Event를 true로 해줘야 물리 충돌이 발생할 때 Hit Event가 발생함.
@@ -282,7 +282,7 @@ void AKart::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
 	if (IsLocallyControlled())
 	{
-		FFastLogger::LogScreen(FColor::Red, TEXT("Kart Possessed"));
+		FFastLogger::LogScreen(FColor::Red, TEXT("Posseessed"));
 		RootBox->SetSimulatePhysics(true);
 		SpeedLineUI = CreateWidget<USpeedLineUI>(GetWorld(), SpeedLineUIClass);
 		if (SpeedLineUI)
@@ -299,7 +299,7 @@ void AKart::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 	}
 	else
 	{
-		FFastLogger::LogScreen(FColor::Red, TEXT("Kart UnPossessed"));
+		FFastLogger::LogScreen(FColor::Red, TEXT("UnPosseessed"));
 		RootBox->SetSimulatePhysics(false);
 	}
 }
@@ -318,15 +318,6 @@ void AKart::BeginPlay()
 		{
 			SubSystem->AddMappingContext(Imc_Kart, 0);
 		}
-	}
-
-	if (HasAuthority())
-	{
-		PC->OnPossessedPawnChanged.AddDynamic(this, &AKart::OnPossessedPawnChanged);
-	}
-	else
-	{
-		OnPossessedPawnChanged(nullptr, nullptr);
 	}
 }
 
