@@ -61,7 +61,7 @@ private:
 	bool bDraftStart = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
-	float DraftStartTime = 3.f;
+	float DraftStartTime = 2.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Draft", meta = (AllowPrivateAccess = "true"))
 	float DraftDuration = 2.3f;

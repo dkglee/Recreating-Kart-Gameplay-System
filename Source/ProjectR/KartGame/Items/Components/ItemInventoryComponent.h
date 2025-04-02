@@ -144,8 +144,6 @@ private:
 #pragma endregion
 
 public:
-	
-	
 	UPROPERTY()
 	TMap<int32, FItemTable> ItemMap;
 

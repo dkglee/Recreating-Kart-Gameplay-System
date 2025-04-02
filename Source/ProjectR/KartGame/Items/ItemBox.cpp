@@ -84,7 +84,8 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 	for (const auto& Item : itemMap)
 	{
 		CurrentWeight += Item.Value.ItemWeight;
-		FFastLogger::LogConsole(TEXT("CurrentWeight : %d"), CurrentWeight);
+		
+		FFastLogger::LogConsole(TEXT("%s : %d"), *FCommonUtil::GetClassEnumKeyAsString(Item.Value.ItemName), Item.Value.ItemWeight);
 		if (RandomValue < CurrentWeight)
 		{
 			RandomItem = Item.Value;
@@ -96,8 +97,8 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 	{
 		while (RandomItem.ItemID < 10)
 		{
+			// 1등은 부스터 제외
 			RandomValue = FMath::RandRange(1,TotalWeight - 1);
-			FFastLogger::LogConsole(TEXT("(부스터여서 다시뽑기)RandomWeight : %d"), RandomValue);
 			CurrentWeight = 0;
 			
 			for (const auto& Item : itemMap)
@@ -111,14 +112,31 @@ void AItemBox::Server_MakeRandomItem_Implementation(class UItemInventoryComponen
 			}
 		}
 	}
+	// else if (ps->GetRanking() == GetWorld()->GetNumControllers())
+	// {
+	// 	while (RandomItem.ItemID > 10)
+	// 	{
+	// 		// 꼴등은 부스터만
+	// 		RandomValue = FMath::RandRange(1,TotalWeight - 1);
+	// 		CurrentWeight = 0;
+	// 		
+	// 		for (const auto& Item : itemMap)
+	// 		{
+	// 			CurrentWeight += Item.Value.ItemWeight;
+	// 			if (RandomValue < CurrentWeight)
+	// 			{
+	// 				RandomItem = Item.Value;
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// }
 	
 	NetMultiCast_MakeRandomItem(ItemInventoryComponent, RandomItem);
 }
 
 void AItemBox::NetMultiCast_MakeRandomItem_Implementation(class UItemInventoryComponent* ItemInventoryComponent, const FItemTable Item)
 {
-	//FFastLogger::LogConsole(TEXT("IsServer: %s, Role: %d"), HasAuthority() ? TEXT("True") : TEXT("False"), GetLocalRole());
-	
 	if (HasAuthority())
 	{
 		ItemInventoryComponent->GetItem(Item);
