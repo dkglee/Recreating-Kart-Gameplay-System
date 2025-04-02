@@ -38,5 +38,6 @@ protected:
 	virtual void OnBoosterDeactivated() override;
 
 private:
+	UPROPERTY()
 	FVector InstantBoostLength{100, 0, 0};
 };

@@ -22,12 +22,14 @@ protected:
 	virtual void NativePreConstruct() override;
 
 private:
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnCountEndNotified;
 	
 	// TODO: 해당 로직은 추후 GameState로 이전되어 연동될 예정
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
 	uint8 MaxCountDown = 10;
-	
+
+	UPROPERTY()
 	uint8 CountDownNum = 10;
 
 	UPROPERTY(meta = (BindWidget))

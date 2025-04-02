@@ -34,8 +34,10 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Options", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCurveFloat> RollbackEffectCurve;
-	
+
+	UPROPERTY()
 	FOnTimelineFloat RollbackEffectCallback;
+	UPROPERTY()
 	FOnTimelineEvent RollbackEffectFinish;
 
 	UFUNCTION()

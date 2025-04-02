@@ -54,5 +54,6 @@ private:
 	UPROPERTY()
 	float LineShowTime = 0.15f;
 
+	UPROPERTY()
 	int32 SpeedLineUICount = 0;
 };

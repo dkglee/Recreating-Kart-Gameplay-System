@@ -22,7 +22,7 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 	
-private: 
+private:
 	FSessionSearchData SessionSearchData;
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
 	

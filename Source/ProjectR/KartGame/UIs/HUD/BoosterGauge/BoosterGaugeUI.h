@@ -27,7 +27,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class AKart* Kart;
 
+	UPROPERTY()
 	float WidgetDriftGauge = 0.0f;
+	UPROPERTY()
 	float WidgetDriftGaugeMax = 100.0f;
 
 	UPROPERTY(meta = (BindWidget))

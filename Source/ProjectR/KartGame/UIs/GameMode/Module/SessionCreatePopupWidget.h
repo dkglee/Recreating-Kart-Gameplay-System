@@ -31,6 +31,7 @@ protected:
 	virtual void NativeOnInitialized() override;
 	
 private:
+	UPROPERTY()
 	EMatchType SelectedMode = EMatchType::Item;
 	
 	UPROPERTY(meta = (BindWidget))
