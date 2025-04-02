@@ -18,7 +18,10 @@ protected:
 	virtual void Init() override;
 
 private:
+	UPROPERTY()
 	uint8 InGamePlayerCount = 1;
+	
+	UPROPERTY()
 	uint8 PingCount = 0;
 
 	UFUNCTION()

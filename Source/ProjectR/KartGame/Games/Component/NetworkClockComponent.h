@@ -38,5 +38,6 @@ public:
 	GETTER(float, ServerTime);
 
 private:
+	UPROPERTY()
 	float ServerTime = 0.0f;
 };

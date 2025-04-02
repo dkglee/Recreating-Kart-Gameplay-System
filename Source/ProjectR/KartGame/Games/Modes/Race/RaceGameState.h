@@ -39,10 +39,13 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
+	UPROPERTY()
 	uint8 MaxLaps = 3;
 	
+	UPROPERTY()
 	uint16 MaxCheckPoint = 0;
 
+	UPROPERTY()
 	uint8 CurrentPlayerCount = 0;
 
 	UPROPERTY()
