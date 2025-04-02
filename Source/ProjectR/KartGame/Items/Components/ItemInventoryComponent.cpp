@@ -8,8 +8,10 @@
 #include "FastLogger.h"
 #include "ItemInteractionComponent.h"
 #include "Kart.h"
+#include "KartAccelerationComponent.h"
 #include "KartFrictionComponent.h"
 #include "KartItemSoundComponent.h"
+#include "KartSteeringComponent.h"
 #include "Components/Image.h"
 #include "Components/WidgetComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
@@ -149,21 +151,31 @@ void UItemInventoryComponent::GetBoosterItem()
 
 void UItemInventoryComponent::UseItem()
 {
+	// 마지막 랩 도착 후 안움직일 때 아이템 사용 방지
 	if (!Kart->GetbCanMove())
 	{
 		return;
 	}
-	
+
+	// 아이템 없을 때 아이템 사용 방지
 	if (Inventory.Num() == 0)
 	{
 		return;
 	}
 
+	// 부스터 사용중에 다른 부스터 사용 불가
 	if (Kart->GetbUsingBooster() == true && Inventory[0].ItemName == EItemName::Booster)
 	{
 		return;
 	}
 
+	// 앞키 안누르고 부스터 누르면 사용 불가
+	if (Kart->GetAccelerationComponent()->GetTargetAcceleration() == 0 && Inventory[0].ItemName == EItemName::Booster)
+	{
+		return;
+	}
+
+	// 쉴드 사용 중일때 쉴드 사용 불가
 	if (Kart->GetItemInteractionComponent()->bShieldOn == true && Inventory[0].ItemName == EItemName::Shield)
 	{
 		return;
