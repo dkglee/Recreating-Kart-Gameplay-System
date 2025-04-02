@@ -282,7 +282,7 @@ void AKart::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
 	if (IsLocallyControlled())
 	{
-		FFastLogger::LogConsole(TEXT("Kart BeginPlay"));
+		FFastLogger::LogScreen(FColor::Red, TEXT("Kart Possessed"));
 		RootBox->SetSimulatePhysics(true);
 		SpeedLineUI = CreateWidget<USpeedLineUI>(GetWorld(), SpeedLineUIClass);
 		if (SpeedLineUI)
@@ -299,7 +299,7 @@ void AKart::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 	}
 	else
 	{
-		FFastLogger::LogConsole(TEXT("Kart BeginPlay!!!!!!!"));
+		FFastLogger::LogScreen(FColor::Red, TEXT("Kart UnPossessed"));
 		RootBox->SetSimulatePhysics(false);
 	}
 }
@@ -320,8 +320,14 @@ void AKart::BeginPlay()
 		}
 	}
 
-	PC->OnPossessedPawnChanged.AddDynamic(this, &AKart::OnPossessedPawnChanged);
-	
+	if (HasAuthority())
+	{
+		PC->OnPossessedPawnChanged.AddDynamic(this, &AKart::OnPossessedPawnChanged);
+	}
+	else
+	{
+		OnPossessedPawnChanged(nullptr, nullptr);
+	}
 }
 
 void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -336,20 +342,11 @@ void AKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// FString localstr = FCommonUtil::GetClassEnumKeyAsString(GetLocalRole());
-	// FString remotestr = FCommonUtil::GetClassEnumKeyAsString(GetRemoteRole());
-	// FVector temp = GetActorLocation();
-	// temp.Z += 100.f;
 	if (!IsLocallyControlled()) return ;
 
 	bool flag = true;
 	bool bDrift = FrictionComponent->GetbDrift();
 
-	if (RootBox->IsSimulatingPhysics() == false)
-	{
-		// RootBox->SetSimulatePhysics(true);
-		FFastLogger::LogScreen(FColor::Red, TEXT("RootBox is not simulating physics"));
-	}
 	// 로컬의 위치만 업데이트 됨
 	if(ItemInteractionComponent->GetbIsInteraction() == false && RootBox->IsSimulatingPhysics())
 	{
