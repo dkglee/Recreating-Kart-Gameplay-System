@@ -54,15 +54,18 @@ void UKartDraftComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	if (Kart->IsLocallyControlled() == false) return;
 
-	if (bDraftStart == false)
+	if (Kart->GetbCanMove())
 	{
-		FVector start = Kart->GetRootComponent()->GetComponentLocation();
-		FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * DraftDistance;
-		Server_FindTarget(start, end, TraceBoxHalfSize);
-	}
-	else
-	{
-		AddDraftForce();
+		if (bDraftStart == false)
+		{
+			FVector start = Kart->GetRootComponent()->GetComponentLocation();
+			FVector end = Kart->GetRootComponent()->GetComponentLocation() + Kart->GetRootComponent()->GetForwardVector() * DraftDistance;
+			Server_FindTarget(start, end, TraceBoxHalfSize);
+		}
+		else
+		{
+			AddDraftForce();
+		}
 	}
 }
 
