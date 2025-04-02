@@ -69,7 +69,8 @@ public:
 	UFUNCTION()
 	void ClearAcceleration();
 #pragma endregion
-	
+
+	UPROPERTY()
 	FInputBindingDelegate OnInputBindingDelegate;
 
 private:
