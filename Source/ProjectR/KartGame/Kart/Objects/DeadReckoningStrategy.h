@@ -28,6 +28,8 @@ private:
 	UPROPERTY()
 	FKartInfo LastUpdatedKartInfo;
 
+	UPROPERTY()
 	FVector PredictedPosition;
+	UPROPERTY()
 	FRotator PredictedRotation;
 };

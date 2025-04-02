@@ -182,6 +182,7 @@ private:
 #pragma endregion
 
 #pragma region Etc
+	UPROPERTY()
 	TArray<FVector> LineTraceLocations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Etc", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Bubble;

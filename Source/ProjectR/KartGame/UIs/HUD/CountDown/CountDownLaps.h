@@ -16,8 +16,10 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnCountEndNotified;
-	
+
+	UPROPERTY()
 	bool IsInitialize = false;
 	
 	UPROPERTY(meta = (BindWidget))

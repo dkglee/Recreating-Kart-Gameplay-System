@@ -43,6 +43,7 @@ public:
 	GETTER(float, TargetAcceleration);
 #pragma endregion
 
+	UPROPERTY()
 	FOnAccelerationStarted OnAccelerationStarted;
 private:
 	void OnMovementInputDetected(const FInputActionValue& InputActionValue);
@@ -76,6 +77,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Movement", meta = (AllowPrivateAccess = "true"))
 	float TargetAcceleration;
 
+	UPROPERTY()
 	bool bWasSteering = false;
+	UPROPERTY()
 	float ForwardInputDetected = false;
 };

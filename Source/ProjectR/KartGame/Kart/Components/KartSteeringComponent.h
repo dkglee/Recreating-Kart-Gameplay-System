@@ -85,8 +85,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Steering", meta = (AllowPrivateAccess = "true"))
 	float TurnScaling = 350.0f;
 
+	UPROPERTY()
 	bool bWasDrifting = false;
+	UPROPERTY()
 	float DriftBoostTimer = 0.0f;
+	UPROPERTY()
 	float DriftBoostDuration = 0.25f;
+	UPROPERTY()
 	bool bDriftKeyEdged = false;
 };

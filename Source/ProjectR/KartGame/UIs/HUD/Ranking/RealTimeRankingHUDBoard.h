@@ -28,5 +28,6 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> RankListOverlay;
 
+	UPROPERTY()
 	FTimerHandle InitializeLoopTimer;
 };

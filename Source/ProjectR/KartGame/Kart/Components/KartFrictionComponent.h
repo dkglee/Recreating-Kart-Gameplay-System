@@ -124,6 +124,7 @@ private:
 	float MinimumFrictionDelay = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart Friction", meta = (AllowPrivateAccess = "true"))
 	FTimerHandle FrictionDelayTimer;
+	UPROPERTY()
 	float bForceDrfit = false;
 
 #pragma region BoosterGauage

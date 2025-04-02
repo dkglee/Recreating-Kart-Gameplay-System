@@ -49,10 +49,14 @@ public:
 	void ProcessBooster(bool bBoosterUsing);
 
 	GETTER(bool, bOnBooster);
-	
+
+	UPROPERTY()
 	FOnBoosterActivated OnBoosterActivated;
+	UPROPERTY()
 	FOnBoosterDeactivated OnBoosterDeactivated;
+	UPROPERTY()
 	FOnInstantBoosterActivated OnInstantBoosterActivated;
+	UPROPERTY()
 	FOnInstantBoosterDeactivated OnInstantBoosterDeactivated;
 	
 	

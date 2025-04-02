@@ -22,7 +22,9 @@ protected:
 	virtual void NativePreConstruct() override;
 
 private:
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnCountEndNotified;
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnCountStartNotified;
 	
 	// TODO: 해당 로직은 추후 GameState로 이전되어 연동될 예정
