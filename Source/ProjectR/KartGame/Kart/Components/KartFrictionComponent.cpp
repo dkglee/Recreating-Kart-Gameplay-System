@@ -298,7 +298,7 @@ void UKartFrictionComponent::RollbackFriction()
 }
 
 
-void UKartFrictionComponent::OnItemInteraction()
+void UKartFrictionComponent::OnItemInteraction(bool bStart)
 {
 	// 이 변수를 수정하면 자연스럽게 업데이트가 될 듯 : 드리프트가 눌린 상태에서 맞고 입력이 들어오면 드리프트가
 	// 계속해서 유지되는 판정이 되려나?
@@ -307,6 +307,10 @@ void UKartFrictionComponent::OnItemInteraction()
 	// 중복 호출되기는 하는데 문제가 될 게 있나?
 	OnDriftEnded.Broadcast();
 	FFastLogger::LogConsole(TEXT("Drift End"));
+	if (!bStart)
+	{
+		OnInstantBoost.Broadcast();
+	}
 }
 
 void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue)

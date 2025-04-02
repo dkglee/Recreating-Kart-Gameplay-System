@@ -107,7 +107,7 @@ void UItemInteractionComponent::Interaction(EInteractionType interactionType)
 
 	bIsInteraction = true;
 	CurrentType = interactionType;
-	InteractionDelegate.Broadcast();
+	InteractionDelegate.Broadcast(true);
 
 	switch (CurrentType)
 	{
@@ -276,6 +276,11 @@ void UItemInteractionComponent::NetMulticast_WaterBombInteraction_VisibleUI_Impl
 void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable)
 {
 	if (Kart->IsLocallyControlled() == false) return;
+
+	if (bEnable == true)
+	{
+		InteractionDelegate.Broadcast(false);
+	}
 	
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
