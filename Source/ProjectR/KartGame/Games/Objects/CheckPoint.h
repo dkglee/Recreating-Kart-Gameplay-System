@@ -28,6 +28,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+	UPROPERTY()
 	TArray<uint16> CurrentCheckPointPinNumArray;
 	
 	UPROPERTY(EditAnywhere, Category = "Options|CheckPoint", meta = (AllowPrivateAccess = true))

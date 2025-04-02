@@ -102,6 +102,7 @@ private:
 	class UParticleSystem* Explosion;
 	
 public:
+	UPROPERTY()
 	FInteraction InteractionDelegate;
 	
 	UPROPERTY()
