@@ -16,6 +16,7 @@ class PROJECTR_API UGameStartCinematicUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
 	FOnCinematicEndNotified OnCinematicEndNotified;
 	
 protected:
@@ -34,11 +35,13 @@ private:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> CinematicEndNearAnimation;
 	
+	UPROPERTY()
 	bool IsStartAnimationWhenCinematicEnd = false;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Options|Cinematic", meta = (AllowPrivateAccess = true))
 	float RemainTimeToStartAnimationWhenCinematicEnd = 3.f;
 	
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnAnimationEndNotified;
 
 	UFUNCTION()

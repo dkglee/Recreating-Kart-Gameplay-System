@@ -32,6 +32,7 @@ public:
 	GETTER_SETTER(FDateTime, RaceEndTime);
 	GETTER_SETTER(bool, IsRaceEnd);
 
+	UPROPERTY()
 	FOnGoNextLapNotified OnGoNextLapNotified;
 
 protected:

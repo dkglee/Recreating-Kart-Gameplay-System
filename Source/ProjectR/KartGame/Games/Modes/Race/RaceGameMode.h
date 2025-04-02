@@ -15,6 +15,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	FTimerHandle GameStartTimerHandle;
 
 	UFUNCTION()

@@ -23,6 +23,7 @@ protected:
 	virtual void NativeOnInitialized() override;
 	
 private:
+	UPROPERTY()
 	FWidgetAnimationDynamicEvent OnAnimationEndNotified;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
