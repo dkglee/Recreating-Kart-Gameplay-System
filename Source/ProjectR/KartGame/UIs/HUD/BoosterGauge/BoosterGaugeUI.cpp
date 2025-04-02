@@ -15,7 +15,7 @@ void UBoosterGaugeUI::Init()
 		Kart->GetFrictionComponent()->OnBoosterGaugeUpdated.AddDynamic(this, &UBoosterGaugeUI::OnBoosterGaugeUpdated);
 	}
 
-	if (GetWorld()->GetMapName().Compare(TEXT("ItemTrack")))
+	if (GetWorld()->GetMapName().Contains(TEXT("ItemTrack")))
 	{
 		SetVisibility(ESlateVisibility::Hidden);
 	}
