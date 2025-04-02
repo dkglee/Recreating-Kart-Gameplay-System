@@ -59,6 +59,8 @@ public:
 private:
 	UFUNCTION()
 	void OnItemInteraction(bool bStart);
+	UFUNCTION()
+	void OnGameStart();
 	void OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue);
 	void OnBroadCastDriftKeyPressed(const FInputActionValue& InputActionValue);
 	void OnDriftInputDetected(const FInputActionValue& InputActionValue);

@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Kart.h"
+#include "KartFrictionComponent.h"
 #include "RaceGameMode.h"
 #include "RaceGameState.h"
 #include "KartGame/UIs/HUD/MainUI.h"
@@ -91,6 +92,7 @@ void ARacePlayerController::KartSetToMove()
 	
 	AKart* Kart = Cast<AKart>(GetPawn());
 	Kart->SetbCanMove(true);
+	Kart->GetFrictionComponent()->OnInstantBoost.Broadcast();
 }
 
 void ARacePlayerController::CountDownToEndGame()

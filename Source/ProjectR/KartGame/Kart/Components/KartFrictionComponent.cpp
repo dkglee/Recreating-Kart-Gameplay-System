@@ -11,7 +11,10 @@
 #include "KartSteeringComponent.h"
 #include "KartSuspensionComponent.h"
 #include "KartSystemLibrary.h"
+#include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/Items/Components/ItemInteractionComponent.h"
+#include "KartGame/UIs/HUD/MainUI.h"
+#include "KartGame/UIs/HUD/CountDown/CountDownToStart.h"
 
 
 // Sets default values for this component's properties
@@ -309,8 +312,13 @@ void UKartFrictionComponent::OnItemInteraction(bool bStart)
 	FFastLogger::LogConsole(TEXT("Drift End"));
 	if (!bStart)
 	{
-		OnInstantBoost.Broadcast();
+		OnGameStart();
 	}
+}
+
+void UKartFrictionComponent::OnGameStart()
+{
+	OnInstantBoost.Broadcast();
 }
 
 void UKartFrictionComponent::OnBroadCastDriftKeyReleased(const FInputActionValue& InputActionValue)
