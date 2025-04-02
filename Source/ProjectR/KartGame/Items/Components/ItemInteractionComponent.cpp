@@ -285,6 +285,8 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
 	Kart->GetSpringArmComponent()->bInheritRoll = bEnable;
+	Kart->GetSpringArmComponent()->bInheritPitch = bEnable;
+	
 	FFastLogger::LogConsole(TEXT("상호작용 끝"));
 }
 
