@@ -15,7 +15,10 @@ void USessionCreatePopupWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 			this, &ThisClass::OnSessionCreated);
+	
 	CreateRoomButton->OnClicked.AddDynamic(this, &ThisClass::OnClickCreateRoomButton);
+	ModeSwitchButton->OnClicked.AddDynamic(this, &ThisClass::OnClickModeSwitchButton);
+	
 	RoomPlayerCountSlider->OnValueChanged.AddDynamic(this, &ThisClass::OnChangePlayerCount);
 	RoomPlayerCount->SetText(FText::FromString(FString::FromInt(
 		FMath::Floor(RoomPlayerCountSlider->GetValue()))));
@@ -53,7 +56,7 @@ void USessionCreatePopupWidget::OnClickCreateRoomButton()
 {
 	FSessionCreateData CreateData;
 	CreateData.IsPublic = GamePublicCheckBox->GetCheckedState() == ECheckBoxState::Checked;
-	CreateData.MatchType = EMatchType::Item;
+	CreateData.MatchType = SelectedMode;
 	CreateData.MaxPlayer = FMath::Floor(RoomPlayerCountSlider->GetValue());
 	CreateData.RoomName = RoomTitle->GetText().ToString();
 	CreateData.OnCreateSessionCompleteDelegate = OnCreateSessionCompleteDelegate;
@@ -73,4 +76,14 @@ void USessionCreatePopupWidget::OnSessionCreated(FName SessionName, bool IsCreat
 void USessionCreatePopupWidget::OnChangePlayerCount(float Value)
 {
 	RoomPlayerCount->SetText(FText::FromString(FString::FromInt(FMath::Floor(Value))));
+}
+
+void USessionCreatePopupWidget::OnClickModeSwitchButton()
+{
+	SelectedMode = (SelectedMode == EMatchType::Item)
+		? EMatchType::Speed : EMatchType::Item;
+	
+	ModeText->SetText(
+		FText::FromString(
+			SelectedMode == EMatchType::Item ? TEXT("아이템전") : TEXT("스피드전")));
 }

@@ -25,6 +25,18 @@ void FSessionUtil::Init()
 	OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
 }
 
+void FSessionUtil::Clear()
+{
+	OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(
+		OnCreateSessionCompleteDelegateHandle);
+	
+	OnlineSessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(
+		OnJoinSessionCompleteDelegateHandle);
+	
+	OnlineSessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(
+		OnJoinSessionCompleteDelegateHandle);
+}
+
 void FSessionUtil::CreateSession(const FSessionCreateData& SessionCreateData)
 {
 	if (!OnlineSessionInterface.IsValid())

@@ -29,6 +29,7 @@ public:
 	static IOnlineSessionPtr OnlineSessionInterface;
 	
 	static void Init();
+	static void Clear();
 	static void CreateSession(const FSessionCreateData& SessionCreateData);
 	static void SearchSession(FSessionSearchData& SessionSearchData);
 	static void JoinSession(const UWorld* World, FOnlineSessionSearchResult& Result,

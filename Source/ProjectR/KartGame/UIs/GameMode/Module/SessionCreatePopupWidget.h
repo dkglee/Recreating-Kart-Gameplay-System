@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "EnumUtil.h"
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/OnlineSessionDelegates.h"
 #include "SessionCreatePopupWidget.generated.h"
 
+enum class EMatchType : uint8;
 class UTextBlock;
 class USlider;
 class ALobbyPlayerController;
@@ -29,6 +31,8 @@ protected:
 	virtual void NativeOnInitialized() override;
 	
 private:
+	EMatchType SelectedMode = EMatchType::Item;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UEditableText> RoomTitle;
 	
@@ -46,12 +50,22 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> CreateRoomButton;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> ModeText;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> ModeSwitchButton;
 
 #pragma region SessionCreateDelegate
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	
 	UFUNCTION()
 	void OnClickCreateRoomButton();
 
-	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	UFUNCTION()
+	void OnClickModeSwitchButton();
+
 	void OnSessionCreated(FName SessionName, bool IsCreateSuccess);
 #pragma endregion
 

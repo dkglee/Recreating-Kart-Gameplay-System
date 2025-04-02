@@ -1,7 +1,5 @@
 ﻿#include "ItemModeListUI.h"
 
-#include "CommonUtil.h"
-#include "EnumUtil.h"
 #include "FastLogger.h"
 #include "OnlineSessionSettings.h"
 #include "SessionUtil.h"
@@ -18,9 +16,9 @@ void UItemModeListUI::NativeOnInitialized()
 void UItemModeListUI::InitializeSearchType()
 {
 	SessionSearchData.SessionSearch = MakeShareable(new FOnlineSessionSearch());
-	const FString MatchType = FCommonUtil::GetClassEnumKeyAsString(EMatchType::Item);
-	SessionSearchData.SessionSearch->QuerySettings.Set<FString>(FName("MatchType")
-		, MatchType, EOnlineComparisonOp::Equals);
+	// const FString MatchType = FCommonUtil::GetClassEnumKeyAsString(EMatchType::Item);
+	// SessionSearchData.SessionSearch->QuerySettings.Set<FString>(FName("MatchType")
+	// 	, MatchType, EOnlineComparisonOp::Equals);
 	SessionSearchData.OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCompleteSearch);
 }

@@ -20,4 +20,7 @@ protected:
 private:
 	uint8 InGamePlayerCount = 1;
 	uint8 PingCount = 0;
+
+	UFUNCTION()
+	void ClearSteam();
 };
