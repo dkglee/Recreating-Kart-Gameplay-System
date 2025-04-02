@@ -145,6 +145,8 @@ void UItemInventoryComponent::NetMulticast_GetItem_Implementation(const FItemTab
 
 void UItemInventoryComponent::GetBoosterItem()
 {
+	if (GetWorld()->GetMapName().Compare(TEXT("ItemTrack"))) return;
+	
 	FFastLogger::LogConsole(TEXT("부스터 얻기"));
 	GetItem(ItemMap[1]);
 }
@@ -162,7 +164,7 @@ void UItemInventoryComponent::UseItem()
 	{
 		return;
 	}
-
+	
 	// 부스터 사용중에 다른 부스터 사용 불가
 	if (Kart->GetbUsingBooster() == true && Inventory[0].ItemName == EItemName::Booster)
 	{
@@ -180,7 +182,7 @@ void UItemInventoryComponent::UseItem()
 	{
 		return;
 	}
-
+	
 	Server_UseItem();
 }
 

@@ -75,6 +75,7 @@ void UItemInteractionComponent::GetLifetimeReplicatedProps(TArray<class FLifetim
 
 	DOREPLIFETIME(UItemInteractionComponent, bIsInteraction);
 	DOREPLIFETIME(UItemInteractionComponent, WaterBombDecreaseTime);
+	DOREPLIFETIME(UItemInteractionComponent, bShieldOn);
 	
 }
 
