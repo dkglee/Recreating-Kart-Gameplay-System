@@ -14,6 +14,11 @@ void UBoosterGaugeUI::Init()
 	{
 		Kart->GetFrictionComponent()->OnBoosterGaugeUpdated.AddDynamic(this, &UBoosterGaugeUI::OnBoosterGaugeUpdated);
 	}
+
+	if (GetWorld()->GetMapName().Compare(TEXT("ItemTrack")))
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UBoosterGaugeUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
