@@ -10,9 +10,11 @@
 #include "KartShieldVFXComponent.h"
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/NotificationUI/NotificationUI.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -132,6 +134,7 @@ void UItemInteractionComponent::MissileHitInteraction()
 	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 	Client_ChangePhysics(false);
+	NetMulticast_MissileHitEffect();
 }
 
 void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
@@ -172,12 +175,18 @@ void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementat
 	Kart->SetActorLocation(resultPos);
 }
 
+void UItemInteractionComponent::NetMulticast_MissileHitEffect_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Explosion, Kart->GetActorLocation());
+}
+
 void UItemInteractionComponent::WaterBombHitInteraction()
 {
 	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 	InitialRot = Kart->GetActorRotation();
 	Client_ChangePhysics(false);
+	Client_StuckInBubble(true);
 	NetMulticast_WaterBombInteraction_VisibleUI(true);
 }
 
@@ -240,6 +249,7 @@ void UItemInteractionComponent::WaterBombInteraction_Move(float DeltaTime)
 		WaterBombDecreaseTime = 0.f;
 		resultRot = InitialRot;	
 		Client_ChangePhysics(true);
+		Client_StuckInBubble(false);
 		NetMulticast_WaterBombInteraction_VisibleUI(false);
 	}
 	
@@ -269,7 +279,15 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 	
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
+	Kart->GetSpringArmComponent()->bInheritRoll = bEnable;
 	FFastLogger::LogConsole(TEXT("상호작용 끝"));
+}
+
+void UItemInteractionComponent::Client_StuckInBubble_Implementation(bool value)
+{
+	if (Kart->IsLocallyControlled() == false) return;
+
+	Kart->GetBubble()->SetVisibility(value);
 }
 
 void UItemInteractionComponent::Server_CheckShieldUsingTime_Implementation()

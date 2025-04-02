@@ -62,6 +62,7 @@ public:
 	GETTER(class UBoosterGaugeUI*, BoosterGaugeUI);
 	GETTER(class UKartShieldVFXComponent*, Shield);
 	GETTER(class UKartItemSoundComponent*, ItemSoundComponent);
+	GETTER(class UStaticMeshComponent*, Bubble);
 #pragma endregion
 
 #pragma region ForeignFunction
@@ -182,6 +183,8 @@ private:
 
 #pragma region Etc
 	TArray<FVector> LineTraceLocations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Etc", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* Bubble;
 #pragma endregion
 
 #pragma region Camera

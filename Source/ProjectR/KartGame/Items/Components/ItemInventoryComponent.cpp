@@ -169,7 +169,6 @@ void UItemInventoryComponent::UseItem()
 		return;
 	}
 
-	//NetMulticast_StopSound();
 	Server_UseItem();
 }
 
@@ -264,7 +263,6 @@ void UItemInventoryComponent::SpawnItem(const FItemTable itemData)
 			auto* booster = GetWorld()->SpawnActor<ABooster>(itemData.ItemClass, itemTransform);
 			if (booster)
 			{
-				//FFastLogger::LogConsole(TEXT("UseBooster) IsServer: %s, Role: %d"), Kart->HasAuthority() ? TEXT("True") : TEXT("False"), Kart->GetLocalRole());
 				booster->SetOwningPlayer(Kart);
 			}
 			break;
@@ -315,7 +313,6 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 	{
 		for (const FHitResult& Hit : InitialHitResults)
 		{
-			//FFastLogger::LogConsole(TEXT("%s"), *Hit.GetActor()->GetName());
 			AKart* PotentialTarget = Cast<AKart>(Hit.GetActor());
 			if (PotentialTarget)
 			{
@@ -381,6 +378,7 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 		LockedTarget = nullptr;
 	}
 
+	// 조준 사운드
 	if (LockedTarget != nullptr)
 	{
 		NetMulticast_PlayMissileAimSound(true);
@@ -389,13 +387,14 @@ void UItemInventoryComponent::Server_FindTarget_Implementation(FVector start, FV
 	{
 		NetMulticast_PlayMissileAimSound(false);
 	}
+	
 	NetMulticast_TakeAim(start, end, AdjustedBoxHalfSize, BoxColor);
 }
 
 void UItemInventoryComponent::NetMulticast_TakeAim_Implementation(FVector start, FVector end,
 	FVector boxHalfSize, FColor BoxColor)
 {
-	DrawAimLineBox(start, end, boxHalfSize, BoxColor);
+	//DrawAimLineBox(start, end, boxHalfSize, BoxColor);
 
 	if (Kart->IsLocallyControlled())
 	{
