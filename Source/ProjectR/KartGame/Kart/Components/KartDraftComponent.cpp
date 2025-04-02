@@ -160,7 +160,7 @@ void UKartDraftComponent::Server_FindTarget_Implementation(FVector start, FVecto
 		NetMulticast_SetDraftProgressBarValueAndOpacity(0.0f, 1.0f);
 	}
 
-	//DrawTraceLineBox(start, end, boxHalfSize, boxColor);
+	// DrawTraceLineBox(start, end, boxHalfSize, boxColor);
 }
 
 void UKartDraftComponent::Server_CheckTraceTime_Implementation()

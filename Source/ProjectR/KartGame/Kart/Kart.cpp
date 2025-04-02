@@ -204,8 +204,8 @@ AKart::AKart()
 	DraftComponent = CreateDefaultSubobject<UKartDraftComponent>(TEXT("Kart Draft Component"));
 	DraftComponent->SetNetAddressable();
 	DraftComponent->SetIsReplicated(true);
-
 	
+	//
 	KartSkeletalMeshComponent = CreateDefaultSubobject<UKartSkeletalMeshComponent>(TEXT("KartSkeletalMeshComponent"));
 	KartSkeletalMeshComponent->SetupAttachment(RootBox);
 	KartSkeletalMeshComponent->SetNetAddressable();
