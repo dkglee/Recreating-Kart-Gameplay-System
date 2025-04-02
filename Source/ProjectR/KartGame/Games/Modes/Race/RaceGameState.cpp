@@ -106,6 +106,16 @@ void ARaceGameState::SortRank()
 		const ARiderPlayerState* PSA = Cast<ARiderPlayerState>(A);
 		const ARiderPlayerState* PSB = Cast<ARiderPlayerState>(B);
 
+		if (PSA->GetIsRaceEnd())
+		{
+			return true;
+		}
+
+		if (PSA->GetIsRaceEnd() && PSB->GetIsRaceEnd())
+		{
+			return PSA->GetRaceEndTime() < PSB->GetRaceEndTime();
+		}
+		
 		// 서로 이동한 랩 정보가 다르다면, 랩을 더 많이 돌은 사람이 우선순위가 높다.
 		if (PSA->GetCurrentLap() != PSB->GetCurrentLap())
 		{

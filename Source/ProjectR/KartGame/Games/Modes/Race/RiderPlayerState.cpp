@@ -100,5 +100,10 @@ void ARiderPlayerState::GoNextLap()
 
 void ARiderPlayerState::OnRep_CurrentLap()
 {
+	const ARaceGameState* GS = GetWorld()->GetGameState<ARaceGameState>();
+	if (CurrentLap == GS->GetMaxLaps())
+	{
+		return;
+	}
 	OnGoNextLapNotified.Broadcast(CurrentLap);
 }
