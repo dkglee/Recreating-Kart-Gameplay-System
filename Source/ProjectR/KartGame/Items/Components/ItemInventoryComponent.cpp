@@ -145,7 +145,7 @@ void UItemInventoryComponent::NetMulticast_GetItem_Implementation(const FItemTab
 
 void UItemInventoryComponent::GetBoosterItem()
 {
-	if (GetWorld()->GetMapName().Compare(TEXT("ItemTrack"))) return;
+	if (GetWorld()->GetMapName().Contains(TEXT("ItemTrack"))) return;
 	
 	FFastLogger::LogConsole(TEXT("부스터 얻기"));
 	GetItem(ItemMap[1]);
