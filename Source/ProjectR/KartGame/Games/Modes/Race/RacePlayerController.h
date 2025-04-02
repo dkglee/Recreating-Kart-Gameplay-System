@@ -37,7 +37,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
+
 private:
 #pragma region UIFactory
 	UPROPERTY(EditDefaultsOnly, Category = "Options|UI", meta = (AllowPrivateAccess = true))
@@ -79,5 +79,11 @@ protected:
 private:
 	UPROPERTY()
 	class UNetworkClockComponent* NetworkClockComponent = nullptr;
+#pragma endregion
+#pragma region Possess
+	virtual void OnRep_Pawn() override;
+	virtual void OnPossess(APawn* InPawn) override;
+	UFUNCTION()
+	void OnPossessedPlayer(APawn* OldPawn, APawn* NewPawn);
 #pragma endregion
 };
