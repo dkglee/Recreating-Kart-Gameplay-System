@@ -346,6 +346,7 @@ void AKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AKart, bUsingBooster);
+	DOREPLIFETIME(AKart, bCanMove);
 }
 
 // Called every frame

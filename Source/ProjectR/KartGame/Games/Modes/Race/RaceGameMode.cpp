@@ -1,5 +1,6 @@
 ﻿#include "RaceGameMode.h"
 
+#include "FastLogger.h"
 #include "RaceGameState.h"
 #include "RacePlayerController.h"
 #include "GameFramework/PlayerState.h"
@@ -21,7 +22,7 @@ void ARaceGameMode::StartGame()
 	}
 	
 	GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this,
-			&ThisClass::SetReadyGame, 3, false);
+			&ThisClass::SetReadyGame, 15, false);
 }
 
 void ARaceGameMode::SetReadyGame()

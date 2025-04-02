@@ -75,7 +75,7 @@ public:
 private:
 	
 #pragma region ForeignVariable
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	bool bCanMove = true;
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Kart", meta = (AllowPrivateAccess = "true"))
 	bool bUsingBooster = false;
