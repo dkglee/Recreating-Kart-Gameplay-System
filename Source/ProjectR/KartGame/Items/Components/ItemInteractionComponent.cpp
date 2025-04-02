@@ -10,6 +10,7 @@
 #include "KartShieldVFXComponent.h"
 #include "KartSteeringComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/NotificationUI/NotificationUI.h"
@@ -271,6 +272,7 @@ void UItemInteractionComponent::Client_ChangePhysics_Implementation(bool bEnable
 	
 	Kart->GetRootBox()->SetSimulatePhysics(bEnable);
 	Kart->GetAccelerationComponent()->ResetAcceleration();
+	Kart->GetSpringArmComponent()->bInheritRoll = bEnable;
 	FFastLogger::LogConsole(TEXT("상호작용 끝"));
 }
 
