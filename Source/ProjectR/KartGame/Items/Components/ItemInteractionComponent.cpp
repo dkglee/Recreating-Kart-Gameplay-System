@@ -14,6 +14,7 @@
 #include "KartGame/Games/Modes/Race/RacePlayerController.h"
 #include "KartGame/UIs/HUD/MainUI.h"
 #include "KartGame/UIs/NotificationUI/NotificationUI.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -133,6 +134,7 @@ void UItemInteractionComponent::MissileHitInteraction()
 	InitialPos = Kart->GetActorLocation();
 	InitialQuat = Kart->GetActorQuat();
 	Client_ChangePhysics(false);
+	NetMulticast_MissileHitEffect();
 }
 
 void UItemInteractionComponent::MissileInteraction_Move(float DeltaTime)
@@ -171,6 +173,11 @@ void UItemInteractionComponent::NetMulticast_MissileInteraction_Move_Implementat
 {
 	Kart->SetActorRotation(resultQuat);
 	Kart->SetActorLocation(resultPos);
+}
+
+void UItemInteractionComponent::NetMulticast_MissileHitEffect_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Explosion, Kart->GetActorLocation());
 }
 
 void UItemInteractionComponent::WaterBombHitInteraction()

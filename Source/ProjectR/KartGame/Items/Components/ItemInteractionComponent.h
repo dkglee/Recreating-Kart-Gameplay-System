@@ -57,6 +57,9 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_MissileInteraction_Move(FQuat resultQuat, FVector resultPos);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_MissileHitEffect();
 #pragma endregion
 
 #pragma region WaterFunction
@@ -94,6 +97,9 @@ private:
 	
 	UPROPERTY(Replicated, EditAnywhere, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
 	bool bIsInteraction = false;
+
+	UPROPERTY(EditAnywhere, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* Explosion;
 	
 public:
 	FInteraction InteractionDelegate;
