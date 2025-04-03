@@ -13,7 +13,7 @@ struct FFastLogger
 	static void LogScreen(FColor Color, const FmtType& Format, Arg&&... Args_)
 	{
 		const FString LogMessage = FString::Printf(Format, std::forward<Arg>(Args_)...);
-		if (GEngine)
+		if (GEngine && false)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.f, Color, LogMessage);
 		}
@@ -46,6 +46,7 @@ struct FFastLogger
 	template<typename FmtType, typename... Arg>
 	static void LogConsole(const FmtType& Format, Arg&&... Args)
 	{
+		if (true) return ;
 		const FString FormattedMessage = FString::Printf(Format, std::forward<Arg>(Args)...);
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *FormattedMessage);
 	}
