@@ -1,6 +1,6 @@
 # Recreating KartRider's Gameplay System
 
-## 프로젝트 설명
+## <mark>프로젝트 설명</mark>
 카트라이더의 핵심 시스템을 분석하고 UE5로 재구현한 연구/개발 프로젝트입니다. 
 개인적으로는 **주행 감각의 재현**과 **멀티플레이 체감 품질 개선**을 목표로 했습니다.
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 역할 및 목표
+## <mark>역할 및 목표</mark>
 
 **역할**
 - 차량 물리 전반(가속, 서스펜션, 스티어링 토크, 측면 마찰/드리프트)
@@ -26,7 +26,7 @@
 
 ## 주요 기능
 
-### 차량 물리
+### <mark>차량 물리</mark>
 카트 특유의 탄성·그립·드리프트 감각을 다음 모델로 구현.
 
 - **가속/저항:** 추진력·항력·롤링저항을 합력으로 계산 후 `F = m·a` 적용
@@ -46,10 +46,14 @@ https://github.com/user-attachments/assets/6394b2db-b387-4742-9bbf-1fb1c4ecae3b
 
 **소스 코드**
 
+[가속도 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp#L108) <br>
+[서스펜션 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartSuspensionComponent.cpp) <br>
+[측면 마찰력(드리프트) 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp#L108) <br>
+[토크(스티어링) 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartSteeringComponent.cpp)
 
 ---
 
-### 차량 네트워크
+### <mark>차량 네트워크</mark>
 멀티플레이에서 위치·상태 일관성을 높이기 위한 클라이언트 기반 동기화.
 - **RTT 기반 시간 동기화:**  
   클라이언트가 요청 시각을 포함해 서버 시간 요청 → 응답 수신 시  
@@ -69,5 +73,9 @@ https://github.com/user-attachments/assets/6394b2db-b387-4742-9bbf-1fb1c4ecae3b
 
 **소스 코드**
 
+[클라이언트 기반 물리 시뮬레이션 및 동기화 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartNetworkSyncComponent.cpp) <br>
+[RTT 기반 시간 동기화 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Games/Component/NetworkClockComponent.cpp) <br>
+[RTT 기반 서버 시간 요청(클라이언트 실행) 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Games/Modes/Race/RacePlayerController.cpp#L158) <br>
+[데드 레코닝 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Objects/DeadReckoningStrategy.cpp)
 
 ---
