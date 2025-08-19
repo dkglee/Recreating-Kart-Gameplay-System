@@ -49,6 +49,7 @@ https://github.com/user-attachments/assets/6394b2db-b387-4742-9bbf-1fb1c4ecae3b
 [가속도 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp#L108) <br>
 [서스펜션 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartSuspensionComponent.cpp) <br>
 [측면 마찰력(드리프트) 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartAccelerationComponent.cpp#L108) <br>
+[드리프트 탈출 식(Slip Angle) 도출 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartFrictionComponent.cpp#L163C1-L189C28) <br>
 [토크(스티어링) 소스 코드 바로가기](https://github.com/dkglee/Rider-Kart-/blob/main/Source/ProjectR/KartGame/Kart/Components/KartSteeringComponent.cpp)
 
 ---
