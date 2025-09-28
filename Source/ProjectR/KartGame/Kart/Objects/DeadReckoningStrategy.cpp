@@ -18,7 +18,7 @@ void UDeadReckoningStrategy::Update(float DeltaTime)
 {
 	Super::Update(DeltaTime);
 
-	if (!Kart->GetController()) return ;
+	// if (!Kart->GetController()) return ;
 
 	// 서버 시간 기준 Delta 구하기
 	float CurrentTime = Kart->GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
